@@ -4,13 +4,13 @@ from django.shortcuts import render
 # from .models import *
 from .forms import *
 
-
+from django.db.models import Count, Sum
 from django.urls import reverse_lazy
 
 
 def index(request):
-    latest_games_list = Boardgames.objects.order_by('lastTimePlayed')[:5]
-    mostplayed_games_list = Boardgames.objects.order_by('-totalTime')[:5]
+    latest_games_list = Gameplay.objects.order_by('date')[:5]
+    mostplayed_games_list = Gameplay.objects.values('name').annotate(Count('id')).order_by('id')[:5]
     context = {'latest_games_list': latest_games_list,
                'mostplayed_games_list': mostplayed_games_list
                }

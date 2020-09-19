@@ -20,7 +20,7 @@
 {% if mostplayed_games_list %}
     <ul>
     {% for b in mostplayed_games_list %}
-        <li>{{ b.name }}, {{ b.totalTime }}</li>
+        <li>{{ b.name }}, {{ b.id }}</li>
     {% endfor %}
     </ul>
 {% else %}
