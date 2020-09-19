@@ -1,0 +1,29 @@
+{% extends "polls/header.html" %}
+{% block body %}
+
+  <h2>New gameplay</h2>
+<form method="post">
+    <select name="item_id">
+    {% for b in boardgame %}
+        <option value="{{ b.name }}">{{ b.name }}</option>
+    {% endfor %}
+    </select>
+    {% csrf_token %}
+    <select name="item_id">
+    {% for p in players %}
+        <option value="{{ p }}">{{ p }}</option>
+    {% endfor %}
+    </select>
+    {% csrf_token %}
+    <table>
+    {{ form.as_table }}
+    </table>
+    {% csrf_token %}
+    <button type="submit" name="run_script">Save gameplay</button>
+</form>
+<form method="POST">
+
+</form>
+
+
+{% endblock %}

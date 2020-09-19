@@ -1,0 +1,64 @@
+li a {
+    color: black;
+}
+
+
+body {
+  background-color: #b5f5dc;
+}
+
+h1 {
+  text-align: center;
+}
+
+
+/* Navbar container */
+.navbar {
+  overflow: hidden;
+  background-color: #3CB371;
+  font-family: Arial;
+}
+
+/* Links inside the navbar */
+.navbar a {
+  float: left;
+  font-size: 20px;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+/* The dropdown container */
+.dropdown {
+  float: left;
+  overflow: hidden;
+}
+
+.round {
+  border-radius: 10px 10px 10px 10px;
+  -moz-border-radius: 10px 10px 10px 10px;
+  -webkit-border-radius: 10px 10px 10px 10px;
+  border: 0px solid #000000;
+}
+
+.shadow {
+  -webkit-box-shadow: 10px 10px 5px 0px rgba(163,163,163,1);
+  -moz-box-shadow: 10px 10px 5px 0px rgba(163,163,163,1);
+  box-shadow: 10px 10px 5px 0px rgba(163,163,163,1);
+}
+
+.box {
+  font-weight: 600;
+  font-family: Arial;
+  padding: 0px 10px;
+  float: left;
+  height: 180px;
+  width: 300px;
+  margin-bottom: 15px;
+  margin-top: 15px;
+  clear: both;
+  background-color: #90EE90;
+}
+
+}

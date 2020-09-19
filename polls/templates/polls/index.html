@@ -1,0 +1,32 @@
+{% extends "polls/header.html" %}
+{% block body %}
+<div class='box round shadow'>
+  <h2>Recently played</h2>
+
+{% if latest_games_list %}
+    <ul>
+    {% for b in latest_games_list %}
+        <li>{{ b.name }}, {{ b.lastTimePlayed }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
+</div>
+
+<div class='box round shadow'>
+  <h2>Most played</h2>
+
+{% if mostplayed_games_list %}
+    <ul>
+    {% for b in mostplayed_games_list %}
+        <li>{{ b.name }}, {{ b.totalTime }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
+</div>
+
+
+{% endblock %}
