@@ -20,3 +20,9 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+
+# python3 manage.py makemigrations polls
+# python3 manage.py migrate
+# python3 manage.py runserver 0.0.0.0:8000
