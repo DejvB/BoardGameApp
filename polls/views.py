@@ -8,7 +8,7 @@ from django.db.models import Count
 
 
 def index(request):
-    latest_games_list = Gameplay.objects.order_by('date')[:5]
+    latest_games_list = Gameplay.objects.order_by('-date')[:5]
     mostplayed_games_list = Gameplay.objects.values('name__name').annotate(game_count=Count('name__name')).order_by('-game_count')[:5]
     context = {'latest_games_list': latest_games_list,
                'mostplayed_games_list': mostplayed_games_list
