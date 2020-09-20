@@ -1,0 +1,39 @@
+{% extends "polls/header.html" %}
+{% block body %}
+
+  <h2>Results</h2>
+
+
+<!--<form method="post">-->
+    <!--{% csrf_token %}-->
+    <!--<table>-->
+    <!--{{ form.as_table }}-->
+    <!--</table>-->
+<!--<button type="submit" name="run_script">Save player</button>-->
+<!--</form>-->
+
+<form method="POST" enctype="multipart/form-data">
+    {{ formset.management_data }}
+    {% csrf_token %}
+    {{ formset.as_p }}
+    <input type="submit" value="Submit">
+</form>
+
+ <!--<form action='.' method='POST'>-->
+        <!--{{ formset.management_form }}-->
+
+        <!--{% if formset.errors %}-->
+            <!--<ul class='errorlist'><li>There are Errors. Details below...</li></ul>-->
+        <!--{% endif %}-->
+        <!--{% for form in formset %}-->
+            <!--<div class="subform">-->
+                <!--<div class="table">-->
+                    <!--{{ form.as_table }}-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--{% endfor %}-->
+        <!--<div>-->
+            <!--<button type='submit'>Submit</button>-->
+        <!--</div>-->
+    <!--</form>-->
+{% endblock %}

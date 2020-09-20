@@ -1,26 +1,38 @@
 from django import forms
-from .models import Boardgames
-from .models import Gameplay
+from .models import *
 
 class BoardgameForm(forms.ModelForm):
     class Meta:
         model = Boardgames
-        fields = ('name', 'minNumberOfPlayers', 'maxNumberOfPlayers')
+        fields = ('name', 'owner', 'minNumberOfPlayers', 'maxNumberOfPlayers')
 
 
 class GameplayForm(forms.ModelForm):
     class Meta:
-
         model = Gameplay
-        name = forms.ChoiceField(label="Boardgame", widget=forms.Select(choices=Boardgames.objects.all()))
-        # NoP = forms.ChoiceFieldlabel="Number of players", widget=forms.Select(choices=range(Boardgames.objects.all()))
+        # name = forms.ModelChoiceField(label="Boardgame", queryset= Boardgames.objects.all())
+        # name = forms.ChoiceField(label="Boardgame",widget=forms.Select(choices=Boardgames.objects.all()))
+        # NoP = forms.ChoiceField(label="Number of players", widget=forms.Select(choices=range(Boardgames.objects.all())))
         fields = ('name', 'NumberOfPlayers', 'time')
 
         # def __init__(self, *args, **kwargs):
         #     super().__init__(*args, **kwargs)
         #     self.fields['NumberOfPlayers'].queryset = Boardgames.objects.none()
 
-    # def __init__(self, *args, **kwargs):
+class PlayerForm(forms.ModelForm):
+    class Meta:
+        model = Player
+        exclude = ()
+
+
+
+
+class ResultsForm(forms.ModelForm):
+    class Meta:
+        model = Results
+        exclude = ()
+
+            # def __init__(self, *args, **kwargs):
     #     super().__init__(*args, **kwargs)
     #     self.fields['city'].queryset = Boardgames.objects.none()
 

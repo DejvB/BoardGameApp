@@ -1,15 +1,13 @@
 from django.db import models
 import datetime
 
-# class Question(models.Model):
-#     question_text = models.CharField(max_length=200)
-#     pub_date = models.DateTimeField('date published')
-#
-#
-# class Choice(models.Model):
-#     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-#     choice_text = models.CharField(max_length=200)
-#     votes = models.IntegerField(default=0)
+
+class Player(models.Model):
+
+    def __str__(self):
+        return self.name
+
+    name = models.CharField(max_length=10)
 
 
 class Boardgames(models.Model):
@@ -21,26 +19,27 @@ class Boardgames(models.Model):
         return self.lastTimePlayed <= datetime.date.today() - datetime.timedelta(days=d)
 
     name = models.CharField(max_length=50)
-    minNumberOfPlayers = models.IntegerField(default=0)
-    maxNumberOfPlayers = models.IntegerField(default=0)
+    owner = models.ForeignKey(Player, on_delete=models.CASCADE)
+    minNumberOfPlayers = models.IntegerField(default=2)
+    maxNumberOfPlayers = models.IntegerField(default=4)
+
 
 class Gameplay(models.Model):
+
     def __str__(self):
-        return self.name
+        return self.name.name
 
     name = models.ForeignKey(Boardgames, on_delete=models.CASCADE)
     NumberOfPlayers = models.IntegerField(default=0)
     time = models.DurationField(default=datetime.timedelta(days=0, seconds=0))
-    date = models.DateField(auto_now=True)
-
-class Player(models.Model):
-    def __str__(self):
-        return self.name
-
-    name = models.CharField(max_length=10)
+    date = models.DateTimeField(auto_now=True)
 
 
 class Results(models.Model):
+
+    def __str__(self):
+        return self.gp_id
+
     gp_id = models.ForeignKey(Gameplay, on_delete=models.CASCADE)
     p_id = models.ForeignKey(Player, on_delete=models.CASCADE)
     order = models.IntegerField(default=0)

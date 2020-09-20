@@ -1,0 +1,16 @@
+{% extends "polls/header.html" %}
+{% block body %}
+
+  <h2>New player</h2>
+
+
+<form method="post">
+    {% csrf_token %}
+    <input type="text" name="name" required id="id_name">
+
+<button type="submit" name="run_script">Save player</button>
+</form>
+
+
+
+{% endblock %}
