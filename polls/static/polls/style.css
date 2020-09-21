@@ -17,6 +17,7 @@ h1 {
   overflow: hidden;
   background-color: #3CB371;
   font-family: Arial;
+    width: 100%;
 }
 
 /* Links inside the navbar */

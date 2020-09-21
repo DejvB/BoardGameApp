@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 # from django.template import loader
 
 # from .models import *
@@ -24,7 +24,7 @@ def add_boardgame(request):
         if form.is_valid():
             b = form.save()
             b.save()
-        return render(request, 'polls/index.html')
+        return redirect('http://192.168.0.150:8000/polls')
     context['form'] = form
     return render(request, 'polls/add_boardgame.html', context)
 
@@ -34,20 +34,14 @@ def add_boardgame(request):
 def add_play(request):
     context = {}
     form = GameplayForm()
-    if request.method == 'POST': # and 'run_script' in request.POST:
+    if request.method == 'POST':
         form = GameplayForm(request.POST)
         if form.is_valid():
             gp = form.save()
             gp.save()
-            print('a')
-        else:
-            print('b')
-            print(form.errors)
-        print('c')
-        print(form.cleaned_data['name'])
-        context['player_count'] = form.cleaned_data['NumberOfPlayers']
-        return render(request, 'polls/add_results.html', context)
-    print('d')
+        # request.session['player_count'] = form.cleaned_data['NumberOfPlayers']
+        # request.session['last_game'] = form.cleaned_data['name']
+        return redirect('http://192.168.0.150:8000/polls/add_results/')
     context['form'] = form
     context['boardgame'] = Boardgames.objects.all()
     # boardgame_id = form.cleaned_data['boardgame_name']
@@ -63,12 +57,14 @@ def add_player(request):
         if form.is_valid():
             p = form.save()
             p.save()
-        return render(request, 'polls/index.html')
+        return redirect('http://192.168.0.150:8000/polls')
     return render(request, 'polls/add_player.html')
 
 from django.forms import formset_factory
 
 def add_results(request):
+    # if 'player_count' in request.session:
+    #     print(request.session['player_count'])
     lastGame = Gameplay.objects.order_by('-id')[0]
     ResultsFormSet = formset_factory(ResultsForm, extra=0)
     formset = ResultsFormSet(request.POST or None, initial=[{'order': i+1, 'gp_id':lastGame} for i in range(lastGame.NumberOfPlayers)])
@@ -76,5 +72,16 @@ def add_results(request):
         for form in formset:
             r = form.save()
             r.save()
-        return render(request, 'polls/index.html')
+        return redirect('http://192.168.0.150:8000/polls')
     return render(request, 'polls/add_results.html', {'formset':formset})
+
+
+def pie_chart(request):
+    labels = []
+    data = []
+
+    queryset = Results.objects.filter(order=1).values('p_id__name').annotate(total=Count('p_id__name'))
+    for p in queryset:
+        labels.append(p['p_id__name'])
+        data.append(p['total'])
+    return render(request, 'polls/pie_chart.html', {'labels': labels,'data': data})

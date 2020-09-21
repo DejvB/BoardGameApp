@@ -14,6 +14,9 @@ urlpatterns = [
     # ex: /polls/add_results/
     path('add_results/', views.add_results, name='add_results'),
 
+
+    path('pie_chart/', views.pie_chart, name='pie-chart'),
+
     # # ex: /polls/last_played_games/
     # path('last_played_games/', views.last_played_games, name='games'),
-]
+ ]
