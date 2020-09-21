@@ -39,16 +39,22 @@ def add_play(request):
         if form.is_valid():
             gp = form.save()
             gp.save()
-        # print(form.cleaned_data['name'])
+            print('a')
+        else:
+            print('b')
+            print(form.errors)
+        print('c')
+        print(form.cleaned_data['name'])
         context['player_count'] = form.cleaned_data['NumberOfPlayers']
         return render(request, 'polls/add_results.html', context)
+    print('d')
     context['form'] = form
     context['boardgame'] = Boardgames.objects.all()
     # boardgame_id = form.cleaned_data['boardgame_name']
     # print(boardgame_id)
     # minP = Boardgames.objects.filter(name=boardgame_id).only('minNumberOfPlayers')
     # maxP = Boardgames.objects.filter(name=boardgame_id).only('maxNumberOfPlayers')
-    context['players'] = [1,2,3]
+    context['players'] = range(1,7)
     return render(request, 'polls/add_game.html', context)
 
 def add_player(request):
@@ -63,21 +69,12 @@ def add_player(request):
 from django.forms import formset_factory
 
 def add_results(request):
-
-    print(request)
     lastGame = Gameplay.objects.order_by('-id')[0]
-    print(lastGame)
     ResultsFormSet = formset_factory(ResultsForm, extra=0)
     formset = ResultsFormSet(request.POST or None, initial=[{'order': i+1, 'gp_id':lastGame} for i in range(lastGame.NumberOfPlayers)])
-    # formset = ResultsFormSet(request.POST or None, initial=[{'order':1}])
-    # formset = ResultsFormSet()
     if formset.is_valid():
         for form in formset:
-            print(form.cleaned_data)
-
-    # if request.method == 'POST':
-    #     if formset.is_valid():
-    #         for form in formset:
-    #             form.save()
-    #         return render(request, 'polls/add_results.html')
+            r = form.save()
+            r.save()
+        return render(request, 'polls/index.html')
     return render(request, 'polls/add_results.html', {'formset':formset})

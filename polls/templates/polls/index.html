@@ -6,7 +6,7 @@
 {% if latest_games_list %}
     <ul>
     {% for b in latest_games_list %}
-        <li>{{ b.name }}, {{ b.date }}</li>
+        <li>{{ b.name }}, {{ b.date.date }}</li>
     {% endfor %}
     </ul>
 {% else %}
@@ -27,6 +27,5 @@
     <p>No polls are available.</p>
 {% endif %}
 </div>
-
 
 {% endblock %}

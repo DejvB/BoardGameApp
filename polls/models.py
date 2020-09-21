@@ -32,13 +32,13 @@ class Gameplay(models.Model):
     name = models.ForeignKey(Boardgames, on_delete=models.CASCADE)
     NumberOfPlayers = models.IntegerField(default=0)
     time = models.DurationField(default=datetime.timedelta(days=0, seconds=0))
-    date = models.DateTimeField(auto_now=True)
+    date = models.DateTimeField( default=datetime.datetime.now())
 
 
 class Results(models.Model):
 
     def __str__(self):
-        return self.gp_id
+        return self.gp_id.name.name
 
     gp_id = models.ForeignKey(Gameplay, on_delete=models.CASCADE)
     p_id = models.ForeignKey(Player, on_delete=models.CASCADE)
