@@ -13,17 +13,18 @@ class GameplayForm(forms.ModelForm):
         # name = forms.ModelChoiceField(label="Boardgame", queryset= Boardgames.objects.all())
         # name = forms.ChoiceField(label="Boardgame",widget=forms.Select(choices=Boardgames.objects.all()))
         # NoP = forms.ChoiceField(label="Number of players", widget=forms.Select(choices=range(Boardgames.objects.all())))
-        fields = ('name', 'NumberOfPlayers', 'time')
+        # fields = ('name', 'NumberOfPlayers', 'time', 'date')
+        exclude = ()
 
         # def __init__(self, *args, **kwargs):
         #     super().__init__(*args, **kwargs)
         #     self.fields['NumberOfPlayers'].queryset = Boardgames.objects.none()
 
 class PlayerForm(forms.ModelForm):
+    date = forms.DateTimeField(widget=forms.widgets.DateTimeInput(format='%Y-%m-%d %H:%M', attrs={'class':'myDateClass', 'type':'datetime-local'}))
     class Meta:
         model = Player
         exclude = ()
-
 
 
 

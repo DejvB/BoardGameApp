@@ -2,7 +2,7 @@
 {% block body %}
 
   <h2>New gameplay</h2>
-<!--<form method="post">-->
+<form method="post">
 
     <!--<select name="boardgame_name">-->
         <!--<option value="">&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
@@ -29,27 +29,28 @@
 
 <!--</form>-->
 
-<form method="post">
-    {% csrf_token %}
-    <select name="name" required id="id_name">
-        <option value="">---</option>
-        {% for b in boardgame %}
-            <option value="{{ b.pk }}">{{ b.name }}</option>
-        {% endfor %}
-    </select>
-    <select name="NumberOfPlayers" required id="id_NumberOfPlayers">
-        {% for p in players %}
-            <option value="{{ p }}">{{ p }}</option>
-        {% endfor %}
-    </select>
-    <input type="text" name="time" value="00:00:00" required id="id_time">
-
-<button type="submit" name="run_script">Save gameplay</button>
-
-
-
+{% csrf_token %}
+    <table>
+    {{ form.as_table }}
+    </table>
+    <button type="submit" name="run_script">Save boardgame</button>
 </form>
 
+<!--<form method="post">-->
+    <!--{% csrf_token %}-->
+    <!--<select name="name" required id="id_name">-->
+        <!--<option value="">-&#45;&#45;</option>-->
+        <!--{% for b in boardgame %}-->
+            <!--<option value="{{ b.pk }}">{{ b.name }}</option>-->
+        <!--{% endfor %}-->
+    <!--</select>-->
+    <!--<select name="NumberOfPlayers" required id="id_NumberOfPlayers">-->
+        <!--{% for p in players %}-->
+            <!--<option value="{{ p }}">{{ p }}</option>-->
+        <!--{% endfor %}-->
+    <!--</select>-->
+    <!--<input type="text" name="time" value="00:00:00" required id="id_time">-->
+    <!--<input type="text" name="date" value="00:00:00" required id="id_date">-->
 
 
 {% endblock %}
