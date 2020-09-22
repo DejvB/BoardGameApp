@@ -11,6 +11,24 @@ h1 {
   text-align: center;
 }
 
+h2 {
+    padding: 0px;
+    margin: 10px;
+}
+
+input {
+  width: 100%;
+}
+
+input, button[type=submit],input[type=button],select  {
+  background-color: b5f5dc;
+  border: 20px solid b5f5dc;
+  border-radius: 10px;
+  padding: 5px 10px;
+  text-decoration: none;
+  margin: 4px 2px;
+  cursor: pointer;
+}
 
 /* Navbar container */
 .navbar {
@@ -50,16 +68,17 @@ h1 {
 }
 
 .box {
+display:inline;
   font-weight: 600;
   font-family: Arial;
   padding: 0px 10px;
   float: left;
-  height: 180px;
+  /*height: 180px;*/
   width: 300px;
   margin-bottom: 15px;
   margin-top: 15px;
   clear: both;
-  background-color: #90EE90;
+  background-color: #B7ED97;/*#90EE90;*/
 }
 
 

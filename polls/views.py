@@ -52,13 +52,16 @@ def add_play(request):
     return render(request, 'polls/add_game.html', context)
 
 def add_player(request):
+    context = {}
+    form = PlayerForm()
     if request.method == 'POST':
         form = PlayerForm(request.POST)
         if form.is_valid():
             p = form.save()
             p.save()
         return redirect('http://192.168.0.150:8000/polls')
-    return render(request, 'polls/add_player.html')
+    context['form'] = form
+    return render(request, 'polls/add_player.html',context)
 
 from django.forms import formset_factory
 

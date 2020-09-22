@@ -1,7 +1,7 @@
 {% extends "polls/header.html" %}
 {% block body %}
 
-  <h2>Results</h2>
+
 
 
 <!--<form method="post">-->
@@ -14,9 +14,22 @@
 
 <form method="POST" enctype="multipart/form-data">
     {{ formset.management_data }}
-    {% csrf_token %}
-    {{ formset.as_p }}
-    <input type="submit" value="Submit">
+        {% csrf_token %}
+        {% for form in formset %}
+            <div class='box round shadow'>
+                {% if forloop.first %}
+                    <h2>Results</h2>
+                {% endif %}
+                <h3>Player {{ forloop.counter}}</h3>
+                <hr>
+                <table>
+                    {{ form.as_table }}
+                </table>
+                {% if forloop.last %}
+<button type="submit" name="run_script">Save results</button>
+                {% endif %}
+            </div>
+        {% endfor %}
 </form>
 
  <!--<form action='.' method='POST'>-->

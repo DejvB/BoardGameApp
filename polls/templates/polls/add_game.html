@@ -1,56 +1,15 @@
 {% extends "polls/header.html" %}
 {% block body %}
-
+<div class='box round shadow'>
   <h2>New gameplay</h2>
+    <hr>
 <form method="post">
-
-    <!--<select name="boardgame_name">-->
-        <!--<option value="">&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
-        <!--{% for b in boardgame %}-->
-            <!--<option value="{{ b.name }}">{{ b.name }}</option>-->
-        <!--{% endfor %}-->
-    <!--</select>-->
-
-    <!--{% csrf_token %}-->
-    <!--<select name="number_of_players">-->
-    <!--{% for p in players %}-->
-        <!--<option value="{{ p }}">{{ p }}</option>-->
-    <!--{% endfor %}-->
-    <!--</select>-->
-
-    <!--{% csrf_token %}-->
-    <!--<table>-->
-    <!--{{ form.as_table }}-->
-    <!--</table>-->
-
-    <!--{% csrf_token %}-->
-    <!--<button type="submit" name="run_script">Save gameplay</button>-->
-
-
-<!--</form>-->
 
 {% csrf_token %}
     <table>
     {{ form.as_table }}
     </table>
-    <button type="submit" name="run_script">Save boardgame</button>
+    <button type="submit" name="run_script">Save gammeplay</button>
 </form>
-
-<!--<form method="post">-->
-    <!--{% csrf_token %}-->
-    <!--<select name="name" required id="id_name">-->
-        <!--<option value="">-&#45;&#45;</option>-->
-        <!--{% for b in boardgame %}-->
-            <!--<option value="{{ b.pk }}">{{ b.name }}</option>-->
-        <!--{% endfor %}-->
-    <!--</select>-->
-    <!--<select name="NumberOfPlayers" required id="id_NumberOfPlayers">-->
-        <!--{% for p in players %}-->
-            <!--<option value="{{ p }}">{{ p }}</option>-->
-        <!--{% endfor %}-->
-    <!--</select>-->
-    <!--<input type="text" name="time" value="00:00:00" required id="id_time">-->
-    <!--<input type="text" name="date" value="00:00:00" required id="id_date">-->
-
-
+</div>
 {% endblock %}

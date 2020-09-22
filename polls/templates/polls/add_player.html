@@ -1,16 +1,19 @@
 {% extends "polls/header.html" %}
 {% block body %}
 
-  <h2>New player</h2>
+<div class='box round shadow'>
 
+  <h2>New player</h2>
+    <hr>
 
 <form method="post">
     {% csrf_token %}
-    <input type="text" name="name" required id="id_name">
-
+    <table>
+    {{ form.as_table }}
+    </table>
 <button type="submit" name="run_script">Save player</button>
 </form>
-
+</div>
 
 
 {% endblock %}
