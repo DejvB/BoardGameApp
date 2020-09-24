@@ -6,7 +6,6 @@ from .forms import *
 
 from django.db.models import Count
 
-
 def index(request):
     latest_games_list = Gameplay.objects.order_by('-date')[:5]
     mostplayed_games_list = Gameplay.objects.values('name__name').annotate(game_count=Count('name__name')).order_by('-game_count')[:5]
@@ -24,7 +23,7 @@ def add_boardgame(request):
         if form.is_valid():
             b = form.save()
             b.save()
-        return redirect('http://192.168.0.150:8000/polls')
+        return redirect('home')
     context['form'] = form
     return render(request, 'polls/add_boardgame.html', context)
 
@@ -41,7 +40,7 @@ def add_play(request):
             gp.save()
         # request.session['player_count'] = form.cleaned_data['NumberOfPlayers']
         # request.session['last_game'] = form.cleaned_data['name']
-        return redirect('http://192.168.0.150:8000/polls/add_results/')
+        return redirect('add_results')
     context['form'] = form
     context['boardgame'] = Boardgames.objects.all()
     # boardgame_id = form.cleaned_data['boardgame_name']
@@ -59,7 +58,7 @@ def add_player(request):
         if form.is_valid():
             p = form.save()
             p.save()
-        return redirect('http://192.168.0.150:8000/polls')
+        return redirect('home')
     context['form'] = form
     return render(request, 'polls/add_player.html',context)
 
@@ -75,7 +74,7 @@ def add_results(request):
         for form in formset:
             r = form.save()
             r.save()
-        return redirect('http://192.168.0.150:8000/polls')
+        return redirect('home')
     return render(request, 'polls/add_results.html', {'formset':formset})
 
 
