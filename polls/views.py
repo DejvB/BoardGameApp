@@ -4,13 +4,15 @@ from django.shortcuts import render, redirect
 # from .models import *
 from .forms import *
 
-from django.db.models import Count
+from django.db.models import Count, Sum, Q
 
 def index(request):
     latest_games_list = Gameplay.objects.order_by('-date')[:5]
+    best_companion = Results.objects.filter(~Q(p_id__name='David')).values('p_id__name').annotate(Sum('gp_id__time'), Count('gp_id__time'))
     mostplayed_games_list = Gameplay.objects.values('name__name').annotate(game_count=Count('name__name')).order_by('-game_count')[:5]
     context = {'latest_games_list': latest_games_list,
-               'mostplayed_games_list': mostplayed_games_list
+               'mostplayed_games_list': mostplayed_games_list,
+               'best_companion': best_companion
                }
     return render(request, 'polls/index.html', context)
 
@@ -81,9 +83,27 @@ def add_results(request):
 def pie_chart(request):
     labels = []
     data = []
+    colors = []
+    context = {}
+    players = Player.objects.order_by('name').values_list('name', flat=True)
+    c = {'Adam':'#E2F0CB','David':'#ADD8E6','Bára':'#B5EAD7','Anička':'#C0C0C0', 'Samo':'#000000'}
+    for i in range(4):
+        data.append([])
+        queryset = Results.objects.filter(order=i + 1).values('p_id__name').annotate(total=Count('p_id__name'))
 
-    queryset = Results.objects.filter(order=3).values('p_id__name').annotate(total=Count('p_id__name'))
-    for p in queryset:
-        labels.append(p['p_id__name'])
-        data.append(p['total'])
-    return render(request, 'polls/pie_chart.html', {'labels': labels,'data': data})
+        for player in players:
+            p = queryset.filter(p_id__name=player)
+            try:
+                data[i].append(p[0]['total'])
+            except:
+                data[i].append(0)
+            if i == 0:
+                labels.append(player)
+                colors.append(c[player])
+    context['labels'] = labels
+    context['colors'] = colors
+    context['data0'] = data[0]
+    context['data1'] = data[1]
+    context['data2'] = data[2]
+    context['data3'] = data[3]
+    return render(request, 'polls/pie_chart.html', context)

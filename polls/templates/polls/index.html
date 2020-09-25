@@ -29,5 +29,18 @@
 {% endif %}
 </div>
 
+<div class='box round shadow'>
+  <h2>Best companion</h2>
+
+{% if best_companion %}
+    <ul>
+    {% for bc in best_companion %}
+        <li>{{ bc.p_id__name }}, {{ bc.gp_id__time__sum }}, {{ bc.gp_id__time__count }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
+</div>
 
 {% endblock %}

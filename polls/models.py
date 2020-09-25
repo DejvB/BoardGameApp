@@ -22,6 +22,7 @@ class Boardgames(models.Model):
     owner = models.ForeignKey(Player, on_delete=models.CASCADE)
     minNumberOfPlayers = models.IntegerField(default=2)
     maxNumberOfPlayers = models.IntegerField(default=4)
+    # ordering = ['name']
 
 
 class Gameplay(models.Model):

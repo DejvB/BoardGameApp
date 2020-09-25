@@ -8,6 +8,7 @@ class BoardgameForm(forms.ModelForm):
 
 
 class GameplayForm(forms.ModelForm):
+    name = forms.ModelChoiceField(Boardgames.objects.order_by('name'))
     class Meta:
         model = Gameplay
         exclude = ()
@@ -30,3 +31,7 @@ class ResultsForm(forms.ModelForm):
     class Meta:
         model = Results
         exclude = ()
+
+
+
+        # field_order = ['username', 'custom_field', 'password']

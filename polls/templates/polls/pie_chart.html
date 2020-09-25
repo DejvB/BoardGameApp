@@ -8,13 +8,42 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script>
     var config = {
-      type: 'pie',
+      type: 'doughnut',
       data: {
         datasets: [{
-          data: {{ data|safe }},
-          backgroundColor: [
-            '#E2F0CB', '#B5EAD7', '#ADD8E6', '#C0C0C0', '#D3D3D3'
-          ],
+          data: {{ data0|safe }},
+          backgroundColor: {{ colors|safe }},
+          borderColor: '#a0a0a0',
+          borderWidth: 1,
+          borderAlign: 'inner',
+          hoverBorderWidth: 3,
+          label: 'Population'
+        },
+        {
+          data: {{ data1|safe }},
+          backgroundColor: {{ colors|safe }},
+          borderColor: '#a0a0a0',
+          borderWidth: 1,
+          borderAlign: 'inner',
+          hoverBorderWidth: 3,
+          label: 'Population'
+        },
+        {
+          data: {{ data2|safe }},
+          backgroundColor: {{ colors|safe }},
+          borderColor: '#a0a0a0',
+          borderWidth: 1,
+          borderAlign: 'inner',
+          hoverBorderWidth: 3,
+          label: 'Population'
+        },
+        {
+          data: {{ data3|safe }},
+          backgroundColor: {{ colors|safe }},
+          borderColor: '#a0a0a0',
+          borderWidth: 1,
+          borderAlign: 'inner',
+          hoverBorderWidth: 3,
           label: 'Population'
         }],
         labels: {{ labels|safe }}
