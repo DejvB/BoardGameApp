@@ -82,7 +82,7 @@ def pie_chart(request):
     labels = []
     data = []
 
-    queryset = Results.objects.filter(order=1).values('p_id__name').annotate(total=Count('p_id__name'))
+    queryset = Results.objects.filter(order=3).values('p_id__name').annotate(total=Count('p_id__name'))
     for p in queryset:
         labels.append(p['p_id__name'])
         data.append(p['total'])
