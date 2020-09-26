@@ -86,7 +86,7 @@ def pie_chart(request):
     colors = []
     context = {}
     players = Player.objects.order_by('name').values_list('name', flat=True)
-    c = {'Adam':'#E2F0CB','David':'#ADD8E6','Bára':'#B5EAD7','Anička':'#C0C0C0', 'Samo':'#000000'}
+    c = {'Adam':'#E2F0CB','David':'#ADD8E6','Bára':'#B5EAD7','Anička':'#C0C0C0', 'Jana':'#000000'}
     for i in range(4):
         data.append([])
         queryset = Results.objects.filter(order=i + 1).values('p_id__name').annotate(total=Count('p_id__name'))
