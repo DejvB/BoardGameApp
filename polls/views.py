@@ -8,7 +8,7 @@ from django.db.models import Count, Sum, Q
 
 def index(request):
     latest_games_list = Gameplay.objects.order_by('-date')[:5]
-    best_companion = Results.objects.filter(~Q(p_id__name='David')).values('p_id__name').annotate(Sum('gp_id__time'), Count('gp_id__time'))
+    best_companion = Results.objects.filter(~Q(p_id__name='David')).values('p_id__name').annotate(Sum('gp_id__time'), Count('gp_id__time')).order_by('-gp_id__time__sum')
     mostplayed_games_list = Gameplay.objects.values('name__name').annotate(game_count=Count('name__name')).order_by('-game_count')[:5]
     context = {'latest_games_list': latest_games_list,
                'mostplayed_games_list': mostplayed_games_list,
