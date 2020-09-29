@@ -40,17 +40,19 @@ def add_play(request):
         if form.is_valid():
             gp = form.save()
             gp.save()
-        # request.session['player_count'] = form.cleaned_data['NumberOfPlayers']
-        # request.session['last_game'] = form.cleaned_data['name']
         return redirect('add_results')
     context['form'] = form
     context['boardgame'] = Boardgames.objects.all()
-    # boardgame_id = form.cleaned_data['boardgame_name']
-    # print(boardgame_id)
-    # minP = Boardgames.objects.filter(name=boardgame_id).only('minNumberOfPlayers')
-    # maxP = Boardgames.objects.filter(name=boardgame_id).only('maxNumberOfPlayers')
-    context['players'] = range(1,7)
+    # context['players'] = range(1,7)
     return render(request, 'polls/add_game.html', context)
+
+def load_player_count(request):
+    bg_id = request.GET.get('name')
+    playersRange = Boardgames.objects.filter(id=bg_id).values('minNumberOfPlayers','maxNumberOfPlayers')[0]
+    minP = playersRange['minNumberOfPlayers']
+    maxP = playersRange['maxNumberOfPlayers']
+    PossibleNumberOfPlayers = range(minP, maxP + 1)
+    return render(request, 'polls/players_dropdown_options.html', {'PossibleNumberOfPlayers':PossibleNumberOfPlayers})
 
 def add_player(request):
     context = {}
@@ -86,7 +88,7 @@ def pie_chart(request):
     colors = []
     context = {}
     players = Player.objects.order_by('name').values_list('name', flat=True)
-    c = {'Adam':'#E2F0CB','David':'#ADD8E6','Bára':'#B5EAD7','Anička':'#C0C0C0', 'Jana':'#000000'}
+    c = {'Adam':'#FFB6C1','David':'#ADD8E6','Bára':'#90EE90','Anička':'#ffcccb', 'Jana':'#FFFF66'}
     for i in range(4):
         data.append([])
         queryset = Results.objects.filter(order=i + 1).values('p_id__name').annotate(total=Count('p_id__name'))

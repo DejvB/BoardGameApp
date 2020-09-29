@@ -17,6 +17,6 @@ urlpatterns = [
 
     path('pie_chart/', views.pie_chart, name='pie-chart'),
 
-    # # ex: /polls/last_played_games/
-    # path('last_played_games/', views.last_played_games, name='games'),
+    path('ajax/load_player_count/', views.load_player_count, name='load_player_count'),  # <-- this one here
+
  ]
