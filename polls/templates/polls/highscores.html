@@ -1,0 +1,101 @@
+{% extends "polls/header.html" %}
+{% block body %}
+
+<div class='box round shadow'>
+  <h2>Highscores</h2>
+    <hr>
+<form method="post" id="GameplayForm" load_player_count_url="{% url 'load_player_count' %}"  novalidate>
+
+    {% csrf_token %}
+    <table>
+        <tr><th>
+        <label for="id_name">Name:</label></th><td>
+            <select name="name" required id="id_name">
+                <option value="">---------</option>
+                {% for b in boardgames %}
+                    <option value="{{ b.id }}">{{ b.name }}</option>
+                {% endfor %}
+            </select>
+        </td></tr>
+        <tr><th>
+        <label for="id_NumberOfPlayers">Number of players:</label></th><td><select name="NumberOfPlayers" id="id_NumberOfPlayers">
+                <option value="">---------</option>
+            </select></td></tr>
+        </table>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script>
+    $("#id_name").change(function () {
+      var url = $("#GameplayForm").attr("load_player_count_url");  // get the url of the `load_cities` view
+      var bg_id = $(this).val();  // get the selected country ID from the HTML input
+
+      $.ajax({                       // initialize an AJAX request
+        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load_player_count/)
+        data: {
+          'name': bg_id       // add the country id to the GET parameters
+        },
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+          $("#id_NumberOfPlayers").html(data);  // replace the contents of the city input with the data that came from the server
+        }
+      });
+
+    });
+  </script>
+
+<div id="container" style="width: 75%;">
+    <canvas id="pie_chart" data-url="{% url 'chart_options' %}"></canvas>
+  </div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+  <script>
+
+    $("#id_NumberOfPlayers").change(function () {
+      <!--alert($(id_name).val());-->
+      <!--console.log('your message');-->
+      var url = $("#pie_chart").attr("data-url");
+      var pie_chart = $("#pie_chart");
+      var bg_id = $(id_name).val();
+      var p_count = $(this).val();
+      $.ajax({
+        url: url,
+        data: {
+          'name': bg_id,       // add the country id to the GET parameters
+          'NoP': p_count
+        },
+        success: function (data) {
+
+          var ctx = pie_chart[0].getContext("2d");
+
+          new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: data.labels,
+              datasets: [{
+                <!--label: data.labels,-->
+                backgroundColor: data.colors,
+                data: data.data
+              }]
+            },
+            options: {
+              responsive: true,
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: false,
+                text: 'Highscores'
+              }
+            }
+          });
+        },
+        failure: function(data) {
+          alert('Got an error dude');
+        }
+      });
+    });
+  </script>
+
+{% endblock %}

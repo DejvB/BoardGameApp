@@ -88,7 +88,7 @@ def pie_chart(request):
     colors = []
     context = {}
     players = Player.objects.order_by('name').values_list('name', flat=True)
-    c = {'Adam':'#FFB6C1','David':'#ADD8E6','Bára':'#90EE90','Anička':'#ffcccb', 'Jana':'#FFFF66'}
+    c = {'Adam':'#FFB6C1','David':'#ADD8E6','Bára':'#90EE90','Anička':'#FFFF66', 'Jana':'#ffcccb'}
     for i in range(4):
         data.append([])
         queryset = Results.objects.filter(order=i + 1).values('p_id__name').annotate(total=Count('p_id__name'))
@@ -109,3 +109,44 @@ def pie_chart(request):
     context['data2'] = data[2]
     context['data3'] = data[3]
     return render(request, 'polls/pie_chart.html', context)
+
+def highscores(request):
+    context = {'boardgames': Boardgames.objects.all().order_by('name')}
+
+    datas = ['1','2','3']
+    colors = ['#FFB6C1','#ADD8E6','#90EE90','#ffcccb''#FFFF66']
+    labels = ['a','b','v']
+    # minP = playersRange['minNumberOfPlayers']
+    # maxP = playersRange['maxNumberOfPlayers']
+    # PossibleNumberOfPlayers = range(minP, maxP + 1)
+
+    context['labels'] = labels
+    context['colors'] = colors
+    context['data'] = datas
+    return render(request, 'polls/highscores.html', context)
+
+from django.http import JsonResponse
+
+def load_chart_data(request):
+    labels = []
+    data = []
+    colors = []
+    legend = []
+    c = {'Adam':'#FFB6C1','David':'#ADD8E6','Bára':'#90EE90','Anička':'#FFFF66', 'Jana':'#ffcccb'}
+    context = {}
+
+    url = request.GET.get('url')
+    bg_id = request.GET.get('name')
+    p_count = request.GET.get('NoP')
+    print(bg_id, p_count)
+    queryset = Results.objects.filter(gp_id__name__id=bg_id).filter(gp_id__NumberOfPlayers=p_count).values('p_id__name','points','order').order_by('-points')
+    print(queryset)
+    for query in queryset:
+        data.append(query['points'])
+        colors.append(c[query['p_id__name']])
+        labels.append(query['p_id__name'] + ', \nPosition:' + str(query['order']))
+    try:
+        return JsonResponse(data={'labels': labels,'data': data, 'colors':colors})
+    except:
+        return JsonResponse(data={'labels': ['a','b','v'], 'data': ['1','5','3'],
+    'colors': ['#FFB6C1','#ADD8E6','#90EE90','#ffcccb''#FFFF66']})

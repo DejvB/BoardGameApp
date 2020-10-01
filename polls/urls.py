@@ -13,10 +13,15 @@ urlpatterns = [
     path('add_player/', views.add_player, name='add_player'),
     # ex: /polls/add_results/
     path('add_results/', views.add_results, name='add_results'),
+    # ex: /polls/hs/
+    path('hs/', views.highscores, name='highscores'),
 
 
     path('pie_chart/', views.pie_chart, name='pie-chart'),
 
-    path('ajax/load_player_count/', views.load_player_count, name='load_player_count'),  # <-- this one here
+
+    # AJAX
+    path('ajax/load_player_count/', views.load_player_count, name='load_player_count'),
+    path('ajax/chart_options/', views.load_chart_data, name='chart_options'),
 
  ]
