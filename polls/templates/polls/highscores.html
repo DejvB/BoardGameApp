@@ -46,7 +46,28 @@
     options: {
       responsive: true,
       legend: {
-        position: 'top'
+        position: 'top',
+
+        <!--onHover: function(event, legendItem) {-->
+          <!--document.getElementById("canvas").style.cursor = 'pointer';-->
+        <!--},-->
+        onClick: function(e, legendItem) {
+          var index = legendItem.datasetIndex;
+          var name = legendItem.text;
+          var ch = this.chart;
+
+          ch.data.datasets.forEach(function(e, i) {
+            var meta = ch.getDatasetMeta(i);
+            if (e.label == name) {
+              meta.hidden = !meta.hidden
+
+            }
+          });
+
+          ch.update();
+        <!--},-->
+      }
+
       },
       title: {
         display: false,

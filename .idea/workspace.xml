@@ -4,7 +4,6 @@
     <list default="true" id="ed48db24-a98b-47d3-9a90-d805269f8293" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/polls/templates/polls/highscores.html" afterPath="$PROJECT_DIR$/polls/templates/polls/highscores.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/polls/views.py" afterPath="$PROJECT_DIR$/polls/views.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -126,8 +125,8 @@
           <file leaf-file-name="highscores.html" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/polls/templates/polls/highscores.html">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="368">
-                  <caret line="49" column="8" lean-forward="true" selection-start-line="49" selection-start-column="8" selection-end-line="49" selection-end-column="8" />
+                <state relative-caret-position="306">
+                  <caret line="57" column="0" lean-forward="true" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
                   <folding />
                 </state>
               </provider>
@@ -159,6 +158,7 @@
       <find>Results</find>
       <find>id_name</find>
       <find>order</find>
+      <find>ci</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -774,8 +774,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/polls/templates/polls/highscores.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="368">
-          <caret line="49" column="8" lean-forward="true" selection-start-line="49" selection-start-column="8" selection-end-line="49" selection-end-column="8" />
+        <state relative-caret-position="306">
+          <caret line="57" column="0" lean-forward="true" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
           <folding />
         </state>
       </provider>
