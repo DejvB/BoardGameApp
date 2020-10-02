@@ -131,20 +131,17 @@ def load_chart_data(request):
     labels = []
     data = []
     colors = []
-    legend = []
     c = {'Adam':'#FFB6C1','David':'#ADD8E6','Bára':'#90EE90','Anička':'#FFFF66', 'Jana':'#ffcccb'}
-    context = {}
 
-    url = request.GET.get('url')
     bg_id = request.GET.get('name')
     p_count = request.GET.get('NoP')
     print(bg_id, p_count)
     queryset = Results.objects.filter(gp_id__name__id=bg_id).filter(gp_id__NumberOfPlayers=p_count).values('p_id__name','points','order').order_by('-points')
     print(queryset)
     for query in queryset:
-        data.append(query['points'])
+        data.append([query['points']])
         colors.append(c[query['p_id__name']])
-        labels.append(query['p_id__name'] + ', \nPosition:' + str(query['order']))
+        labels.append(query['p_id__name'])
     try:
         return JsonResponse(data={'labels': labels,'data': data, 'colors':colors})
     except:

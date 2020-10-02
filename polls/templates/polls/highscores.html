@@ -24,6 +24,49 @@
         </table>
 </div>
 
+<div id="container" style="width: 75%;">
+    <canvas id="pie_chart" data-url="{% url 'chart_options' %}"></canvas>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<script>
+  var ctx = pie_chart.getContext("2d");
+  var chartData = {
+    labels: 'h',
+    datasets: [{
+      label: ['ha'],
+      data: [3],
+      backgroundColor: '#333333'
+    }]
+  }
+  var ch = new Chart(ctx, {
+    type: 'bar',
+    data: chartData,
+
+    options: {
+      responsive: true,
+      legend: {
+        position: 'top'
+      },
+      title: {
+        display: false,
+        text: 'Highscores'
+      },
+      scales: {
+        yAxes: [{
+            ticks: {
+                suggestedMin: 0
+            }
+        }]
+      },
+      animation: {
+            duration: 1000
+        }
+    }
+  }
+);
+</script>
+
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script>
@@ -44,9 +87,7 @@
     });
   </script>
 
-<div id="container" style="width: 75%;">
-    <canvas id="pie_chart" data-url="{% url 'chart_options' %}"></canvas>
-  </div>
+
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
@@ -57,6 +98,7 @@
       <!--console.log('your message');-->
       var url = $("#pie_chart").attr("data-url");
       var pie_chart = $("#pie_chart");
+      var sel = $(id_name);
       var bg_id = $(id_name).val();
       var p_count = $(this).val();
       $.ajax({
@@ -66,30 +108,20 @@
           'NoP': p_count
         },
         success: function (data) {
-
-          var ctx = pie_chart[0].getContext("2d");
-
-          new Chart(ctx, {
-            type: 'bar',
-            data: {
-              labels: data.labels,
-              datasets: [{
-                <!--label: data.labels,-->
-                backgroundColor: data.colors,
-                data: data.data
-              }]
-            },
-            options: {
-              responsive: true,
-              legend: {
-                position: 'top',
-              },
-              title: {
-                display: false,
-                text: 'Highscores'
-              }
+            var i;
+            var len = chartData.datasets.length;
+            for (i = 0; i < len; i++) {
+              chartData.datasets.pop()
+              ch.update(); // can be with number of miliseconds as duraiton
             }
-          });
+            data.data.forEach(function (a, i) {
+                chartData.datasets.push({
+                  label: data.labels[i],
+                  backgroundColor: data.colors[i],
+                  data: data.data[i]
+                })
+                ch.update();
+            })
         },
         failure: function(data) {
           alert('Got an error dude');
