@@ -3,7 +3,7 @@
 
 <div class='box round shadow'>
   <h2>Recently played</h2>
-
+    <hr>
 {% if latest_games_list %}
     <ul>
     {% for b in latest_games_list %}
@@ -17,7 +17,7 @@
 
 <div class='box round shadow'>
   <h2>Most played</h2>
-
+    <hr>
 {% if mostplayed_games_list %}
     <ul>
     {% for b in mostplayed_games_list %}
@@ -31,7 +31,7 @@
 
 <div class='box round shadow'>
   <h2>Best companion</h2>
-
+    <hr>
 {% if best_companion %}
     <ul>
     {% for bc in best_companion %}
@@ -42,5 +42,106 @@
     <p>No polls are available.</p>
 {% endif %}
 </div>
+
+<div id="container" style="width: 50%;">
+    <canvas id="line-chart"></canvas>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<script>
+    var config = {
+        type: 'line',
+        data: {
+            labels: {{ week|safe }},
+            datasets: [{
+                label: 'Total time per week',
+                backgroundColor: '#ff0000',
+                borderColor: '#ff0000',
+                data: {{ totalTime|safe }},
+				yAxisID: 'y-axis-1',
+                fill: false,
+            }, {
+                label: 'Total gameplays per week',
+                fill: false,
+                backgroundColor: '#0000ff',
+                borderColor: '#0000ff',
+                data: {{ totalCount|safe }},
+				yAxisID: 'y-axis-2',
+            }]
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: true,
+                text: 'Statistics'
+            },
+            tooltips: {
+                mode: 'nearest',
+                intersect: false,
+                callbacks: {
+                    label: function(tooltipItem){
+                        console.log(tooltipItem);
+                        if (tooltipItem.value > 1000) {
+                            return {{ totalTimestr|safe }}[tooltipItem.index];
+                        }
+                        else {
+                            return tooltipItem.value;
+                        }
+                    }
+                }
+            },
+            <!--hover: {-->
+                <!--mode: 'nearest',-->
+                <!--intersect: false-->
+            <!--},-->
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Week'
+                    }
+                }],
+                yAxes: [{
+							type: 'linear',
+							display: true,
+							position: 'right',
+							ticks: {
+							    stepSize: 1,
+                                beginAtZero: true,
+                            },
+							id: 'y-axis-2',
+						}, {
+							type: 'linear',
+                            position: 'left',
+                            ticks: {
+                              min: 0,
+                              max: {{ avg|safe }},
+                              stepSize: 10.8e+6,
+                              beginAtZero: true,
+                              callback: value => {
+                                var date = new Date(value);
+                                var hours = date.getHours() - 1;
+                                var minutes = "0" + date.getMinutes();
+                                var seconds = "0" + date.getSeconds();
+                                var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+                                return formattedTime;
+                              },
+							id: 'y-axis-1',
+                        },
+                        // grid line settings
+                        gridLines: {
+                            drawOnChartArea: false, // only want the grid lines for one axis to show up
+                        },
+				}],
+            }
+        }
+    };
+
+window.onload = function() {
+      var ctx = document.getElementById('line-chart').getContext('2d');
+      window.myPie = new Chart(ctx, config);
+    };
+</script>
 
 {% endblock %}

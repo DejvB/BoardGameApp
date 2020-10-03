@@ -5,15 +5,32 @@ from django.shortcuts import render, redirect
 from .forms import *
 
 from django.db.models import Count, Sum, Q
+from django.db.models.functions import ExtractWeek, ExtractYear
 
 def index(request):
     latest_games_list = Gameplay.objects.order_by('-date')[:5]
-    best_companion = Results.objects.filter(~Q(p_id__name='David')).values('p_id__name').annotate(Sum('gp_id__time'), Count('gp_id__time')).order_by('-gp_id__time__sum')
+    best_companion = Results.objects.filter(~Q(p_id__name='Davi')).values('p_id__name').annotate(Sum('gp_id__time'), Count('gp_id__time')).order_by('-gp_id__time__sum')[:5]
     mostplayed_games_list = Gameplay.objects.values('name__name').annotate(game_count=Count('name__name')).order_by('-game_count')[:5]
     context = {'latest_games_list': latest_games_list,
                'mostplayed_games_list': mostplayed_games_list,
                'best_companion': best_companion
                }
+    week = []
+    totalTime = []
+    totalTimestr = []
+    totalCount = []
+    stats = Gameplay.objects.annotate(year=ExtractYear('date')).annotate(week=ExtractWeek('date')).values('week').annotate(Sum('time'), Count('time'))
+    for stat in stats:
+        week.append(stat['week'])
+        totalTime.append(stat['time__sum'].seconds * 1000)
+        totalTimestr.append(str(stat['time__sum']))
+        totalCount.append(stat['time__count'])
+    avg = int(sum(totalTime) / sum(totalCount)  * max(totalCount))
+    context['week'] = week
+    context['totalTime'] = totalTime
+    context['totalTimestr'] = totalTimestr
+    context['totalCount'] =  totalCount
+    context['avg'] = avg
     return render(request, 'polls/index.html', context)
 
 
@@ -113,16 +130,14 @@ def pie_chart(request):
 def highscores(request):
     context = {'boardgames': Boardgames.objects.all().order_by('name')}
 
-    datas = ['1','2','3']
-    colors = ['#FFB6C1','#ADD8E6','#90EE90','#ffcccb''#FFFF66']
-    labels = ['a','b','v']
-    # minP = playersRange['minNumberOfPlayers']
-    # maxP = playersRange['maxNumberOfPlayers']
-    # PossibleNumberOfPlayers = range(minP, maxP + 1)
 
-    context['labels'] = labels
-    context['colors'] = colors
-    context['data'] = datas
+    # datas = ['1','2','3']
+    # colors = ['#FFB6C1','#ADD8E6','#90EE90','#ffcccb''#FFFF66']
+    # labels = ['a','b','v']
+    #
+    # context['labels'] = labels
+    # context['colors'] = colors
+    # context['data'] = datas
     return render(request, 'polls/highscores.html', context)
 
 from django.http import JsonResponse
@@ -131,19 +146,21 @@ def load_chart_data(request):
     labels = []
     data = []
     colors = []
+    display = []
+    names = []
     c = {'Adam':'#FFB6C1','David':'#ADD8E6','Bára':'#90EE90','Anička':'#FFFF66', 'Jana':'#ffcccb'}
 
-    bg_id = request.GET.get('name')
+    bg_name = request.GET.get('name')
     p_count = request.GET.get('NoP')
-    print(bg_id, p_count)
-    queryset = Results.objects.filter(gp_id__name__id=bg_id).filter(gp_id__NumberOfPlayers=p_count).values('p_id__name','points','order').order_by('-points')
-    print(queryset)
+    queryset = Results.objects.filter(gp_id__name__name=bg_name).values('p_id__name','gp_id__NumberOfPlayers','points','order').order_by('-points')
     for query in queryset:
+        if (str(query['gp_id__NumberOfPlayers'])) in labels:
+            display.append(False)
+        else:
+            display.append(True)
         data.append([query['points']])
         colors.append(c[query['p_id__name']])
-        labels.append(query['p_id__name'])
-    try:
-        return JsonResponse(data={'labels': labels,'data': data, 'colors':colors})
-    except:
-        return JsonResponse(data={'labels': ['a','b','v'], 'data': ['1','5','3'],
-    'colors': ['#FFB6C1','#ADD8E6','#90EE90','#ffcccb''#FFFF66']})
+        labels.append(str(query['gp_id__NumberOfPlayers']))
+        names.append(query['p_id__name'])
+    return JsonResponse(data={'labels': labels,'data': data, 'colors':colors, 'display': display, 'names': names})
+
