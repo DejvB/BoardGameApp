@@ -33,7 +33,7 @@ class Gameplay(models.Model):
     name = models.ForeignKey(Boardgames, on_delete=models.CASCADE)
     NumberOfPlayers = models.IntegerField(default=0)
     time = models.DurationField(default=datetime.timedelta(days=0, seconds=0))
-    date = models.DateTimeField( default=datetime.datetime.now())
+    date = models.DateTimeField(default=datetime.datetime.now())
 
 
 class Results(models.Model):

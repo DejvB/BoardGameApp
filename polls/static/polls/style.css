@@ -66,9 +66,12 @@ input, button[type=submit],input[type=button],select  {
   -moz-box-shadow: 10px 10px 5px 0px rgba(163,163,163,1);
   box-shadow: 10px 10px 5px 0px rgba(163,163,163,1);
 }
+.container {
+  display: flex;
+}
 
 .box {
-display:inline;
+  display:inline;
   font-weight: 600;
   font-family: Arial;
   padding: 0px 10px;
@@ -79,6 +82,28 @@ display:inline;
   margin-top: 15px;
   clear: both;
   background-color: #B7ED97;/*#90EE90;*/
+  margin-right: 20px;
 }
 
+.big {
+  display: inline;
+  font-weight: 600;
+  font-family: Arial;
+  padding: 0px 10px;
+  float: left;
+  margin-bottom: 15px;
+  margin-top: 15px;
+  clear: both;
+  background-color: #B7ED97;/*#90EE90;*/
+  /*height: 50px;*/
+  width: 900px;
+  /*flex-grow: 1;*/
+}
+
+
+.input {
+  margin: 12px;
+  width: 250px;
+  height: 90px;
+}
 

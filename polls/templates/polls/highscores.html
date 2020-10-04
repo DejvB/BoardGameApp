@@ -13,16 +13,17 @@
                 <select name="name" required id="id_name">
                     <!--<option value="">-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
                     {% for b in boardgames %}
-                        <option value="{{ b.name }}">{{ b.name }}</option>
+                        <option value="{{ b.name__name }}">{{ b.name__name }}</option>
                     {% endfor %}
                 </select>
             </td></tr>
         </table>
     </form>
 </div>
-
-<div id="container" style="width: 50%;">
+<div class='box round shadow big'>
+<div id="container" style="width: 100%;">
     <canvas id="pie_chart" data-url="{% url 'chart_options' %}"></canvas>
+</div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -57,13 +58,17 @@
           });
 
           ch.update();
-        <!--},-->
-      }
-
+        },
+        labels: {
+          fontColor: 'black',
+        }
       },
       title: {
         display: true,
-        text: ''
+        text: '',
+        fontColor: 'black',
+        fontSize: 15
+
       },
       scales: {
         yAxes: [{
@@ -101,15 +106,19 @@ $("#id_name").change(function () {
         chartData.labels = [bg_name];
         for (i = 0; i < len; i++) {
           chartData.datasets.pop()
-          ch.update(); // can be with number of miliseconds as duraiton
+          ch.update(); // can be with number of milliseconds as duration
         }
         data.data.forEach(function (a, i) {
             chartData.datasets.push({
               label: data.labels[i],
               backgroundColor: data.colors[i],
-              data: data.data[i]
+              data: data.data[i],
+              borderColor: '#808080',
+              borderWidth: 3,
+              borderSkipped: '',
             })
             ch.update();
+            console.log(ch.data.datasets.backgroundColor)
         })
         ch.options.legend.labels.filter = function(item, chart){
                     return data.display[item.datasetIndex];

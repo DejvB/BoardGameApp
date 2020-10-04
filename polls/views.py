@@ -7,6 +7,8 @@ from .forms import *
 from django.db.models import Count, Sum, Q
 from django.db.models.functions import ExtractWeek, ExtractYear
 
+c = {'Adam': '#ffff42', 'David': '#7ad3f0', 'Bára': '#5cff5c', 'Anička': '#ff8a9b', 'Jana': '#ffa09e'}
+
 def index(request):
     latest_games_list = Gameplay.objects.order_by('-date')[:5]
     best_companion = Results.objects.filter(~Q(p_id__name='Davi')).values('p_id__name').annotate(Sum('gp_id__time'), Count('gp_id__time')).order_by('-gp_id__time__sum')[:5]
@@ -105,7 +107,7 @@ def pie_chart(request):
     colors = []
     context = {}
     players = Player.objects.order_by('name').values_list('name', flat=True)
-    c = {'Adam':'#FFB6C1','David':'#ADD8E6','Bára':'#90EE90','Anička':'#FFFF66', 'Jana':'#ffcccb'}
+    # c = {'Adam':'#FFB6C1','David':'#ADD8E6','Bára':'#90EE90','Anička':'#FFFF66', 'Jana':'#ffcccb'}
     for i in range(4):
         data.append([])
         queryset = Results.objects.filter(order=i + 1).values('p_id__name').annotate(total=Count('p_id__name'))
@@ -128,7 +130,7 @@ def pie_chart(request):
     return render(request, 'polls/pie_chart.html', context)
 
 def highscores(request):
-    context = {'boardgames': Boardgames.objects.all().order_by('name')}
+    context = {'boardgames': Gameplay.objects.all().values('name__name').distinct().order_by('name__name')}
 
 
     # datas = ['1','2','3']
@@ -148,7 +150,8 @@ def load_chart_data(request):
     colors = []
     display = []
     names = []
-    c = {'Adam':'#FFB6C1','David':'#ADD8E6','Bára':'#90EE90','Anička':'#FFFF66', 'Jana':'#ffcccb'}
+    # c = {'Adam':'#FFB6C1','David':'#ADD8E6','Bára':'#90EE90','Anička':'#FFFF66', 'Jana':'#ffcccb'}
+    # c = {'Adam':'#ffff42','David':'#7ad3f0','Bára':'#5cff5c','Anička':'#ff8a9b', 'Jana':'#ffa09e'}
 
     bg_name = request.GET.get('name')
     p_count = request.GET.get('NoP')
