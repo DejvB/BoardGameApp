@@ -3,12 +3,23 @@
 <div class='box round shadow'>
   <h2>New gameplay</h2>
     <hr>
-<form method="post" id="GameplayForm" load_player_count_url="{% url 'load_player_count' %}" novalidate>
+<form method="post" id="GameplayForm" load_player_count_url="{% url 'load_player_count' %}" expansions_select_options_url="{% url 'expansions_select_options' %}" novalidate>
 
-{% csrf_token %}
+    {% csrf_token %}
     <table>
-    {{ form.as_table }}
+        {{ gp_form.as_table }}
     </table>
+    <div id="Expansion_formset_id">
+        {{ e_formset.management_form }}
+        {% for e_form in e_formset %}
+            <table >
+                {{ e_form.as_table }}
+            </table>
+        {% endfor %}
+    </div>
+
+
+
     <button type="submit" name="run_script">Save gameplay</button>
 </form>
 </div>
@@ -26,6 +37,27 @@
         },
         success: function (data) {   // `data` is the return of the `load_cities` view function
           $("#id_NumberOfPlayers").html(data);  // replace the contents of the city input with the data that came from the server
+        }
+      });
+
+    });
+  </script>
+  <script>
+    $("#id_name").change(function () {
+      var url = $("#GameplayForm").attr("expansions_select_options_url");  // get the url of the `load_cities` view
+      console.log(url);
+      var bg_id = $(this).val();  // get the selected country ID from the HTML input
+      console.log('ha');
+      $.ajax({                       // initialize an AJAX request
+        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load_player_count/)
+
+        data: {
+          'name': bg_id       // add the country id to the GET parameters
+        },
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+          console.log(data);
+          $("#Expansion_formset_id").html(data);  // replace the contents of the city input with the data that came from the server
+
         }
       });
 

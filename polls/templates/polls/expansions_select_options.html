@@ -1,0 +1,13 @@
+{% load index %}
+{% csrf_token %}
+{{ e_formset.management_form }}
+
+{% for e_form in e_formset %}
+    <!--<table>-->
+        <!--{{ e_form.as_table }}-->
+        <label for="id_form-{{ forloop.counter0 }}-used">{{ ExpansionsNames|index:forloop.counter0 }}</label>
+        <input type="checkbox" name="form-{{ forloop.counter0 }}-used" id="id_form-{{ forloop.counter0 }}-used">
+        <input type="hidden" name="form-{{ forloop.counter0 }}-gp_id" value="3" id="id_form-{{ forloop.counter0 }}-gp_id"> <!-- value 3 is first gameplay - is immediately changed after creation of current gameplay-->
+        <input type="hidden" name="form-{{ forloop.counter0 }}-e_id" value="{{ Expansions|index:forloop.counter0 }}" id="id_form-{{ forloop.counter0 }}-e_id">
+    <!--</table>-->
+{% endfor %}

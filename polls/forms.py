@@ -31,6 +31,18 @@ class PlayerForm(forms.ModelForm):
         exclude = ()
 
 
+class ExpansionForm(forms.ModelForm):
+    basegame = forms.ModelChoiceField(Boardgames.objects.order_by('name'))
+    class Meta:
+        model = Expansion
+        exclude = ()
+
+class UsedExpansionForm(forms.ModelForm):
+    class Meta:
+        model = UsedExpansion
+        fields = ('used','gp_id', 'e_id')
+        widgets = {'gp_id': forms.HiddenInput(), 'e_id': forms.HiddenInput()}
+        # widgets = {'e_id': forms.HiddenInput()}
 
 class ResultsForm(forms.ModelForm):
     class Meta:

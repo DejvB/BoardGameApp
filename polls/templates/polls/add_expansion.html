@@ -2,14 +2,14 @@
 {% block body %}
 
 <div class='box round shadow'>
-  <h2>New player</h2>
+    <h2>New expansion</h2>
     <hr>
     <form method="post">
         {% csrf_token %}
         <table>
             {{ form.as_table }}
         </table>
-        <button type="submit" name="run_script">Save player</button>
+        <button type="submit" name="run_script">Save Expansion</button>
     </form>
 </div>
 

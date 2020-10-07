@@ -24,6 +24,12 @@ class Boardgames(models.Model):
     maxNumberOfPlayers = models.IntegerField(default=4)
     # ordering = ['name']
 
+class Expansion(models.Model):
+    def __str__(self):
+        return self.name
+    basegame = models.ForeignKey(Boardgames, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50)
+
 
 class Gameplay(models.Model):
 
@@ -45,3 +51,12 @@ class Results(models.Model):
     p_id = models.ForeignKey(Player, on_delete=models.CASCADE)
     order = models.IntegerField(default=0)
     points = models.IntegerField(default=0)
+
+
+class UsedExpansion(models.Model):
+    def __str__(self):
+        return self.gp_id.name.name
+
+    gp_id = models.ForeignKey(Gameplay, on_delete=models.CASCADE)
+    e_id = models.ForeignKey(Expansion, on_delete=models.CASCADE)
+    used = models.BooleanField(default=False)

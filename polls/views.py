@@ -53,17 +53,54 @@ def add_boardgame(request):
 
 def add_play(request):
     context = {}
-    form = GameplayForm()
+    gp_form = GameplayForm()
+
+    Expansions = []
+    Expansionformset = formset_factory(UsedExpansionForm, extra=0) # len(Expansions))
+    e_formset = Expansionformset(request.POST or None,
+                                 initial=[{'e_id': Expansions[i], 'gp_id': bg_id} for i in range(len(Expansions))])
     if request.method == 'POST':
-        form = GameplayForm(request.POST)
-        if form.is_valid():
-            gp = form.save()
+        gp_form = GameplayForm(request.POST)
+        if gp_form.is_valid() and e_formset.is_valid(): # can be and e_formset.is_valid()
+            gp = gp_form.save()
             gp.save()
-        return redirect('add_results')
-    context['form'] = form
+            # print(gp.name.id)
+            #
+            #
+        #     Expansions = list(
+        #         Expansion
+        #             .objects
+        #             .filter(basegame__id=gp.name.id)
+        #             .order_by('name')
+        #             .values_list('id', flat=True))
+        # for i, e_form in enumerate(e_formset):
+        #     print(e_form)
+        #     e_form.gp_id = gp.id
+        #     e_form.e_id = Expansions[i]
+            for e_form in e_formset:
+                e = e_form.save()
+                e.gp_id = gp
+                e.save()
+            return redirect('add_results')
+    context['gp_form'] = gp_form
+    context['e_formset'] = e_formset
     context['boardgame'] = Boardgames.objects.all()
     # context['players'] = range(1,7)
     return render(request, 'polls/add_game.html', context)
+
+
+def expansions_select_options(request):
+    bg_id = request.GET.get('name')
+    Expansions = list(Expansion.objects.filter(basegame__id=bg_id).order_by('name').values_list('id', flat=True))
+    ExpansionsNames = list(Expansion.objects.filter(basegame__id=bg_id).order_by('name').values_list('name', flat=True))
+    Expansionformset = formset_factory(UsedExpansionForm, extra=0) # len(Expansions))
+    Gameplays = list(Gameplay.objects.all().order_by('name').values_list('name', flat=True))
+    e_formset = Expansionformset(request.POST or None,
+                                 initial=[{'e_id': Expansions[i], 'gp_id': Gameplays[0]} for i in range(len(Expansions))])
+
+    return render(request, 'polls/expansions_select_options.html', {'e_formset':e_formset,
+                                                                    'Expansions':Expansions,
+                                                                    'ExpansionsNames':ExpansionsNames, 'tex':'haha'})
 
 def load_player_count(request):
     bg_id = request.GET.get('name')
@@ -72,6 +109,18 @@ def load_player_count(request):
     maxP = playersRange['maxNumberOfPlayers']
     PossibleNumberOfPlayers = range(minP, maxP + 1)
     return render(request, 'polls/players_dropdown_options.html', {'PossibleNumberOfPlayers':PossibleNumberOfPlayers})
+
+def add_expansion(request):
+    context = {}
+    form = ExpansionForm()
+    if request.method == 'POST':
+        form = ExpansionForm(request.POST)
+        if form.is_valid():
+            e = form.save()
+            e.save()
+            return redirect('home')
+    context['form'] = form
+    return render(request, 'polls/add_expansion.html',context)
 
 def add_player(request):
     context = {}
