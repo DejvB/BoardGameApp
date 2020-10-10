@@ -204,6 +204,8 @@ def load_chart_data(request):
 
     bg_name = request.GET.get('name')
     p_count = request.GET.get('NoP')
+    chk = request.GET.get('chk')
+    print(chk)
     queryset = Results.objects.filter(gp_id__name__name=bg_name).values('p_id__name','gp_id__NumberOfPlayers','points','order').order_by('-points')
     for query in queryset:
         if (str(query['gp_id__NumberOfPlayers'])) in labels:

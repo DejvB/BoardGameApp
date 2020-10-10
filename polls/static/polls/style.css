@@ -107,3 +107,6 @@ input, button[type=submit],input[type=button],select  {
   height: 90px;
 }
 
+label {
+  display: inline;
+}
