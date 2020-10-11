@@ -206,7 +206,19 @@ def load_chart_data(request):
     p_count = request.GET.get('NoP')
     chk = request.GET.get('chk')
     print(chk)
-    queryset = Results.objects.filter(gp_id__name__name=bg_name).values('p_id__name','gp_id__NumberOfPlayers','points','order').order_by('-points')
+    queryset = Results.objects.filter(gp_id__name__name=bg_name).values('gp_id','p_id__name','gp_id__NumberOfPlayers','points','order').order_by('-points')
+    if chk == 'true':
+        gp_queryset = list(Gameplay.objects.filter(name__name=bg_name).values_list('id', flat=True))
+        gp_queryset_forloop = gp_queryset.copy()
+        for gp in gp_queryset_forloop:
+            print(gp)
+            for n in ['David','Bára','Adam']:
+                if not queryset.filter(gp_id=gp).filter(p_id__name=n):
+                    gp_queryset.remove(gp)
+                    break
+        queryset = Results.objects.filter(gp_id__in=gp_queryset).values('p_id__name', 'gp_id__NumberOfPlayers',
+                                                                            'points', 'order').order_by('-points')
+
     for query in queryset:
         if (str(query['gp_id__NumberOfPlayers'])) in labels:
             display.append(False)
