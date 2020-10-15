@@ -7,7 +7,7 @@ from .forms import *
 from django.db.models import Count, Sum, Q
 from django.db.models.functions import ExtractWeek, ExtractYear
 
-c = {'Adam': '#ffff42', 'David': '#7ad3f0', 'Bára': '#5cff5c', 'Anička': '#ff8a9b', 'Jana': '#ffa09e'}
+# c = {'Adam': '#ffff42', 'David': '#7ad3f0', 'Bára': '#5cff5c', 'Anička': '#ff8a9b', 'Jana': '#ffa09e', 'Zdeněk': '#b800b8'}
 
 def index(request):
     latest_games_list = Gameplay.objects.order_by('-date')[:5]
@@ -156,7 +156,6 @@ def pie_chart(request):
     colors = []
     context = {}
     players = Player.objects.order_by('name').values_list('name', flat=True)
-    # c = {'Adam':'#FFB6C1','David':'#ADD8E6','Bára':'#90EE90','Anička':'#FFFF66', 'Jana':'#ffcccb'}
     for i in range(4):
         data.append([])
         queryset = Results.objects.filter(order=i + 1).values('p_id__name').annotate(total=Count('p_id__name'))
@@ -169,7 +168,7 @@ def pie_chart(request):
                 data[i].append(0)
             if i == 0:
                 labels.append(player)
-                colors.append(c[player])
+                colors.append(Player.objects.filter(name=player).values_list('color', flat=True)[0])
     context['labels'] = labels
     context['colors'] = colors
     context['data0'] = data[0]
@@ -199,13 +198,10 @@ def load_chart_data(request):
     colors = []
     display = []
     names = []
-    # c = {'Adam':'#FFB6C1','David':'#ADD8E6','Bára':'#90EE90','Anička':'#FFFF66', 'Jana':'#ffcccb'}
-    # c = {'Adam':'#ffff42','David':'#7ad3f0','Bára':'#5cff5c','Anička':'#ff8a9b', 'Jana':'#ffa09e'}
 
     bg_name = request.GET.get('name')
     p_count = request.GET.get('NoP')
     chk = request.GET.get('chk')
-    print(chk)
     queryset = Results.objects.filter(gp_id__name__name=bg_name).values('gp_id','p_id__name','gp_id__NumberOfPlayers','points','order').order_by('-points')
     if chk == 'true':
         gp_queryset = list(Gameplay.objects.filter(name__name=bg_name).values_list('id', flat=True))
@@ -225,7 +221,8 @@ def load_chart_data(request):
         else:
             display.append(True)
         data.append([query['points']])
-        colors.append(c[query['p_id__name']])
+        # colors.append(c[query['p_id__name']])
+        colors.append(Player.objects.filter(name=query['p_id__name']).values_list('color', flat=True)[0])
         labels.append(str(query['gp_id__NumberOfPlayers']))
         names.append(query['p_id__name'])
     return JsonResponse(data={'labels': labels,'data': data, 'colors':colors, 'display': display, 'names': names})

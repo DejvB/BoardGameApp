@@ -1,7 +1,7 @@
 {% extends "polls/header.html" %}
 {% block body %}
 
-<div class='box round shadow big'>
+<div class=''>
 <div id="container" style="width: 75%;">
     <canvas id="pie-chart"></canvas>
   </div>
@@ -19,7 +19,7 @@
           borderWidth: 1,
           borderAlign: 'inner',
           hoverBorderWidth: 3,
-          label: 'Population'
+          label: 'Population',
         },
         {
           data: {{ data1|safe }},
@@ -57,8 +57,31 @@
 
     window.onload = function() {
       var ctx = document.getElementById('pie-chart').getContext('2d');
-      window.myPie = new Chart(ctx, config);
+      var chart = new Chart(ctx, config);
     };
+</script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<script>
+
+    <!--$('#pie-chart').click(function (){-->
+        <!--console.log('your message');-->
+        <!--console.log(g.options.legend);-->
+        <!--console.log(g.legend.hidden);-->
+        <!--chart.getDatasetMeta(0).data.forEach(function(e,i) {-->
+            <!--console.log(e)-->
+            <!--console.log(e.hidden)-->
+        <!--}-->
+        <!--)-->
+
+
+        <!--chart.data.datasets.forEach(function(e, i) {-->
+            <!--var meta = chart.getDatasetMeta(i);-->
+            <!--console.log(meta.hidden);-->
+          <!--});-->
+    <!--}-->
+    <!--)-->
+
 
   </script>
 

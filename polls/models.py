@@ -8,6 +8,7 @@ class Player(models.Model):
         return self.name
 
     name = models.CharField(max_length=10)
+    color = models.CharField(max_length=7, default='#000000')
 
 
 class Boardgames(models.Model):
