@@ -4,10 +4,9 @@ from django.shortcuts import render, redirect
 # from .models import *
 from .forms import *
 
-from django.db.models import Count, Sum, Q
+from django.db.models import Count, Sum, Q, Avg
 from django.db.models.functions import ExtractWeek, ExtractYear
-
-# c = {'Adam': '#ffff42', 'David': '#7ad3f0', 'Bára': '#5cff5c', 'Anička': '#ff8a9b', 'Jana': '#ffa09e', 'Zdeněk': '#b800b8'}
+from math import ceil
 
 def index(request):
     latest_games_list = Gameplay.objects.order_by('-date')[:5]
@@ -27,12 +26,19 @@ def index(request):
         totalTime.append(stat['time__sum'].seconds * 1000)
         totalTimestr.append(str(stat['time__sum']))
         totalCount.append(stat['time__count'])
-    avg = int(sum(totalTime) / sum(totalCount)  * max(totalCount))
+
+    # avg time per game
+    avg = int(sum(totalTime) / sum(totalCount))
+    # max number of game equivalent to avg time per game
+    mg = ceil(max(totalTime)/(sum(totalTime) / sum(totalCount)))
+    # time equivalent to mg with avg time per game
+    mt = mg * avg
     context['week'] = week
     context['totalTime'] = totalTime
     context['totalTimestr'] = totalTimestr
     context['totalCount'] =  totalCount
-    context['avg'] = avg
+    context['mg'] = mg
+    context['mt'] = mt
     return render(request, 'polls/index.html', context)
 
 
@@ -156,9 +162,29 @@ def pie_chart(request):
     colors = []
     context = {}
     players = Player.objects.order_by('name').values_list('name', flat=True)
+
+    # for gameplayes wih three of us
+    if False:
+        queryset = Results.objects.values('gp_id', 'p_id__name',
+                                          'gp_id__NumberOfPlayers', 'points',
+                                          'order').order_by('-points')
+        gp_queryset = list(Gameplay.objects.values_list('id', flat=True))
+        gp_queryset_forloop = gp_queryset.copy()
+        for gp in gp_queryset_forloop:
+            for n in ['David', 'Bára', 'Adam']:
+                if not queryset.filter(gp_id=gp).filter(p_id__name=n):
+                    gp_queryset.remove(gp)
+                    break
+    else:
+        gp_queryset = list(Gameplay.objects.values_list('id', flat=True))
+
+
     for i in range(4):
         data.append([])
-        queryset = Results.objects.filter(order=i + 1).values('p_id__name').annotate(total=Count('p_id__name'))
+        # queryset = Results.objects.filter(order=i + 1).values('p_id__name').annotate(total=Count('p_id__name'))
+
+
+        queryset = Results.objects.filter(gp_id__in=gp_queryset).filter(order=i + 1).values('p_id__name').annotate(total=Count('p_id__name'))
 
         for player in players:
             p = queryset.filter(p_id__name=player)
@@ -198,6 +224,7 @@ def load_chart_data(request):
     colors = []
     display = []
     names = []
+    position = []
 
     bg_name = request.GET.get('name')
     p_count = request.GET.get('NoP')
@@ -225,5 +252,23 @@ def load_chart_data(request):
         colors.append(Player.objects.filter(name=query['p_id__name']).values_list('color', flat=True)[0])
         labels.append(str(query['gp_id__NumberOfPlayers']))
         names.append(query['p_id__name'])
-    return JsonResponse(data={'labels': labels,'data': data, 'colors':colors, 'display': display, 'names': names})
+        position.append(query['order'])
 
+    # queryset = Results.objects.filter(gp_id__name__name=bg_name).values('gp_id', 'points', 'order').order_by('-points')
+    # print(queryset)
+    maxws = queryset[0]['points']
+    minws = queryset.filter(order=1).order_by('points')[0]['points']
+    avgws = round(queryset.filter(order=1).aggregate(Avg('points'))['points__avg'],2)
+    avgtot = round(queryset.aggregate(Avg('points'))['points__avg'],2)
+    maxnws = queryset.filter(order=2)[0]['points']
+    return JsonResponse(data={'labels': labels,
+                              'data': data,
+                              'colors':colors,
+                              'display': display,
+                              'names': names,
+                              'position':position,
+                              'maxws':maxws,
+                              'minws':minws,
+                              'avgws':avgws,
+                              'avgtot':avgtot,
+                              'maxnws':maxnws})

@@ -112,6 +112,7 @@
                     ticks: {
                         stepSize: 1,
                         beginAtZero: true,
+                        max: {{ mg|safe }},
                     },
                     id: 'y-axis-2',
                 }, {
@@ -119,7 +120,7 @@
                     position: 'left',
                     ticks: {
                       min: 0,
-                      max: {{ avg|safe }},
+                      max: {{ mt|safe }},
                       stepSize: 10.8e+6,
                       beginAtZero: true,
                       callback: value => {

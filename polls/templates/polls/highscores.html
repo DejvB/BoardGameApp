@@ -1,26 +1,36 @@
 {% extends "polls/header.html" %}
 {% block body %}
+<div class='container'>
+    <div class='box round shadow'>
+      <h2>Highscores</h2>
+        <hr>
+        <form method="post" id="GameplayForm" load_player_count_url="{% url 'load_player_count' %}"  novalidate>
 
-<div class='box round shadow'>
-  <h2>Highscores</h2>
-    <hr>
-    <form method="post" id="GameplayForm" load_player_count_url="{% url 'load_player_count' %}"  novalidate>
-
-        {% csrf_token %}
-        <table>
-            <tr><th>
-            <label for="id_name">Name:</label></th><td>
-                <select name="name" required id="id_name">
-                    <!--<option value="">-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
-                    {% for b in boardgames %}
-                        <option value="{{ b.name__name }}">{{ b.name__name }}</option>
-                    {% endfor %}
-                </select>
-            </td></tr>
-        </table>
-        <label for="checkbox">Jen all star team
-        <input type="checkbox" name="checkbox" id="checkbox">
-    </form>
+            {% csrf_token %}
+            <table>
+                <tr><th>
+                <label for="id_name">Name:</label></th><td>
+                    <select name="name" required id="id_name">
+                        <!--<option value="">-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
+                        {% for b in boardgames %}
+                            <option value="{{ b.name__name }}">{{ b.name__name }}</option>
+                        {% endfor %}
+                    </select>
+                </td></tr>
+            </table>
+            <label for="checkbox">Jen all star team
+            <input type="checkbox" name="checkbox" id="checkbox">
+        </form>
+    </div>
+    <div class='box round shadow'>
+      <h2>Stats</h2>
+        <hr>
+        Highest winning score is: <label id="maxws"></label><br>
+        Lowest winning score is: <label id="minws"></label><br>
+        Average winning score is: <label id="avgws"></label><br>
+        Average score is: <label id="avgtot"></label><br>
+        Highest non-winning score is: <label id="maxnws"></label>
+    </div>
 </div>
 <div class='box round shadow big'>
 <div id="container" style="width: 100%;">
@@ -122,7 +132,6 @@ $("#id_name, #checkbox").change(function () {
               borderSkipped: '',
             })
             ch.update();
-            console.log(ch.data.datasets.backgroundColor)
         })
         ch.options.legend.labels.filter = function(item, chart){
                     return data.display[item.datasetIndex];
@@ -131,11 +140,19 @@ $("#id_name, #checkbox").change(function () {
         ch.options.tooltips.callbacks.label = function(item, chart){
             var i = item.datasetIndex;
             return ['Player: ' + data.names[i],
+                    'Position: ' + data.position[i],
                     'Points: ' + data.data[i],
                     'Number of Players: ' + data.labels[i]
                     ];
         }
         ch.update();
+
+
+      $("#maxws").html(data.maxws);
+      $("#minws").html(data.minws);
+      $("#avgws").html(data.avgws);
+      $("#avgtot").html(data.avgtot);
+      $("#maxnws").html(data.maxnws);
     },
     failure: function(data) {
       alert('Got an error dude');
