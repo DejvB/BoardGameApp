@@ -4,9 +4,10 @@ from django.shortcuts import render, redirect
 # from .models import *
 from .forms import *
 
-from django.db.models import Count, Sum, Q, Avg
-from django.db.models.functions import ExtractWeek, ExtractYear
+from django.db.models import Count, Sum, Q, Avg, Max, Min
+from django.db.models.functions import ExtractWeek, ExtractWeekDay
 from math import ceil
+
 
 def index(request):
     latest_games_list = Gameplay.objects.order_by('-date')[:5]
@@ -20,7 +21,7 @@ def index(request):
     totalTime = []
     totalTimestr = []
     totalCount = []
-    stats = Gameplay.objects.annotate(year=ExtractYear('date')).annotate(week=ExtractWeek('date')).values('week').annotate(Sum('time'), Count('time'))
+    stats = Gameplay.objects.annotate(week=ExtractWeek('date')).values('week').annotate(Sum('time'), Count('time'))
     for stat in stats:
         week.append(stat['week'])
         totalTime.append(stat['time__sum'].seconds * 1000)
@@ -39,6 +40,10 @@ def index(request):
     context['totalCount'] =  totalCount
     context['mg'] = mg
     context['mt'] = mt
+
+    weekday = list(Gameplay.objects.annotate(weekday=ExtractWeekDay('date')).values('weekday').annotate(Count('time')).values_list('time__count', flat=True))
+    weekday = weekday[1:] + [weekday[0]]
+    context['weekday'] = weekday
     return render(request, 'polls/index.html', context)
 
 
@@ -225,6 +230,7 @@ def load_chart_data(request):
     display = []
     names = []
     position = []
+    diff = []
 
     bg_name = request.GET.get('name')
     p_count = request.GET.get('NoP')
@@ -261,6 +267,18 @@ def load_chart_data(request):
     avgws = round(queryset.filter(order=1).aggregate(Avg('points'))['points__avg'],2)
     avgtot = round(queryset.aggregate(Avg('points'))['points__avg'],2)
     maxnws = queryset.filter(order=2)[0]['points']
+
+    queryset_gp = Gameplay.objects.filter(name__name=bg_name).values('time')
+    lg = str(queryset_gp.order_by('-time')[0]['time'])
+    sg = str(queryset_gp.order_by('time')[0]['time'])
+    avgg = str(queryset_gp.aggregate(Avg('time'))['time__avg'])
+
+    gp_id_queryset = list(Gameplay.objects.filter(name__name=bg_name).values_list('id', flat=True))
+    for gp_id in gp_id_queryset:
+        q = queryset.filter(gp_id=gp_id)
+        diff.append(q.filter(order=1)[0]['points'] - q.filter(order=2)[0]['points'])
+    avgmp = round(sum(diff) / len(diff),2)
+    print(lg, sg, avgg, avgmp)
     return JsonResponse(data={'labels': labels,
                               'data': data,
                               'colors':colors,
@@ -271,4 +289,8 @@ def load_chart_data(request):
                               'minws':minws,
                               'avgws':avgws,
                               'avgtot':avgtot,
-                              'maxnws':maxnws})
+                              'maxnws':maxnws,
+                              'lg':lg,
+                              'sg':sg,
+                              'avgg':avgg,
+                              'avgmp':avgmp})

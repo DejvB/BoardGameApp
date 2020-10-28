@@ -44,13 +44,21 @@
 </div>
 
 <div class='box round shadow big'>
-<div id="container" style="width: 100%;">
+  <div id="container_line" style="width: 100%;">
     <canvas id="line-chart"></canvas>
   </div>
 </div>
+
+<div class='box round shadow big'>
+    <div id="container_pie" style="width: 100%;">
+        <canvas id="pie-chart"></canvas>
+      </div>
+</div>
+
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script>
-    var config = {
+    var config_line = {
         type: 'line',
         data: {
             labels: {{ week|safe }},
@@ -142,13 +150,68 @@
         }
     };
 
-window.onload = function() {
+var config_pie = {
+      type: 'pie',
+      data: {
+        datasets: [{
+          data: {{ weekday|safe }},
+          backgroundColor: ["#ff0000","#ffa500","#ffff00","#008000","#0000ff","#4b0082","#ee82ee"],
+          borderColor: '#a0a0a0',
+          borderWidth: 1,
+          borderAlign: 'inner',
+          hoverBorderWidth: 3,
+          label: 'Population',
+        }],
+        labels: ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+      },
+      options: {
+        responsive: true,
+        legend: {
+            position: 'left',
+            display: true
+        }
+      }
+    };
+
+    window.onload = function() {
       if (/Android/i.test(navigator.userAgent)){
       <!--alert('ha!');-->
       }
-      var ctx = document.getElementById('line-chart').getContext('2d');
-      window.myPie = new Chart(ctx, config);
+      line_chart = document.getElementById('line-chart').getContext('2d');
+      window.myPie = new Chart(line_chart, config_line);
+      var pie_chart = document.getElementById('pie-chart').getContext('2d');
+      var chart = new Chart(pie_chart, config_pie);
     };
 </script>
+
+<!--<script>-->
+    <!--var config_pie = {-->
+      <!--type: 'pie',-->
+      <!--data: {-->
+        <!--datasets: [{-->
+          <!--data: {{ weekday|safe }},-->
+          <!--backgroundColor: ["#ff0000","#ffa500","#ffff00","#008000","#0000ff","#4b0082","#ee82ee"],-->
+          <!--borderColor: '#a0a0a0',-->
+          <!--borderWidth: 1,-->
+          <!--borderAlign: 'inner',-->
+          <!--hoverBorderWidth: 3,-->
+          <!--label: 'Population',-->
+        <!--}],-->
+        <!--labels: ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]-->
+      <!--},-->
+      <!--options: {-->
+        <!--responsive: true,-->
+        <!--legend: {-->
+            <!--position: 'left',-->
+            <!--display: true-->
+        <!--}-->
+      <!--}-->
+    <!--};-->
+
+    <!--window.onload = function() {-->
+      <!--var ctx = document.getElementById('pie-chart').getContext('2d');-->
+      <!--var chart = new Chart(ctx, config);-->
+    <!--};-->
+<!--</script>-->
 
 {% endblock %}

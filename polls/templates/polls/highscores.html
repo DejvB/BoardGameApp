@@ -25,13 +25,53 @@
     <div class='box round shadow'>
       <h2>Stats</h2>
         <hr>
-        Highest winning score is: <label id="maxws"></label><br>
-        Lowest winning score is: <label id="minws"></label><br>
-        Average winning score is: <label id="avgws"></label><br>
-        Average score is: <label id="avgtot"></label><br>
-        Highest non-winning score is: <label id="maxnws"></label>
+        <table style="width:100%">
+          <tr>
+            <td>Highest winning score:</td>
+            <th><label id="maxws"></label></th>
+          </tr>
+          <tr>
+            <td>Lowest winning score:</td>
+            <th><label id="minws"></label></th>
+          </tr>
+          <tr>
+            <td>Average winning score:</td>
+            <th><label id="avgws"></label></th>
+          </tr>
+          <tr>
+            <td>Average score:</td>
+            <th><label id="avgtot"></label></th>
+          </tr>
+          <tr>
+            <td>Highest non-winning score:</td>
+            <th><label id="maxnws"></label></th>
+          </tr>
+        </table>
+    </div>
+    <div class='box round shadow'>
+      <h2>Stats</h2>
+        <hr>
+        <table style="width:100%">
+          <tr>
+            <td>Longest gameplay:</td>
+            <th><label id="lg"></label></th>
+          </tr>
+          <tr>
+            <td>Shortest gameplay:</td>
+            <th><label id="sg"></label></th>
+          </tr>
+          <tr>
+            <td>Average gameplay:</td>
+            <th><label id="avgg"></label></th>
+          </tr>
+          <tr>
+            <td>Average missing points:</td>
+            <th><label id="avgmp"></label></th>
+          </tr>
+        </table>
     </div>
 </div>
+
 <div class='box round shadow big'>
 <div id="container" style="width: 100%;">
     <canvas id="pie_chart" data-url="{% url 'chart_options' %}"></canvas>
@@ -146,13 +186,15 @@ $("#id_name, #checkbox").change(function () {
                     ];
         }
         ch.update();
-
-
       $("#maxws").html(data.maxws);
       $("#minws").html(data.minws);
       $("#avgws").html(data.avgws);
       $("#avgtot").html(data.avgtot);
       $("#maxnws").html(data.maxnws);
+      $("#lg").html(data.lg);
+      $("#sg").html(data.sg);
+      $("#avgg").html(data.avgg);
+      $("#avgmp").html(data.avgmp);
     },
     failure: function(data) {
       alert('Got an error dude');
