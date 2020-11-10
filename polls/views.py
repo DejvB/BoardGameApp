@@ -32,7 +32,8 @@ def index(request):
     avg = int(sum(totalTime) / sum(totalCount))
     # max number of game equivalent to avg time per game
     mg = ceil(max(totalTime)/(sum(totalTime) / sum(totalCount)))
-    # time equivalent to mg with avg time per game
+    mg = max(mg, max(totalCount))
+# time equivalent to mg with avg time per game
     mt = mg * avg
     context['week'] = week
     context['totalTime'] = totalTime
