@@ -1,0 +1,42 @@
+{% extends "polls/header.html" %}
+{% block body %}
+<div class='box round shadow'>
+  <h2>Games history</h2>
+    <hr>
+      <label for="fromdate">From date:</label><br>
+      <input type="datetime-local" id="fromdate" name="fromdate"><br>
+      <label for="todate">To date:</label><br>
+      <input type="datetime-local" id="todate" name="todate">
+</div>
+
+<div id="table_container">
+  {% load render_table from django_tables2 %}
+  <div class='box round shadow big' id="table">
+  {% render_table games %}
+  </div>
+</div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<script>
+
+$("#todate").change(function () {
+  var from = $(fromdate).val();
+  var to = $(todate).val();
+  $.ajax({
+    url: "{% url 'get_history' %}",
+    data: {
+        'from': from,
+        'to': to,
+    },
+    success: function (games) {
+      console.log(games);
+      $("#table_container").html(games);
+    },
+    failure: function(data) {
+      alert('Got an error dude');
+    }
+  });
+});
+</script>
+
+{% endblock %}

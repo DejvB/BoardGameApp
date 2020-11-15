@@ -1,6 +1,6 @@
 {% extends "polls/header.html" %}
 {% block body %}
-<div class='container'>
+<div class='container' id="container">
 <div class='box round shadow'>
   <h2>Recently played</h2>
     <hr>
@@ -213,5 +213,17 @@ var config_pie = {
       <!--var chart = new Chart(ctx, config);-->
     <!--};-->
 <!--</script>-->
+
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+$( function() {
+    $( "#container" ).sortable();
+    $( "#container" ).disableSelection();
+} );
+</script>
+
+
+
 
 {% endblock %}

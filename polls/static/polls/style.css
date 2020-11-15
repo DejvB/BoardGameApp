@@ -71,7 +71,7 @@ input, button[type=submit],input[type=button],select  {
 }
 
 .box {
-  display:inline;
+  display: inline;
   font-weight: 600;
   font-family: Arial;
   padding: 0px 10px;
@@ -96,7 +96,7 @@ input, button[type=submit],input[type=button],select  {
   clear: both;
   background-color: #B7ED97;/*#90EE90;*/
   /*height: 50px;*/
-  width: 900px;
+  width: 980px;
   /*flex-grow: 1;*/
 }
 

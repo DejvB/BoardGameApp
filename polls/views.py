@@ -211,7 +211,7 @@ def pie_chart(request):
 
 def highscores(request):
     context = {'boardgames': Gameplay.objects.all().values('name__name').distinct().order_by('name__name')}
-
+    context['last'] = Gameplay.objects.latest('date')
 
     # datas = ['1','2','3']
     # colors = ['#FFB6C1','#ADD8E6','#90EE90','#ffcccb''#FFFF66']
@@ -295,3 +295,16 @@ def load_chart_data(request):
                               'sg':sg,
                               'avgg':avgg,
                               'avgmp':avgmp})
+
+def history(request):
+    context = {}
+    context['games'] = GameplayTable(Gameplay.objects.all())
+    return render(request, 'polls/history.html', context)
+
+from .tables import GameplayTable
+
+def get_history(request):
+    fromdate = request.GET.get('from')
+    todate = request.GET.get('to')
+    games = GameplayTable(Gameplay.objects.filter(date__range=[fromdate, todate]).values())
+    return render(request, "polls/get_history.html", {"games": games})

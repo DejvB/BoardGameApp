@@ -1,6 +1,6 @@
 {% extends "polls/header.html" %}
 {% block body %}
-<div class='container'>
+<div class='container' onload="ha()">
     <div class='box round shadow'>
       <h2>Highscores</h2>
         <hr>
@@ -13,7 +13,11 @@
                     <select name="name" required id="id_name">
                         <!--<option value="">-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
                         {% for b in boardgames %}
-                            <option value="{{ b.name__name }}">{{ b.name__name }}</option>
+                           {%if b.name__name == last %}
+                              <option value="{{ b.name__name }}" selected>{{ b.name__name }}</option>
+                           {% else %}
+                              <option value="{{ b.name__name }}">{{ b.name__name }}</option>
+                            {% endif %}
                         {% endfor %}
                     </select>
                 </td></tr>
@@ -80,7 +84,7 @@
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-<script>
+<script id="ha">
   var ctx = pie_chart.getContext("2d");
   var chartData = {
     labels: 'h',
