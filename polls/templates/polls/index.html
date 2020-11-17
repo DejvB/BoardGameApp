@@ -15,6 +15,34 @@
 {% endif %}
 </div>
 
+<!--<div class='box round shadow'>-->
+  <!--<h2>Least played</h2>-->
+    <!--<hr>-->
+<!--{% if leastplayed_games_list %}-->
+    <!--<ul>-->
+    <!--{% for b in leastplayed_games_list %}-->
+        <!--<li>{{ b.name__name }}, {{ b.game_count }}</li>-->
+    <!--{% endfor %}-->
+    <!--</ul>-->
+<!--{% else %}-->
+    <!--<p>No polls are available.</p>-->
+<!--{% endif %}-->
+<!--</div>-->
+
+<div class='box round shadow'>
+  <h2>Dusty games</h2>
+    <hr>
+{% if long_time_no_see_games_list %}
+    <ul>
+    {% for b in long_time_no_see_games_list %}
+        <li>{{ b.name__name }}, {{ b.today.days }} days</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
+</div>
+
 <div class='box round shadow'>
   <h2>Most played</h2>
     <hr>
@@ -28,6 +56,21 @@
     <p>No polls are available.</p>
 {% endif %}
 </div>
+
+<div class='box round shadow'>
+  <h2>Most time spend</h2>
+    <hr>
+{% if mosttimeplayed_games_list %}
+    <ul>
+    {% for b in mosttimeplayed_games_list %}
+        <li>{{ b.name__name }}, {{ b.game_time }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
+</div>
+
 <div class='box round shadow'>
   <h2>Best companion</h2>
     <hr>
@@ -50,7 +93,7 @@
 </div>
 
 <div class='box round shadow big'>
-    <div id="container_pie" style="width: 100%;">
+    <div id="container_pie" style="margin-bottom: 15px; margin-top: 15px;">
         <canvas id="pie-chart"></canvas>
       </div>
 </div>

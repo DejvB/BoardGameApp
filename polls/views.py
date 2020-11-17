@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 # from .models import *
 from .forms import *
 
-from django.db.models import Count, Sum, Q, Avg, Max, Min
+from django.db.models import Count, Sum, Q, Avg, Max, Min, F, ExpressionWrapper, fields, Value, DateTimeField
 from django.db.models.functions import ExtractWeek, ExtractWeekDay
 from math import ceil
 
@@ -12,9 +12,19 @@ from math import ceil
 def index(request):
     latest_games_list = Gameplay.objects.order_by('-date')[:5]
     best_companion = Results.objects.filter(~Q(p_id__name='Davi')).values('p_id__name').annotate(Sum('gp_id__time'), Count('gp_id__time')).order_by('-gp_id__time__sum')[:5]
-    mostplayed_games_list = Gameplay.objects.values('name__name').annotate(game_count=Count('name__name')).order_by('-game_count')[:5]
+    games_list = Gameplay.objects.values('name__name').annotate(game_count=Count('name__name')).annotate(game_time=Sum('time'))
+    mostplayed_games_list = games_list.order_by('-game_count')[:5]
+    leastplayed_games_list = games_list.order_by('game_count')[:5]
+    time_list = games_list.order_by('-game_time')[:5]
+    games_list = Gameplay.objects.values('name__name', 'date').annotate(game_count=Count('name__name'))
+    long_time_no_see_games_list = games_list.values('name__name')\
+                                    .annotate(id__max=Max('id'),today=Value(datetime.datetime.now(), DateTimeField()))\
+                                    .order_by('id__max')[:5]
     context = {'latest_games_list': latest_games_list,
                'mostplayed_games_list': mostplayed_games_list,
+               'leastplayed_games_list': leastplayed_games_list,
+               'mosttimeplayed_games_list': time_list,
+               'long_time_no_see_games_list': long_time_no_see_games_list,
                'best_companion': best_companion
                }
     week = []
@@ -211,7 +221,7 @@ def pie_chart(request):
 
 def highscores(request):
     context = {'boardgames': Gameplay.objects.all().values('name__name').distinct().order_by('name__name')}
-    context['last'] = Gameplay.objects.latest('date')
+    context['lastgame'] = Gameplay.objects.latest('date').name
 
     # datas = ['1','2','3']
     # colors = ['#FFB6C1','#ADD8E6','#90EE90','#ffcccb''#FFFF66']
