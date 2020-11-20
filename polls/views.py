@@ -157,14 +157,16 @@ def add_player(request):
     return render(request, 'polls/add_player.html',context)
 
 from django.forms import formset_factory
+from django.contrib import messages
 
 def add_results(request):
     # if 'player_count' in request.session:
     #     print(request.session['player_count'])
     lastGame = Gameplay.objects.order_by('-id')[0]
     ResultsFormSet = formset_factory(ResultsForm, extra=0)
-    formset = ResultsFormSet(request.POST or None, initial=[{'order': i+1, 'gp_id':lastGame} for i in range(lastGame.NumberOfPlayers)])
+    formset = ResultsFormSet(request.POST or None, initial=[{'order': i+1, 'gp_id':lastGame} for i in range(max(2, lastGame.NumberOfPlayers))])
     if formset.is_valid():
+        messages.success(request, 'Form submission successful')
         for form in formset:
             r = form.save()
             r.save()
@@ -179,8 +181,8 @@ def pie_chart(request):
     context = {}
     players = Player.objects.order_by('name').values_list('name', flat=True)
 
-    # for gameplayes wih three of us
-    if False:
+    # for gameplayes with three of us
+    if True:
         queryset = Results.objects.values('gp_id', 'p_id__name',
                                           'gp_id__NumberOfPlayers', 'points',
                                           'order').order_by('-points')
@@ -251,7 +253,6 @@ def load_chart_data(request):
         gp_queryset = list(Gameplay.objects.filter(name__name=bg_name).values_list('id', flat=True))
         gp_queryset_forloop = gp_queryset.copy()
         for gp in gp_queryset_forloop:
-            print(gp)
             for n in ['David','Bára','Adam']:
                 if not queryset.filter(gp_id=gp).filter(p_id__name=n):
                     gp_queryset.remove(gp)
@@ -289,7 +290,7 @@ def load_chart_data(request):
         q = queryset.filter(gp_id=gp_id)
         diff.append(q.filter(order=1)[0]['points'] - q.filter(order=2)[0]['points'])
     avgmp = round(sum(diff) / len(diff),2)
-    print(lg, sg, avgg, avgmp)
+    uw = queryset.filter(order=1).values('p_id__name').annotate(Count('p_id__name')).order_by('-p_id__name__count')[0]['p_id__name']
     return JsonResponse(data={'labels': labels,
                               'data': data,
                               'colors':colors,
@@ -304,7 +305,8 @@ def load_chart_data(request):
                               'lg':lg,
                               'sg':sg,
                               'avgg':avgg,
-                              'avgmp':avgmp})
+                              'avgmp':avgmp,
+                              'uw':uw})
 
 def history(request):
     context = {}
@@ -316,5 +318,5 @@ from .tables import GameplayTable
 def get_history(request):
     fromdate = request.GET.get('from')
     todate = request.GET.get('to')
-    games = GameplayTable(Gameplay.objects.filter(date__range=[fromdate, todate]).values())
+    games = GameplayTable(Gameplay.objects.filter(date__range=[fromdate, todate]))
     return render(request, "polls/get_history.html", {"games": games})

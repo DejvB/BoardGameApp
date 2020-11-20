@@ -74,6 +74,28 @@
           </tr>
         </table>
     </div>
+    <div class='box round shadow'>
+      <h2>Stats</h2>
+        <hr>
+        <table style="width:100%">
+          <tr>
+            <td>Usual winner:</td>
+            <th><label id="uw"></label></th>
+          </tr>
+          <tr>
+            <td>Shortest gameplay:</td>
+            <th><label id="sg"></label></th>
+          </tr>
+          <tr>
+            <td>Average gameplay:</td>
+            <th><label id="avgg"></label></th>
+          </tr>
+          <tr>
+            <td>Average missing points:</td>
+            <th><label id="avgmp"></label></th>
+          </tr>
+        </table>
+    </div>
 </div>
 
 <div class='box round shadow big'>
@@ -200,6 +222,7 @@ $("#id_name, #checkbox").change(function () {
       $("#sg").html(data.sg);
       $("#avgg").html(data.avgg);
       $("#avgmp").html(data.avgmp);
+      $("#uw").html(data.uw);
     },
     failure: function(data) {
       alert('Got an error dude');
