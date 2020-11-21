@@ -288,7 +288,11 @@ def load_chart_data(request):
     gp_id_queryset = list(Gameplay.objects.filter(name__name=bg_name).values_list('id', flat=True))
     for gp_id in gp_id_queryset:
         q = queryset.filter(gp_id=gp_id)
-        diff.append(q.filter(order=1)[0]['points'] - q.filter(order=2)[0]['points'])
+        try:
+            diff.append(q.filter(order=1)[0]['points'] - q.filter(order=2)[0]['points'])
+        except:
+            # empty queryset. You take id from all gp, not just from games with all three
+            pass
     avgmp = round(sum(diff) / len(diff),2)
     uw = queryset.filter(order=1).values('p_id__name').annotate(Count('p_id__name')).order_by('-p_id__name__count')[0]['p_id__name']
     return JsonResponse(data={'labels': labels,
