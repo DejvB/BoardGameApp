@@ -182,7 +182,7 @@ def pie_chart(request):
     players = Player.objects.order_by('name').values_list('name', flat=True)
 
     # for gameplayes with three of us
-    if True:
+    if False:
         queryset = Results.objects.values('gp_id', 'p_id__name',
                                           'gp_id__NumberOfPlayers', 'points',
                                           'order').order_by('-points')
@@ -281,7 +281,7 @@ def load_chart_data(request):
     maxnws = queryset.filter(order=2)[0]['points']
 
     queryset_gp = Gameplay.objects.filter(name__name=bg_name).values('time')
-    lg = str(queryset_gp.order_by('-time')[0]['time'])
+    longest_gp = str(queryset_gp.order_by('-time')[0]['time'])
     sg = str(queryset_gp.order_by('time')[0]['time'])
     avgg = str(queryset_gp.aggregate(Avg('time'))['time__avg'])
 
@@ -295,6 +295,15 @@ def load_chart_data(request):
             pass
     avgmp = round(sum(diff) / len(diff),2)
     uw = queryset.filter(order=1).values('p_id__name').annotate(Count('p_id__name')).order_by('-p_id__name__count')[0]['p_id__name']
+    avgp=[]
+    pp = sorted(list(Gameplay.objects.filter(name__name=bg_name).values('NumberOfPlayers').distinct().values_list('NumberOfPlayers', flat=True)))
+    for i in pp:
+        avgp.append(list(queryset.filter(gp_id__NumberOfPlayers=i).values('p_id__name', 'gp_id__NumberOfPlayers').annotate(Avg('points')).order_by('-points__avg').values_list('p_id__name', 'points__avg')))
+    gp_list = list(Gameplay.objects.filter(name__name=bg_name).order_by('date').values_list('date',flat=True))
+    first_gp = gp_list[0].date()
+    print(first_gp)
+    last_gp = gp_list[-1].date()
+    nogp = len(gp_list)
     return JsonResponse(data={'labels': labels,
                               'data': data,
                               'colors':colors,
@@ -306,11 +315,16 @@ def load_chart_data(request):
                               'avgws':avgws,
                               'avgtot':avgtot,
                               'maxnws':maxnws,
-                              'lg':lg,
+                              'longest_gp':longest_gp,
                               'sg':sg,
                               'avgg':avgg,
                               'avgmp':avgmp,
-                              'uw':uw})
+                              'uw':uw,
+                              'pp':pp,
+                              'avgp':avgp,
+                              'first_gp':first_gp,
+                              'last_gp':last_gp,
+                              'nogp':nogp,})
 
 def history(request):
     context = {}

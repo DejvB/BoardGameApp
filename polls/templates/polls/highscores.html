@@ -58,7 +58,7 @@
         <table style="width:100%">
           <tr>
             <td>Longest gameplay:</td>
-            <th><label id="lg"></label></th>
+            <th><label id="longest_gp"></label></th>
           </tr>
           <tr>
             <td>Shortest gameplay:</td>
@@ -83,27 +83,39 @@
             <th><label id="uw"></label></th>
           </tr>
           <tr>
-            <td>Shortest gameplay:</td>
-            <th><label id="sg"></label></th>
+            <td>First gameplay:</td>
+            <th><label id="first_gp"></label></th>
           </tr>
           <tr>
-            <td>Average gameplay:</td>
-            <th><label id="avgg"></label></th>
+            <td>Last gameplay:</td>
+            <th><label id="last_gp"></label></th>
           </tr>
           <tr>
-            <td>Average missing points:</td>
-            <th><label id="avgmp"></label></th>
+            <td>Total count:</td>
+            <th><label id="nogp"></label></th>
           </tr>
         </table>
     </div>
 </div>
-
+<div class='container'>
 <div class='box round shadow big'>
 <div id="container" style="width: 100%;">
     <canvas id="pie_chart" data-url="{% url 'chart_options' %}"></canvas>
 </div>
 </div>
-
+    <div class='box round shadow'>
+      <h2>Average points</h2>
+        <hr>
+        <table style="width:100%" id="avgp">
+            {% for a, b in data.avgp %}
+              <tr>
+                <td>{{ a }}</td>
+                <th><label>{{ b }}</label></th>
+              </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script id="ha">
@@ -218,11 +230,22 @@ $("#id_name, #checkbox").change(function () {
       $("#avgws").html(data.avgws);
       $("#avgtot").html(data.avgtot);
       $("#maxnws").html(data.maxnws);
-      $("#lg").html(data.lg);
+      $("#longest_gp").html(data.longest_gp);
       $("#sg").html(data.sg);
       $("#avgg").html(data.avgg);
       $("#avgmp").html(data.avgmp);
       $("#uw").html(data.uw);
+      $("#first_gp").html(data.first_gp);
+      $("#last_gp").html(data.last_gp);
+      $("#nogp").html(data.nogp);
+      $("#avgp").html("");
+      for (j = 0; j < data.pp.length; j++){
+          <!--$("#avgp").append('<b>Number of Players: ' + data.pp[j] + '</b>')-->
+          $("#avgp").append(data.pp[j])
+          for (i = 0; i < data.avgp[j].length; i++){
+          $("#avgp").append('<tr><th>' + data.avgp[j][i][0] + '</th>' + '<th>' +  Math.round(data.avgp[j][i][1]*10)/10 + '</th></tr>');
+          }
+      }
     },
     failure: function(data) {
       alert('Got an error dude');

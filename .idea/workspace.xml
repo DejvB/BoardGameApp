@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="ed48db24-a98b-47d3-9a90-d805269f8293" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/polls/templates/polls/highscores.html" afterPath="$PROJECT_DIR$/polls/templates/polls/highscores.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/polls/views.py" afterPath="$PROJECT_DIR$/polls/views.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -17,31 +18,11 @@
       <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/polls/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="143">
-              <caret line="289" column="40" lean-forward="false" selection-start-line="289" selection-start-column="40" selection-end-line="289" selection-end-column="40" />
+            <state relative-caret-position="175">
+              <caret line="304" column="32" lean-forward="false" selection-start-line="304" selection-start-column="32" selection-end-line="304" selection-end-column="32" />
               <folding>
                 <element signature="e#0#45#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="history.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/polls/templates/polls/history.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="13" column="35" lean-forward="false" selection-start-line="13" selection-start-column="35" selection-end-line="13" selection-end-column="35" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="get_history.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/polls/templates/polls/get_history.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="51">
-              <caret line="3" column="6" lean-forward="false" selection-start-line="3" selection-start-column="6" selection-end-line="3" selection-end-column="6" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -59,12 +40,13 @@
       <file leaf-file-name="highscores.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/polls/templates/polls/highscores.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="399">
-              <caret line="224" column="10" lean-forward="true" selection-start-line="224" selection-start-column="10" selection-end-line="224" selection-end-column="10" />
+            <state relative-caret-position="273">
+              <caret line="93" column="27" lean-forward="false" selection-start-line="93" selection-start-column="27" selection-end-line="93" selection-end-column="27" />
               <folding>
                 <element signature="n#style#0;n#table#0;n#div#1;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#table#0;n#div#2;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#table#0;n#div#3;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#table#0;n#div#1;n#div#1;n#!!top" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -115,10 +97,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>avera</find>
-      <find>pie-chart</find>
-      <find>if</find>
-      <find>ExpansionForm</find>
       <find>forloop</find>
       <find>list</find>
       <find>getDatasetMeta</find>
@@ -134,7 +112,6 @@
       <find>gamepla</find>
       <find>PossibleNumberOfPlayers</find>
       <find>context</find>
-      <find>boardgames</find>
       <find>Player</find>
       <find>installed</find>
       <find>last</find>
@@ -145,6 +122,11 @@
       <find>agr</find>
       <find>ag</find>
       <find>print</find>
+      <find>if True</find>
+      <find>boardgames</find>
+      <find>maxws = queryset[</find>
+      <find>dist</find>
+      <find>lg</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -181,17 +163,17 @@
         <option value="$PROJECT_DIR$/polls/templates/polls/history.html" />
         <option value="$PROJECT_DIR$/polls/tables.py" />
         <option value="$PROJECT_DIR$/polls/static/polls/style.css" />
-        <option value="$PROJECT_DIR$/polls/templates/polls/highscores.html" />
         <option value="$PROJECT_DIR$/polls/templates/polls/add_results.html" />
         <option value="$PROJECT_DIR$/polls/templates/polls/header.html" />
         <option value="$PROJECT_DIR$/polls/templates/polls/index.html" />
+        <option value="$PROJECT_DIR$/polls/templates/polls/highscores.html" />
         <option value="$PROJECT_DIR$/polls/views.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="33" />
-    <option name="y" value="67" />
+    <option name="x" value="221" />
+    <option name="y" value="-18" />
     <option name="width" value="1512" />
     <option name="height" value="840" />
   </component>
@@ -211,6 +193,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -264,8 +248,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -331,24 +313,35 @@
     <frame x="-8" y="-8" width="1554" height="916" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2858099" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29919678" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32977587" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3290735" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21796565" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32977587" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32977587" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4116095" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2858099" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32977587" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32977587" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32977587" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -572,13 +565,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/polls/templates/polls/expansions_select_options.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="101" lean-forward="false" selection-start-line="7" selection-start-column="8" selection-end-line="7" selection-end-column="101" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/polls/templatetags/index.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
@@ -601,31 +587,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/polls/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="30" column="28" lean-forward="false" selection-start-line="30" selection-start-column="28" selection-end-line="30" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/polls/tables.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
           <caret line="6" column="34" lean-forward="true" selection-start-line="6" selection-start-column="34" selection-end-line="6" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/polls/templates/polls/add_game.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="646">
-          <caret line="38" column="32" lean-forward="false" selection-start-line="38" selection-start-column="14" selection-end-line="38" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/polls/templates/polls/players_dropdown_options.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="35" lean-forward="false" selection-start-line="1" selection-start-column="12" selection-end-line="1" selection-end-column="35" />
         </state>
       </provider>
     </entry>
@@ -666,6 +631,57 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/polls/templates/polls/header.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="16" lean-forward="false" selection-start-line="8" selection-start-column="16" selection-end-line="8" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/polls/templates/polls/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4437">
+          <caret line="261" column="52" lean-forward="false" selection-start-line="261" selection-start-column="52" selection-end-line="261" selection-end-column="52" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#div#1;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#2;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/polls/templates/polls/expansions_select_options.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="19" lean-forward="true" selection-start-line="11" selection-start-column="19" selection-end-line="11" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/polls/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="30" column="28" lean-forward="false" selection-start-line="30" selection-start-column="28" selection-end-line="30" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/polls/templates/polls/add_game.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="214">
+          <caret line="17" column="20" lean-forward="true" selection-start-line="17" selection-start-column="20" selection-end-line="17" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/polls/templates/polls/players_dropdown_options.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="40" lean-forward="true" selection-start-line="2" selection-start-column="40" selection-end-line="2" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/polls/templates/polls/get_history.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51">
@@ -682,11 +698,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/polls/templates/polls/header.html">
+    <entry file="file://$PROJECT_DIR$/polls/templates/polls/highscores.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="16" lean-forward="false" selection-start-line="8" selection-start-column="16" selection-end-line="8" selection-end-column="16" />
-          <folding />
+        <state relative-caret-position="273">
+          <caret line="93" column="27" lean-forward="false" selection-start-line="93" selection-start-column="27" selection-end-line="93" selection-end-column="27" />
+          <folding>
+            <element signature="n#style#0;n#table#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#table#0;n#div#2;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#table#0;n#div#3;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#table#0;n#div#1;n#div#1;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -698,33 +719,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/polls/templates/polls/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4437">
-          <caret line="261" column="52" lean-forward="false" selection-start-line="261" selection-start-column="52" selection-end-line="261" selection-end-column="52" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#div#1;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#2;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/polls/templates/polls/highscores.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="399">
-          <caret line="224" column="10" lean-forward="true" selection-start-line="224" selection-start-column="10" selection-end-line="224" selection-end-column="10" />
-          <folding>
-            <element signature="n#style#0;n#table#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#table#0;n#div#2;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#table#0;n#div#3;n#div#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/polls/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="143">
-          <caret line="289" column="40" lean-forward="false" selection-start-line="289" selection-start-column="40" selection-end-line="289" selection-end-column="40" />
+        <state relative-caret-position="175">
+          <caret line="304" column="32" lean-forward="false" selection-start-line="304" selection-start-column="32" selection-end-line="304" selection-end-column="32" />
           <folding>
             <element signature="e#0#45#0" expanded="true" />
           </folding>
