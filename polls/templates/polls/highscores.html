@@ -98,9 +98,9 @@
     </div>
 </div>
 <div class='container'>
-<div class='box round shadow big'>
-<div id="container" style="width: 100%;">
-    <canvas id="pie_chart" data-url="{% url 'chart_options' %}"></canvas>
+<div class='box round shadow big' style="width: 100%; overflow-x: auto; overflow-y: hidden">
+<div id="containerha" style="width: 100%;height: 600px;">
+    <canvas id="pie_chart" data-url="{% url 'chart_options' %}" style="width: 100%;height: 600px;"></canvas>
 </div>
 </div>
     <div class='box round shadow'>
@@ -225,6 +225,8 @@ $("#id_name, #checkbox").change(function () {
                     ];
         }
         ch.update();
+      <!--$("#containerha").width(Math.max(800,chartData.datasets.length * 60)).height('600px');-->
+      <!--$("#pie_chart").width(Math.max(800,chartData.datasets.length * 60)).height('600px');-->
       $("#maxws").html(data.maxws);
       $("#minws").html(data.minws);
       $("#avgws").html(data.avgws);

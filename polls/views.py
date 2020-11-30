@@ -110,6 +110,11 @@ def add_play(request):
     # context['players'] = range(1,7)
     return render(request, 'polls/add_game.html', context)
 
+def randomizer(request):
+    games = list(Boardgames.objects.all().values_list('name',flat=True))
+    print(games)
+    return JsonResponse(data={'games': games})
+
 
 def expansions_select_options(request):
     bg_id = request.GET.get('name')
@@ -304,6 +309,15 @@ def load_chart_data(request):
     print(first_gp)
     last_gp = gp_list[-1].date()
     nogp = len(gp_list)
+
+
+    # for i in pp:
+    #     hm = queryset.filter(gp_id__NumberOfPlayers=i).values('p_id__name', 'gp_id__NumberOfPlayers')
+    #     hm.
+    #     denominator = X.dot(X) - X.mean() * X.sum()
+    #     a = (X.dot(Y) - Y.mean() * X.sum()) / denominator
+    #     # b = (Y.mean() * X.dot(X) - X.mean() * X.dot(Y)) / denominator
+
     return JsonResponse(data={'labels': labels,
                               'data': data,
                               'colors':colors,

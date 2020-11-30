@@ -23,7 +23,11 @@
     <button type="submit" name="run_script">Save gameplay</button>
 </form>
 </div>
-
+<div class='box round shadow' id="randomizer" randomizer_url="{% url 'randomizer' %}">
+  <h2>Give me game</h2>
+    <hr>
+      <input type='button' name="give_me_game" id="random_game" value="Na křídlech">
+</div>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script>
     $("#id_name").change(function () {
@@ -57,6 +61,24 @@
         success: function (data) {   // `data` is the return of the `load_cities` view function
           console.log(data);
           $("#Expansion_formset_id").html(data);  // replace the contents of the city input with the data that came from the server
+
+        }
+      });
+
+    });
+  </script>
+  <script>
+    $("#random_game").click(function () {
+      var url = $("#randomizer").attr("randomizer_url");  // get the url of the `load_cities` view
+      console.log('ha');
+      $.ajax({                       // initialize an AJAX request
+        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load_player_count/)
+
+        data: {
+        },
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+      $("#random_game_label").html(data.games[Math.floor(Math.random() * data.games.length)]);
+       $("#random_game").val(data.games[Math.floor(Math.random() * data.games.length)]);
 
         }
       });
