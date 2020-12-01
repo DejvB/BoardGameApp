@@ -1,6 +1,5 @@
 {% extends "polls/header.html" %}
 {% block body %}
-
 <div class='container' id="container">
 <div class='box round shadow'>
   <h2>Recently played</h2>
@@ -57,7 +56,8 @@
     <p>No polls are available.</p>
 {% endif %}
 </div>
-
+</div>
+<div class='container' id="container2">
 <div class='box round shadow'>
   <h2>Most time spend</h2>
     <hr>
@@ -219,7 +219,7 @@ var config_pie = {
 
     window.onload = function() {
       if (/Android/i.test(navigator.userAgent)){
-      <!--alert('ha!');-->
+
       }
       line_chart = document.getElementById('line-chart').getContext('2d');
       window.myPie = new Chart(line_chart, config_line);
@@ -264,6 +264,8 @@ var config_pie = {
 $( function() {
     $( "#container" ).sortable();
     $( "#container" ).disableSelection();
+    $( "#container2" ).sortable();
+    $( "#container2" ).disableSelection();
 } );
 </script>
 

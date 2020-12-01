@@ -112,7 +112,6 @@ def add_play(request):
 
 def randomizer(request):
     games = list(Boardgames.objects.all().values_list('name',flat=True))
-    print(games)
     return JsonResponse(data={'games': games})
 
 
@@ -306,7 +305,6 @@ def load_chart_data(request):
         avgp.append(list(queryset.filter(gp_id__NumberOfPlayers=i).values('p_id__name', 'gp_id__NumberOfPlayers').annotate(Avg('points')).order_by('-points__avg').values_list('p_id__name', 'points__avg')))
     gp_list = list(Gameplay.objects.filter(name__name=bg_name).order_by('date').values_list('date',flat=True))
     first_gp = gp_list[0].date()
-    print(first_gp)
     last_gp = gp_list[-1].date()
     nogp = len(gp_list)
 
