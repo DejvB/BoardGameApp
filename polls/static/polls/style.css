@@ -23,7 +23,7 @@ input {
 
 
 
-input, button[type=submit],input[type=button],select  {
+input:not([type=image]),button[type=submit],input[type=button],select  {
   background-color: b5f5dc;
   border: 20px solid b5f5dc;
   border-radius: 10px;
@@ -129,4 +129,18 @@ label {
   .big {
     width: 95%;
   }
+  .navbar a{
+    float: left;
+    font-size: 20px;
+    text-align: center;
+    padding: 5px 5px;
+    text-decoration: none;
+  }
 }
+
+input[type=image]{
+  width: 40px;
+  height: 40px;
+
+}
+
