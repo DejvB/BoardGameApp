@@ -20,6 +20,9 @@ input {
   width: 100%;
 }
 
+
+
+
 input, button[type=submit],input[type=button],select  {
   background-color: b5f5dc;
   border: 20px solid b5f5dc;
@@ -66,8 +69,10 @@ input, button[type=submit],input[type=button],select  {
   -moz-box-shadow: 10px 10px 5px 0px rgba(163,163,163,1);
   box-shadow: 10px 10px 5px 0px rgba(163,163,163,1);
 }
-.container {
+@media only screen and (min-width: 600px) {
+  .container {
   display: flex;
+  }
 }
 
 .box {
@@ -84,6 +89,7 @@ input, button[type=submit],input[type=button],select  {
   background-color: #B7ED97;/*#90EE90;*/
   margin-right: 20px;
 }
+
 
 .big {
   display: inline;
@@ -109,4 +115,18 @@ input, button[type=submit],input[type=button],select  {
 
 label {
   display: inline;
+}
+
+@media only screen and (max-width: 1000px) {
+  body {
+    background-color: lightblue;
+  }
+}
+@media only screen and (max-width: 600px) {
+  .box {
+    width: 95%;
+  }
+  .big {
+    width: 95%;
+  }
 }
