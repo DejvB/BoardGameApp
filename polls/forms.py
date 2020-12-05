@@ -4,7 +4,7 @@ from .models import *
 class BoardgameForm(forms.ModelForm):
     class Meta:
         model = Boardgames
-        fields = ('name', 'owner', 'minNumberOfPlayers', 'maxNumberOfPlayers')
+        fields = ('name', 'type', 'owner', 'minNumberOfPlayers', 'maxNumberOfPlayers')
 
 
 class GameplayForm(forms.ModelForm):

@@ -19,11 +19,13 @@ class Boardgames(models.Model):
     def not_played_recently(self, d):
         return self.lastTimePlayed <= datetime.date.today() - datetime.timedelta(days=d)
 
+    gametype_choices = [('Classic','Classic'), ('Cooperative','Cooperative'), ('Party','Party'), ('Strategy','Strategy'), ('Family','Family')]
+
     name = models.CharField(max_length=50)
     owner = models.ForeignKey(Player, on_delete=models.CASCADE)
     minNumberOfPlayers = models.IntegerField(default=2)
     maxNumberOfPlayers = models.IntegerField(default=4)
-    # type = models.CharField(max_length=50, default='Classic')
+    type = models.CharField(max_length=50, default='Strategy', choices=gametype_choices)
     # ordering = ['name']
 
 class Expansion(models.Model):
@@ -42,7 +44,7 @@ class Gameplay(models.Model):
     NumberOfPlayers = models.IntegerField(default=0)
     time = models.DurationField(default=datetime.timedelta(days=0, seconds=0))
     date = models.DateTimeField(default=datetime.datetime.now())
-
+    with_results = models.BooleanField(default=True)
 
 class Results(models.Model):
 

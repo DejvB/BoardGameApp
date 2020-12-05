@@ -103,7 +103,10 @@ def add_play(request):
                 e = e_form.save()
                 e.gp_id = gp
                 e.save()
-            return redirect('add_results')
+            if gp.with_results:
+                return redirect('add_results')
+            else:
+                return redirect('home')
     context['gp_form'] = gp_form
     context['e_formset'] = e_formset
     context['boardgame'] = Boardgames.objects.all()
@@ -168,7 +171,12 @@ def add_results(request):
     #     print(request.session['player_count'])
     lastGame = Gameplay.objects.order_by('-id')[0]
     ResultsFormSet = formset_factory(ResultsForm, extra=0)
-    formset = ResultsFormSet(request.POST or None, initial=[{'order': i+1, 'gp_id':lastGame} for i in range(max(2, lastGame.NumberOfPlayers))])
+    if lastGame.with_results:
+        formset = ResultsFormSet(request.POST or None, initial=[{'order': i+1, 'gp_id':lastGame} for i in
+                                                                range(max(2, lastGame.NumberOfPlayers))])
+    else:
+        formset = ResultsFormSet(request.POST or None, initial=[{'order': 0, 'gp_id': lastGame} for i in
+                                                                range(max(2, lastGame.NumberOfPlayers))])
     if formset.is_valid():
         messages.success(request, 'Form submission successful')
         for form in formset:
@@ -254,7 +262,9 @@ def load_chart_data(request):
     bg_name = request.GET.get('name')
     p_count = request.GET.get('NoP')
     chk = request.GET.get('chk')
-    queryset = Results.objects.filter(gp_id__name__name=bg_name).values('gp_id','p_id__name','gp_id__NumberOfPlayers','points','order').order_by('-points')
+    queryset = Results.objects.filter(gp_id__name__name=bg_name)\
+                              .filter(gp_id__with_results=True)\
+                              .values('gp_id','p_id__name','gp_id__NumberOfPlayers','points','order').order_by('-points')
     if chk == 'true':
         gp_queryset = list(Gameplay.objects.filter(name__name=bg_name).values_list('id', flat=True))
         gp_queryset_forloop = gp_queryset.copy()
@@ -263,7 +273,9 @@ def load_chart_data(request):
                 if not queryset.filter(gp_id=gp).filter(p_id__name=n):
                     gp_queryset.remove(gp)
                     break
-        queryset = Results.objects.filter(gp_id__in=gp_queryset).values('p_id__name', 'gp_id__NumberOfPlayers',
+        queryset = Results.objects.filter(gp_id__in=gp_queryset)\
+                                  .filter(gp_id__with_results=True)\
+                                  .values('p_id__name', 'gp_id__NumberOfPlayers',
                                                                             'points', 'order').order_by('-points')
 
     for query in queryset:
@@ -342,7 +354,7 @@ def load_chart_data(request):
 
 def history(request):
     context = {}
-    context['games'] = GameplayTable(Gameplay.objects.all())
+    context['games'] = GameplayTable(Gameplay.objects.all().order_by('date'))
     return render(request, 'polls/history.html', context)
 
 from .tables import GameplayTable
