@@ -23,6 +23,7 @@ class Boardgames(models.Model):
     owner = models.ForeignKey(Player, on_delete=models.CASCADE)
     minNumberOfPlayers = models.IntegerField(default=2)
     maxNumberOfPlayers = models.IntegerField(default=4)
+    # type = models.CharField(max_length=50, default='Classic')
     # ordering = ['name']
 
 class Expansion(models.Model):

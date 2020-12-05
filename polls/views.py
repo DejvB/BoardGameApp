@@ -201,7 +201,7 @@ def pie_chart(request):
         gp_queryset = list(Gameplay.objects.values_list('id', flat=True))
 
 
-    for i in range(4):
+    for i in range(6):
         data.append([])
         # queryset = Results.objects.filter(order=i + 1).values('p_id__name').annotate(total=Count('p_id__name'))
 
@@ -223,6 +223,8 @@ def pie_chart(request):
     context['data1'] = data[1]
     context['data2'] = data[2]
     context['data3'] = data[3]
+    context['data4'] = data[4]
+    context['data5'] = data[5]
     return render(request, 'polls/pie_chart.html', context)
 
 def highscores(request):

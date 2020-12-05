@@ -47,7 +47,8 @@ input:not([type=image]),button[type=submit],input[type=button],select  {
   font-size: 20px;
   color: white;
   text-align: center;
-  padding: 14px 16px;
+  padding: 5px 5px;
+  /*padding: 14px 16px;*/
   text-decoration: none;
 }
 
@@ -79,11 +80,11 @@ input:not([type=image]),button[type=submit],input[type=button],select  {
   display: inline;
   font-weight: 600;
   font-family: Arial;
-  padding: 0px 10px;
+  padding: 0px 10px 5px 10px;
   float: left;
   /*height: 180px;*/
   width: 300px;
-  margin-bottom: 15px;
+  margin-bottom: 0px;
   margin-top: 15px;
   clear: both;
   background-color: #B7ED97;/*#90EE90;*/
@@ -95,7 +96,7 @@ input:not([type=image]),button[type=submit],input[type=button],select  {
   display: inline;
   font-weight: 600;
   font-family: Arial;
-  padding: 0px 10px;
+  padding: 0px 10px 5px 10px;
   float: left;
   margin-bottom: 15px;
   margin-top: 15px;
@@ -119,10 +120,10 @@ label {
 
 @media only screen and (max-width: 1000px) {
   body {
-    background-color: lightblue;
+    /*background-color: lightblue;*/
   }
 }
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 1000px) {
   .box {
     width: 95%;
   }
@@ -131,7 +132,7 @@ label {
   }
   .navbar a{
     float: left;
-    font-size: 20px;
+    font-size: 30px;
     text-align: center;
     padding: 5px 5px;
     text-decoration: none;
@@ -139,8 +140,7 @@ label {
 }
 
 input[type=image]{
-  width: 40px;
-  height: 40px;
-
+  width: 45px;
+  height: 45px;
 }
 
