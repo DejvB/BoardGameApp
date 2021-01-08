@@ -106,7 +106,7 @@ def add_play(request):
             if gp.with_results:
                 return redirect('add_results')
             else:
-                return redirect('home')
+                return redirect('add_results')
     context['gp_form'] = gp_form
     context['e_formset'] = e_formset
     context['boardgame'] = Boardgames.objects.all()
@@ -175,7 +175,7 @@ def add_results(request):
         formset = ResultsFormSet(request.POST or None, initial=[{'order': i+1, 'gp_id':lastGame} for i in
                                                                 range(max(2, lastGame.NumberOfPlayers))])
     else:
-        formset = ResultsFormSet(request.POST or None, initial=[{'order': 0, 'gp_id': lastGame} for i in
+        formset = ResultsFormSet(request.POST or None, initial=[{'order': 0, 'gp_id': lastGame} for _ in
                                                                 range(max(2, lastGame.NumberOfPlayers))])
     if formset.is_valid():
         messages.success(request, 'Form submission successful')
@@ -194,14 +194,14 @@ def pie_chart(request):
     players = Player.objects.order_by('name').values_list('name', flat=True)
 
     # for gameplayes with three of us
-    if False:
+    if True:
         queryset = Results.objects.values('gp_id', 'p_id__name',
                                           'gp_id__NumberOfPlayers', 'points',
                                           'order').order_by('-points')
         gp_queryset = list(Gameplay.objects.values_list('id', flat=True))
         gp_queryset_forloop = gp_queryset.copy()
         for gp in gp_queryset_forloop:
-            for n in ['David', 'Bára', 'Adam']:
+            for n in ['David', 'Bára']:
                 if not queryset.filter(gp_id=gp).filter(p_id__name=n):
                     gp_queryset.remove(gp)
                     break
