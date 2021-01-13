@@ -99,6 +99,11 @@
       </div>
 </div>
 
+<div class='box round shadow big'>
+  <div id="container_line" style="width: 100%;">
+    <canvas id="bar-chart"></canvas>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script>
@@ -217,7 +222,30 @@ var config_pie = {
       }
     };
 
-    window.onload = function() {
+var config_bar = {
+      type: 'bar',
+      data: {
+        datasets: [{
+          data: {{ mostplayed_games_list_values|safe }},
+          <!--backgroundColor: ["#ff0000","#ffa500","#ffff00","#008000","#0000ff","#4b0082","#ee82ee"],-->
+          borderColor: '#a0a0a0',
+          borderWidth: 1,
+          borderAlign: 'inner',
+          hoverBorderWidth: 3,
+          label: 'Count',
+        }],
+        labels: {{ mostplayed_games_list_names|safe }}
+      },
+      options: {
+        responsive: true,
+        legend: {
+            position: 'left',
+            display: true
+        }
+      }
+    };
+
+    window.onload = function(data) {
       if (/Android/i.test(navigator.userAgent)){
 
       }
@@ -225,6 +253,8 @@ var config_pie = {
       window.myPie = new Chart(line_chart, config_line);
       var pie_chart = document.getElementById('pie-chart').getContext('2d');
       var chart = new Chart(pie_chart, config_pie);
+      var bar_chart = document.getElementById('bar-chart').getContext('2d');
+      var chart = new Chart(bar_chart, config_bar);
     };
 </script>
 

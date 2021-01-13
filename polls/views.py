@@ -14,6 +14,11 @@ def index(request):
     best_companion = Results.objects.filter(~Q(p_id__name='Davi')).values('p_id__name').annotate(Sum('gp_id__time'), Count('gp_id__time')).order_by('-gp_id__time__sum')[:5]
     games_list = Gameplay.objects.values('name__name').annotate(game_count=Count('name__name')).annotate(game_time=Sum('time'))
     mostplayed_games_list = games_list.order_by('-game_count')[:5]
+    # For bar plot it must be in list...
+    games_for_bar_list = games_list.filter(name__owner__name__in=['David','Bára']).order_by('-game_count')
+    mostplayed_games_list_names = [games_for_bar_list[i]['name__name'] for i in range(len(games_for_bar_list))]
+    mostplayed_games_list_values = [games_for_bar_list[i]['game_count'] for i in range(len(games_for_bar_list))]
+
     leastplayed_games_list = games_list.order_by('game_count')[:5]
     time_list = games_list.order_by('-game_time')[:5]
     games_list = Gameplay.objects.values('name__name', 'date').annotate(game_count=Count('name__name'))
@@ -25,7 +30,9 @@ def index(request):
                'leastplayed_games_list': leastplayed_games_list,
                'mosttimeplayed_games_list': time_list,
                'long_time_no_see_games_list': long_time_no_see_games_list,
-               'best_companion': best_companion
+               'best_companion': best_companion,
+               'mostplayed_games_list_names':mostplayed_games_list_names,
+               'mostplayed_games_list_values':mostplayed_games_list_values
                }
     week = []
     totalTime = []
@@ -208,6 +215,22 @@ def pie_chart(request):
     else:
         gp_queryset = list(Gameplay.objects.values_list('id', flat=True))
 
+    # points
+    points = {}
+    for player in players:
+        queryset = Results.objects.filter(p_id__name=player).values('p_id__name','gp_id__NumberOfPlayers','order')
+        for query in queryset:
+            print(query)
+            p = (query['gp_id__NumberOfPlayers'] - query['order']) / query['gp_id__NumberOfPlayers']
+            try:
+                points[player] = points[player] + p
+            except:
+                points[player] = p
+        points[player] = points[player]/len(queryset)
+    print(points['Zdeněk'])
+    print(points['David'])
+    print(points['Adam'])
+    print(points['Bára'])
 
     for i in range(6):
         data.append([])
@@ -233,6 +256,7 @@ def pie_chart(request):
     context['data3'] = data[3]
     context['data4'] = data[4]
     context['data5'] = data[5]
+    print(queryset)
     return render(request, 'polls/pie_chart.html', context)
 
 def highscores(request):
