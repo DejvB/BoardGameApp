@@ -132,7 +132,7 @@
                 data: movingAvg({{ totalTime|safe }}, 1, 1),
 				yAxisID: 'y-axis-1',
                 fill: false,
-                borderWidth: 5
+                borderWidth: 2
             },{
                 label: 'Total gameplays per week',
                 fill: false,
@@ -148,7 +148,7 @@
                 borderColor: 'rgba(0, 0, 169, 0.3)',
                 data: movingAvg({{ totalCount|safe }}, 1, 1),
 				yAxisID: 'y-axis-2',
-                borderWidth: 5
+                borderWidth: 2
             }]
         },
         options: {
@@ -371,7 +371,7 @@ var config_bar = {
       for (let i = 0; i < array.length; i++) {
         const subArr = array.slice(Math.max(i - countBefore, 0), Math.min(i + countAfter + 1, array.length));
         const avg = subArr.reduce((a, b) => a + (isNaN(b) ? 0 : b), 0) / subArr.length;
-        result.push(avg);
+        result.push(Math.round(avg));
       }
       return result;
     }
