@@ -94,6 +94,12 @@
 </div>
 
 <div class='box round shadow big'>
+  <div id="container_line" style="width: 100%;">
+    <canvas id="line-chart_month"></canvas>
+  </div>
+</div>
+
+<div class='box round shadow big'>
     <div id="container_pie" style="margin-bottom: 15px; margin-top: 15px;">
         <canvas id="pie-chart"></canvas>
       </div>
@@ -119,12 +125,28 @@
 				yAxisID: 'y-axis-1',
                 fill: false,
                 borderWidth: 5
-            }, {
+            },{
+                label: 'Total time per week',
+                backgroundColor: 'rgba(169, 0, 0, 0.3)',
+                borderColor: 'rgba(169, 0, 0, 0.3)',
+                data: movingAvg({{ totalTime|safe }}, 1, 1),
+				yAxisID: 'y-axis-1',
+                fill: false,
+                borderWidth: 5
+            },{
                 label: 'Total gameplays per week',
                 fill: false,
                 backgroundColor: '#0000ff',
                 borderColor: '#0000ff',
                 data: {{ totalCount|safe }},
+				yAxisID: 'y-axis-2',
+                borderWidth: 5
+            }, {
+                label: 'Total gameplays per week',
+                fill: false,
+                backgroundColor: 'rgba(0, 0, 169, 0.3)',
+                borderColor: 'rgba(0, 0, 169, 0.3)',
+                data: movingAvg({{ totalCount|safe }}, 1, 1),
 				yAxisID: 'y-axis-2',
                 borderWidth: 5
             }]
@@ -150,10 +172,6 @@
                     }
                 }
             },
-            <!--hover: {-->
-                <!--mode: 'nearest',-->
-                <!--intersect: false-->
-            <!--},-->
             scales: {
                 xAxes: [{
                     display: true,
@@ -179,6 +197,94 @@
                       min: 0,
                       max: {{ mt|safe }},
                       stepSize: 10.8e+6,
+                      beginAtZero: true,
+                      callback: value => {
+                        var date = new Date(value);
+                        var hours = date.getHours() - 1;
+                        var minutes = "0" + date.getMinutes();
+                        var seconds = "0" + date.getSeconds();
+                        var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+                        return formattedTime;
+                      },
+                    id: 'y-axis-1',
+                },
+                // grid line settings
+                gridLines: {
+                    drawOnChartArea: false, // only want the grid lines for one axis to show up
+                },
+				}],
+            }
+        }
+    };
+
+var config_line_month = {
+        type: 'line',
+        data: {
+            labels: {{ month|safe }},
+            datasets: [{
+                label: 'Total time per month',
+                backgroundColor: '#ff0000',
+                borderColor: '#ff0000',
+                data: {{ totalTime_month|safe }},
+				yAxisID: 'y-axis-1',
+                fill: false,
+                borderWidth: 5
+            }, {
+                label: 'Total gameplays per month',
+                fill: false,
+                backgroundColor: '#0000ff',
+                borderColor: '#0000ff',
+                data: {{ totalCount_month|safe }},
+				yAxisID: 'y-axis-2',
+                borderWidth: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: true,
+                text: 'Statistics'
+            },
+            tooltips: {
+                mode: 'nearest',
+                intersect: false,
+                callbacks: {
+                    label: function(tooltipItem){
+                        console.log(tooltipItem);
+                        if (tooltipItem.value > 1000) {
+                            return {{ totalTimestr_month|safe }}[tooltipItem.index];
+                        }
+                        else {
+                            return tooltipItem.value;
+                        }
+                    }
+                }
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Month'
+                    }
+                }],
+                yAxes: [{
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    ticks: {
+                        stepSize: 6,
+                        beginAtZero: true,
+                        max: 4 * {{ mg|safe }},
+                    },
+                    id: 'y-axis-2',
+                }, {
+                    type: 'linear',
+                    position: 'left',
+                    ticks: {
+                      min: 0,
+                      max: 4 * {{ mt|safe }},
+                      stepSize: 21.6e+6,
                       beginAtZero: true,
                       callback: value => {
                         var date = new Date(value);
@@ -251,11 +357,24 @@ var config_bar = {
       }
       line_chart = document.getElementById('line-chart').getContext('2d');
       window.myPie = new Chart(line_chart, config_line);
+      line_chart = document.getElementById('line-chart_month').getContext('2d');
+      window.myPie = new Chart(line_chart, config_line_month);
       var pie_chart = document.getElementById('pie-chart').getContext('2d');
       var chart = new Chart(pie_chart, config_pie);
       var bar_chart = document.getElementById('bar-chart').getContext('2d');
       var chart = new Chart(bar_chart, config_bar);
     };
+
+    function movingAvg(array, countBefore, countAfter) {
+      if (countAfter == undefined) countAfter = 0;
+      const result = [];
+      for (let i = 0; i < array.length; i++) {
+        const subArr = array.slice(Math.max(i - countBefore, 0), Math.min(i + countAfter + 1, array.length));
+        const avg = subArr.reduce((a, b) => a + (isNaN(b) ? 0 : b), 0) / subArr.length;
+        result.push(avg);
+      }
+      return result;
+    }
 </script>
 
 <!--<script>-->

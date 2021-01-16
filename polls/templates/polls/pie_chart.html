@@ -2,11 +2,26 @@
 {% block body %}
 
 <div class=''>
-<div id="container" style="width: 75%;">
-    <canvas id="pie-chart"></canvas>
+<div class="container">
+  <div class='box round shadow big' style="width: 100%; overflow-x: auto; overflow-y: hidden">
+    <div id="containerha" style="width: 75%;">
+      <canvas id="pie-chart"></canvas>
+    </div>
+  </div>
+
+  <div class='box round shadow'>
+    <h2>Average points</h2>
+    <hr>
+    <table style="width:100%" id="points">
+        {% for a, b in points %}
+          <tr>
+            <td>{{ a }}</td>
+            <th><label>{{ b }}</label></th>
+          </tr>
+        {% endfor %}
+    </table>
   </div>
 </div>
-  <!--<script src="node_modules/chart.js/dist/Chart.min.js"></script>-->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script>
     var config = {

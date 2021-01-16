@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from .forms import *
 
 from django.db.models import Count, Sum, Q, Avg, Max, Min, F, ExpressionWrapper, fields, Value, DateTimeField
-from django.db.models.functions import ExtractWeek, ExtractWeekDay
+from django.db.models.functions import ExtractWeek, ExtractWeekDay, ExtractMonth, ExtractYear
 from math import ceil
 
 
@@ -18,7 +18,12 @@ def index(request):
     games_for_bar_list = games_list.filter(name__owner__name__in=['David','Bára']).order_by('-game_count')
     mostplayed_games_list_names = [games_for_bar_list[i]['name__name'] for i in range(len(games_for_bar_list))]
     mostplayed_games_list_values = [games_for_bar_list[i]['game_count'] for i in range(len(games_for_bar_list))]
-
+    # games in database which has not been played yet
+    not_played_list = list(Boardgames.objects.values('name').values_list('name', flat=True))
+    played_list = list(Gameplay.objects.values('name__name').values_list('name__name', flat=True))
+    not_played_list = [i for i in not_played_list if i not in played_list]
+    mostplayed_games_list_names.extend(not_played_list)
+    mostplayed_games_list_values.extend([0] * len(not_played_list))
     leastplayed_games_list = games_list.order_by('game_count')[:5]
     time_list = games_list.order_by('-game_time')[:5]
     games_list = Gameplay.objects.values('name__name', 'date').annotate(game_count=Count('name__name'))
@@ -34,11 +39,12 @@ def index(request):
                'mostplayed_games_list_names':mostplayed_games_list_names,
                'mostplayed_games_list_values':mostplayed_games_list_values
                }
+    # stats per week
     week = []
     totalTime = []
     totalTimestr = []
     totalCount = []
-    stats = Gameplay.objects.annotate(week=ExtractWeek('date')).values('week').annotate(Sum('time'), Count('time'))
+    stats = Gameplay.objects.annotate(year=ExtractYear('date'), week=ExtractWeek('date')).values('year','week').annotate(Sum('time'), Count('time'))
     for stat in stats:
         week.append(stat['week'])
         totalTime.append(stat['time__sum'].seconds * 1000)
@@ -50,14 +56,32 @@ def index(request):
     # max number of game equivalent to avg time per game
     mg = ceil(max(totalTime)/(sum(totalTime) / sum(totalCount)))
     mg = max(mg, max(totalCount))
-# time equivalent to mg with avg time per game
+
+    # time equivalent to mg with avg time per game
     mt = mg * avg
     context['week'] = week
     context['totalTime'] = totalTime
     context['totalTimestr'] = totalTimestr
-    context['totalCount'] =  totalCount
+    context['totalCount'] = totalCount
     context['mg'] = mg
     context['mt'] = mt
+
+    # stats per month
+    month = []
+    totalTime_month = []
+    totalTimestr_month = []
+    totalCount_month = []
+    stats = Gameplay.objects.annotate(year=ExtractYear('date'), month=ExtractMonth('date')).values('year','month').annotate(Sum('time'), Count('time'))
+    for stat in stats:
+        month.append(stat['month'])
+        totalTime_month.append(stat['time__sum'].days * 1000 * 86400 + stat['time__sum'].seconds * 1000)
+        totalTimestr_month.append(str(stat['time__sum']))
+        totalCount_month.append(stat['time__count'])
+    print(stats)
+    context['month'] = month
+    context['totalTime_month'] = totalTime_month
+    context['totalTimestr_month'] = totalTimestr_month
+    context['totalCount_month'] = totalCount_month
 
     weekday = list(Gameplay.objects.annotate(weekday=ExtractWeekDay('date')).values('weekday').annotate(Count('time')).values_list('time__count', flat=True))
     weekday = weekday[1:] + [weekday[0]]
@@ -201,7 +225,7 @@ def pie_chart(request):
     players = Player.objects.order_by('name').values_list('name', flat=True)
 
     # for gameplayes with three of us
-    if True:
+    if False:
         queryset = Results.objects.values('gp_id', 'p_id__name',
                                           'gp_id__NumberOfPlayers', 'points',
                                           'order').order_by('-points')
@@ -216,22 +240,14 @@ def pie_chart(request):
         gp_queryset = list(Gameplay.objects.values_list('id', flat=True))
 
     # points
-    points = {}
+    points = []
     for player in players:
-        queryset = Results.objects.filter(p_id__name=player).values('p_id__name','gp_id__NumberOfPlayers','order')
+        p_sum = 0
+        queryset = Results.objects.filter(p_id__name=player).filter(order__gte = 1).values('p_id__name','gp_id__NumberOfPlayers','order')
         for query in queryset:
-            print(query)
-            p = (query['gp_id__NumberOfPlayers'] - query['order']) / query['gp_id__NumberOfPlayers']
-            try:
-                points[player] = points[player] + p
-            except:
-                points[player] = p
-        points[player] = points[player]/len(queryset)
-    print(points['Zdeněk'])
-    print(points['David'])
-    print(points['Adam'])
-    print(points['Bára'])
-
+            p_sum = p_sum + (query['gp_id__NumberOfPlayers'] - query['order'] + 1) / query['gp_id__NumberOfPlayers']
+        points.append([player, round(p_sum/len(queryset),3)])
+    context['points'] = sorted(points, key=lambda x: -x[1])
     for i in range(6):
         data.append([])
         # queryset = Results.objects.filter(order=i + 1).values('p_id__name').annotate(total=Count('p_id__name'))
@@ -240,6 +256,8 @@ def pie_chart(request):
         queryset = Results.objects.filter(gp_id__in=gp_queryset).filter(order=i + 1).values('p_id__name').annotate(total=Count('p_id__name'))
 
         for player in players:
+            if len(Results.objects.filter(p_id__name=player).values('p_id__name')) < 10: # this is kind of stupid - I could filter players before
+                continue
             p = queryset.filter(p_id__name=player)
             try:
                 data[i].append(p[0]['total'])
@@ -256,7 +274,7 @@ def pie_chart(request):
     context['data3'] = data[3]
     context['data4'] = data[4]
     context['data5'] = data[5]
-    print(queryset)
+    # print(queryset)
     return render(request, 'polls/pie_chart.html', context)
 
 def highscores(request):
