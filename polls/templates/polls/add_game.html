@@ -35,30 +35,29 @@
           </tr>
         {% endfor %}
     </table>
-
-      <!---->
-    <!--<table style="width:100%">-->
-      <!--<tr>-->
-        <!--<td>Last winner:</td>-->
-        <!--<th><label id="lw"></label></th>-->
-      <!--</tr>-->
-      <!--<tr>-->
-        <!--<td>Lowest winning score:</td>-->
-        <!--<th><label id="minws"></label></th>-->
-      <!--</tr>-->
-      <!--<tr>-->
-        <!--<td>Average winning score:</td>-->
-        <!--<th><label id="avgws"></label></th>-->
-      <!--</tr>-->
-      <!--<tr>-->
-        <!--<td>Average score:</td>-->
-        <!--<th><label id="avgtot"></label></th>-->
-      <!--</tr>-->
-      <!--<tr>-->
-        <!--<td>Highest non-winning score:</td>-->
-        <!--<th><label id="maxnws"></label></th>-->
-      <!--</tr>-->
-    <!--</table>-->
+    <hr>
+    <table style="width:100%">
+      <tr>
+        <td>Highest winning score:</td>
+        <th><label id="maxws"></label></th>
+      </tr>
+      <tr>
+        <td>Lowest winning score:</td>
+        <th><label id="minws"></label></th>
+      </tr>
+      <tr>
+        <td>Average winning score:</td>
+        <th><label id="avgws"></label></th>
+      </tr>
+      <tr>
+        <td>Average score:</td>
+        <th><label id="avgtot"></label></th>
+      </tr>
+      <tr>
+        <td>Highest non-winning score:</td>
+        <th><label id="maxnws"></label></th>
+      </tr>
+    </table>
 </div>
 </div>
 <div class='box round shadow' id="randomizer" randomizer_url="{% url 'randomizer' %}">
@@ -79,7 +78,6 @@
         },
         success: function (data) {   // `data` is the return of the `load_cities` view function
           $("#id_NumberOfPlayers").html(data);  // replace the contents of the city input with the data that came from the server
-          alert(data);
         }
       });
 
@@ -96,7 +94,6 @@
           'name': bg_id       // add the country id to the GET parameters
         },
         success: function (data) {   // `data` is the return of the `load_cities` view function
-          console.log(data);
           $("#Expansion_formset_id").html(data);  // replace the contents of the city input with the data that came from the server
 
         }
@@ -118,6 +115,11 @@
           for (j = 0; j < data.result.length; j++){
               $("#points").append('<tr><th>' + data.result[j][0] + '</th>' + '<th>' + data.result[j][1] + '</th></tr>');
           }
+          $("#maxws").html(data.maxws);
+          $("#minws").html(data.minws);
+          $("#avgws").html(data.avgws);
+          $("#avgtot").html(data.avgtot);
+          $("#maxnws").html(data.maxnws);
         }
       });
 

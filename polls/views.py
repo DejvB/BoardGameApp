@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from .forms import *
 
 from django.db.models import Count, Sum, Q, Avg, Max, Min, F, ExpressionWrapper, fields, Value, DateTimeField
-from django.db.models.functions import ExtractWeek, ExtractWeekDay, ExtractMonth, ExtractYear
+from django.db.models.functions import ExtractWeek, ExtractWeekDay, ExtractMonth, ExtractYear, ExtractIsoYear
 from math import ceil
 
 
@@ -44,7 +44,7 @@ def index(request):
     totalTime = []
     totalTimestr = []
     totalCount = []
-    stats = Gameplay.objects.annotate(year=ExtractYear('date'), week=ExtractWeek('date')).values('year','week').annotate(Sum('time'), Count('time'))
+    stats = Gameplay.objects.annotate(year=ExtractIsoYear('date'), week=ExtractWeek('date')).values('year','week').annotate(Sum('time'), Count('time'))
     for stat in stats:
         week.append(stat['week'])
         totalTime.append(stat['time__sum'].seconds * 1000)
@@ -170,8 +170,7 @@ def load_player_count(request):
     PossibleNumberOfPlayers = range(minP, maxP + 1)
 
 
-    return render(request, 'polls/players_dropdown_options.html', {'PossibleNumberOfPlayers':PossibleNumberOfPlayers,
-                                                                   'result':result})
+    return render(request, 'polls/players_dropdown_options.html', {'PossibleNumberOfPlayers':PossibleNumberOfPlayers})
 
 def basic_stats(request):
     # basic stats for new gameplay page
@@ -179,8 +178,22 @@ def basic_stats(request):
     game_id = Gameplay.objects.filter(name__id=bg_id).values('id').order_by('-id')[0]['id']
     result = Results.objects.filter(gp_id__id=game_id).values('p_id__name','points')
     result = [[r['p_id__name'],r['points']] for r in result]
-    print(result)
-    return JsonResponse(data={'result': result})
+    queryset = Results.objects.filter(gp_id__name__id=bg_id) \
+        .filter(gp_id__with_results=True) \
+        .values('gp_id', 'p_id__name', 'gp_id__NumberOfPlayers', 'points', 'order').order_by('-points')
+    maxws = queryset[0]['points']
+    minws = queryset.filter(order=1).order_by('points')[0]['points']
+    avgws = round(queryset.filter(order=1).aggregate(Avg('points'))['points__avg'],2)
+    avgtot = round(queryset.aggregate(Avg('points'))['points__avg'],2)
+    maxnws = queryset.filter(order=2)[0]['points']
+
+    return JsonResponse(data={'result': result,
+                              'maxws': maxws,
+                              'minws': minws,
+                              'avgws': avgws,
+                              'avgtot': avgtot,
+                              'maxnws': maxnws,
+                              })
 
 def add_expansion(request):
     context = {}
