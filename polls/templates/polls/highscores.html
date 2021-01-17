@@ -178,20 +178,16 @@
 <script>
 
 $("#id_name, #checkbox").change(function () {
-  <!--alert($(id_name).val());-->
-  <!--console.log('your message');-->
   var url = $("#pie_chart").attr("data-url");
   var pie_chart = $("#pie_chart");
   var sel = $(id_name);
   var chk = $(checkbox).prop('checked');
   var bg_name = $(id_name).val();
-  <!--var p_count = $(this).val();-->
   $.ajax({
     url: url,
     data: {
       'chk': chk,
-      'name': bg_name,       // add the country id to the GET parameters
-      <!--'NoP': p_count-->
+      'name': bg_name,
     },
     success: function (data) {
         var i;

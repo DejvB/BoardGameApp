@@ -168,7 +168,19 @@ def load_player_count(request):
     minP = playersRange['minNumberOfPlayers']
     maxP = playersRange['maxNumberOfPlayers']
     PossibleNumberOfPlayers = range(minP, maxP + 1)
-    return render(request, 'polls/players_dropdown_options.html', {'PossibleNumberOfPlayers':PossibleNumberOfPlayers})
+
+
+    return render(request, 'polls/players_dropdown_options.html', {'PossibleNumberOfPlayers':PossibleNumberOfPlayers,
+                                                                   'result':result})
+
+def basic_stats(request):
+    # basic stats for new gameplay page
+    bg_id = request.GET.get('name')
+    game_id = Gameplay.objects.filter(name__id=bg_id).values('id').order_by('-id')[0]['id']
+    result = Results.objects.filter(gp_id__id=game_id).values('p_id__name','points')
+    result = [[r['p_id__name'],r['points']] for r in result]
+    print(result)
+    return JsonResponse(data={'result': result})
 
 def add_expansion(request):
     context = {}

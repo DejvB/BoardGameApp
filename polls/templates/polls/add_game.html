@@ -1,5 +1,6 @@
 {% extends "polls/header.html" %}
 {% block body %}
+<div class='container' id="container">
 <div class='box round shadow'>
   <h2>New gameplay</h2>
     <hr>
@@ -23,6 +24,43 @@
     <button type="submit" name="run_script">Save gameplay</button>
 </form>
 </div>
+  <div class='box round shadow' id="basic_stats" basic_stats_url="{% url 'basic_stats' %}">
+    <h2>Stats</h2>
+    <hr>
+      <table style="width:100%" id="points">
+        {% for a, b in data.result %}
+          <tr>
+            <td>{{ a }}</td>
+            <th><label>{{ b }}</label></th>
+          </tr>
+        {% endfor %}
+    </table>
+
+      <!---->
+    <!--<table style="width:100%">-->
+      <!--<tr>-->
+        <!--<td>Last winner:</td>-->
+        <!--<th><label id="lw"></label></th>-->
+      <!--</tr>-->
+      <!--<tr>-->
+        <!--<td>Lowest winning score:</td>-->
+        <!--<th><label id="minws"></label></th>-->
+      <!--</tr>-->
+      <!--<tr>-->
+        <!--<td>Average winning score:</td>-->
+        <!--<th><label id="avgws"></label></th>-->
+      <!--</tr>-->
+      <!--<tr>-->
+        <!--<td>Average score:</td>-->
+        <!--<th><label id="avgtot"></label></th>-->
+      <!--</tr>-->
+      <!--<tr>-->
+        <!--<td>Highest non-winning score:</td>-->
+        <!--<th><label id="maxnws"></label></th>-->
+      <!--</tr>-->
+    <!--</table>-->
+</div>
+</div>
 <div class='box round shadow' id="randomizer" randomizer_url="{% url 'randomizer' %}">
   <h2>Give me game</h2>
     <hr>
@@ -41,6 +79,7 @@
         },
         success: function (data) {   // `data` is the return of the `load_cities` view function
           $("#id_NumberOfPlayers").html(data);  // replace the contents of the city input with the data that came from the server
+          alert(data);
         }
       });
 
@@ -49,9 +88,7 @@
   <script>
     $("#id_name").change(function () {
       var url = $("#GameplayForm").attr("expansions_select_options_url");  // get the url of the `load_cities` view
-      console.log(url);
       var bg_id = $(this).val();  // get the selected country ID from the HTML input
-      console.log('ha');
       $.ajax({                       // initialize an AJAX request
         url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load_player_count/)
 
@@ -68,9 +105,27 @@
     });
   </script>
   <script>
+    $("#id_name").change(function () {
+      var url = $("#basic_stats").attr("basic_stats_url");  // get the url of the `load_cities` view
+        var bg_id = $(this).val();
+      $.ajax({                       // initialize an AJAX request
+        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load_player_count/)
+        data: {
+          'name': bg_id
+        },
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+          $("#points").html("");
+          for (j = 0; j < data.result.length; j++){
+              $("#points").append('<tr><th>' + data.result[j][0] + '</th>' + '<th>' + data.result[j][1] + '</th></tr>');
+          }
+        }
+      });
+
+    });
+  </script>
+  <script>
     $("#random_game").click(function () {
       var url = $("#randomizer").attr("randomizer_url");  // get the url of the `load_cities` view
-      console.log('ha');
       $.ajax({                       // initialize an AJAX request
         url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load_player_count/)
 

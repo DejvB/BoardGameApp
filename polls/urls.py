@@ -30,5 +30,6 @@ urlpatterns = [
     path('ajax/chart_options/', views.load_chart_data, name='chart_options'),
     path('ajax/get_history/', views.get_history, name='get_history'),
     path('ajax/randomizer/', views.randomizer, name='randomizer'),
+    path('ajax/basic_stats/', views.basic_stats, name='basic_stats'),
 
  ]
