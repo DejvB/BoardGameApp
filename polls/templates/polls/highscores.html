@@ -98,11 +98,11 @@
     </div>
 </div>
 <div class='container'>
-<div class='box round shadow big' style="width: 100%; overflow-x: auto; overflow-y: hidden">
-<div id="containerha" style="width: 100%;height: 600px;">
-    <canvas id="pie_chart" data-url="{% url 'chart_options' %}" style="width: 100%;height: 600px;"></canvas>
-</div>
-</div>
+  <div class='box round shadow big' style="width: 100%; overflow-x: auto; overflow-y: hidden">
+    <div id="containerha" style="width: 100%;height: 600px;">
+      <canvas id="pie_chart" data-url="{% url 'chart_options' %}" style="width: 100%;height: 600px;"></canvas>
+    </div>
+  </div>
     <div class='box round shadow'>
       <h2>Average points</h2>
         <hr>
@@ -116,17 +116,20 @@
         </table>
     </div>
 </div>
+
+<div class='box round shadow big' style="width: 75%; background-color: #FFFFFF">
+    <label for="order_points_checkbox">Order points switch
+    <input type="checkbox" name="order_points_checkbox" id="order_points_checkbox">
+<div id="ordercontainer">
+  <canvas id="order_chart"></canvas>
+</div>
+</div>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script id="ha">
+var ajax_data=[];
   var ctx = pie_chart.getContext("2d");
   var chartData = {
-    <!--labels: '',-->
-    <!--datasets: [{-->
-      <!--label: '',-->
-      <!--data: [],-->
-      <!--backgroundColor: '#333333'-->
-    <!--}]-->
   }
   var ch = new Chart(ctx, {
     type: 'bar',
@@ -173,15 +176,134 @@
     }
   }
 );
+  var cto = order_chart.getContext("2d");
+  var orderData = {}
+  var orderChart = new Chart(cto, {
+    type: 'line',
+    data: orderData,
+    options: {
+      responsive: true,
+      legend: {
+        position: 'top',
+        onClick: function(e, legendItem) {
+          var index = legendItem.datasetIndex;
+          var name = legendItem.text;
+          var orderChart = this.chart;
+          orderChart.update();
+        },
+        labels: {
+          fontColor: 'black',
+        }
+      },
+      title: {
+        display: true,
+        text: '',
+        fontColor: 'black',
+        fontSize: 15
+
+      },
+      scales: {
+        xAxes: [{
+          type: 'linear',
+          ticks: {
+            stepSize: 1,
+          }
+        }],
+        yAxes: [{
+            ticks: {
+                suggestedMin: 0.5,
+
+                reverse: true,
+                stepSize:1,
+            }
+        }]
+      },
+    }
+  }
+);
 </script>
 
 <script>
+function plot_bar_graph(data) {
+  var bg_name = $(id_name).val();
+  var i;
+  var len = chartData.datasets.length;
+  chartData.labels = [bg_name];
+  for (i = 0; i < len; i++) {
+    chartData.datasets.pop()
+    ch.update(); // can be with number of milliseconds as duration
+  }
+  data.data.forEach(function (a, i) {
+      chartData.datasets.push({
+        label: data.labels[i],
+        backgroundColor: data.colors[i],
+        data: data.data[i],
+        borderColor: '#808080',
+        borderWidth: 3,
+        borderSkipped: '',
+      })
+      ch.update();
+  })
+  ch.options.legend.labels.filter = function(item, chart){
+    return data.display[item.datasetIndex];
+    }
+  ch.options.title.text = bg_name,
+  ch.options.tooltips.callbacks.label = function(item, chart){
+    var i = item.datasetIndex;
+    return ['Player: ' + data.names[i],
+            'Position: ' + data.position[i],
+            'Points: ' + data.data[i],
+            'Number of Players: ' + data.labels[i]
+            ];
+  }
+  ch.update();
+}
+
+
+function plot_order_graph(data, order_points_value) {
+  var len = orderData.datasets.length;
+    for (i = 0; i < len; i++) {
+      orderData.datasets.pop()
+      ch.update(); // can be with number of milliseconds as duration
+    }
+  if (order_points_value) {
+          order_points_id = 2;
+          orderChart.options.scales.yAxes[0].ticks.reverse = true;
+        } else {
+          order_points_id = 3;
+          orderChart.options.scales.yAxes[0].ticks.reverse = false;
+        }
+        data.order_data.forEach(function(a, i) {
+          orderData.datasets.push({
+            label: a[0],
+            borderColor: a[1],
+            backgroundColor: '#ffffff',
+            pointBorderColor: a[1],
+            pointBackgroundColor: a[1],
+            data: a[order_points_id],
+            fill: false,
+            cubicInterpolationMode: 'monotone',
+            borderWidth: 10,
+            radius:10,
+            spanGaps: false,
+          })
+        })
+        console.log(orderData);
+        orderChart.update();
+}
+
+$("#order_points_checkbox").change( function() {
+  var order_points_value = $(order_points_checkbox).prop('checked');
+  plot_order_graph(ajax_data, order_points_value);
+});
 
 $("#id_name, #checkbox").change(function () {
   var url = $("#pie_chart").attr("data-url");
   var pie_chart = $("#pie_chart");
+  var order_chart = $("#order_chart");
   var sel = $(id_name);
   var chk = $(checkbox).prop('checked');
+  var order_points_value = $(order_points_checkbox).prop('checked');
   var bg_name = $(id_name).val();
   $.ajax({
     url: url,
@@ -190,37 +312,11 @@ $("#id_name, #checkbox").change(function () {
       'name': bg_name,
     },
     success: function (data) {
-        var i;
-        var len = chartData.datasets.length;
-        chartData.labels = [bg_name];
-        for (i = 0; i < len; i++) {
-          chartData.datasets.pop()
-          ch.update(); // can be with number of milliseconds as duration
-        }
-        data.data.forEach(function (a, i) {
-            chartData.datasets.push({
-              label: data.labels[i],
-              backgroundColor: data.colors[i],
-              data: data.data[i],
-              borderColor: '#808080',
-              borderWidth: 3,
-              borderSkipped: '',
-            })
-            ch.update();
-        })
-        ch.options.legend.labels.filter = function(item, chart){
-                    return data.display[item.datasetIndex];
-                    }
-        ch.options.title.text = bg_name,
-        ch.options.tooltips.callbacks.label = function(item, chart){
-            var i = item.datasetIndex;
-            return ['Player: ' + data.names[i],
-                    'Position: ' + data.position[i],
-                    'Points: ' + data.data[i],
-                    'Number of Players: ' + data.labels[i]
-                    ];
-        }
-        ch.update();
+        ajax_data = data;
+
+        plot_bar_graph(data);
+        plot_order_graph(data, order_points_value);
+
       <!--$("#containerha").width(Math.max(800,chartData.datasets.length * 60)).height('600px');-->
       <!--$("#pie_chart").width(Math.max(800,chartData.datasets.length * 60)).height('600px');-->
       $("#maxws").html(data.maxws);

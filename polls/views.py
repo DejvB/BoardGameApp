@@ -389,6 +389,45 @@ def load_chart_data(request):
     last_gp = gp_list[-1].date()
     nogp = len(gp_list)
 
+    order_data = []
+    for p in Player.objects.all():
+        player_exists = False
+        count = 0
+        p_order = [{'x': 0, 'y': 'Nan'}]
+        p_points = [{'x': 0, 'y': 'Nan'}]
+        for ids in list(queryset.values('gp_id').order_by('gp_id').distinct().values_list('gp_id', flat=True)):
+            count += 1
+            order = queryset.filter(p_id__name=p).filter(gp_id=ids).values('order')
+            points = queryset.filter(p_id__name=p).filter(gp_id=ids).values('points')
+            if order:
+                p_order.append({'x':count,'y':order[0]['order']})
+                p_points.append({'x':count,'y':points[0]['points']})
+                player_exists = True
+            else:
+                p_order.append({'x': count, 'y': 'Nan'})
+                p_points.append({'x': count, 'y': 'Nan'})
+        p_order.append({'x': count + 1, 'y': 'Nan'})
+        p_points.append({'x': count + 1, 'y': 'Nan'})
+        if player_exists:
+            order_data.append([p.name, p.color, p_order, p_points])
+    print(order_data)
+    ## attempt without x and y and with global x axis
+    # order_data = []
+    # for p in Player.objects.all():
+    #     p_order = []
+    #     p_points = []
+    #     for ids in list(queryset.values('gp_id').order_by('gp_id').distinct().values_list('gp_id', flat=True)):
+    #         order = queryset.filter(p_id__name=p).filter(gp_id=ids).values('order','points')
+    #         if order:
+    #             p_order.append(order[0]['order'])
+    #             p_points.append(order[0]['points'])
+    #         else:
+    #             p_order.append('Nan')
+    #             p_points.append('Nan')
+    #     if p_order:
+    #         order_data.append([p.name, p.color, p_order, p_points])
+    # order_x_axis = range(1, len(list(queryset.values('gp_id').order_by('gp_id').distinct().values_list('gp_id', flat=True))) + 1)
+    # print(order_data)
 
     # for i in pp:
     #     hm = queryset.filter(gp_id__NumberOfPlayers=i).values('p_id__name', 'gp_id__NumberOfPlayers')
@@ -417,7 +456,8 @@ def load_chart_data(request):
                               'avgp':avgp,
                               'first_gp':first_gp,
                               'last_gp':last_gp,
-                              'nogp':nogp,})
+                              'nogp':nogp,
+                              'order_data':order_data,})
 
 def history(request):
     context = {}
