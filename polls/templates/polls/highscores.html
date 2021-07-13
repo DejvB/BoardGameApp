@@ -97,45 +97,105 @@
         </table>
     </div>
 </div>
+
+
 <div class='container'>
-  <div class='box round shadow big' style="width: 100%; overflow-x: auto; overflow-y: hidden">
-    <div id="containerha" style="width: 100%;height: 600px;">
-      <canvas id="pie_chart" data-url="{% url 'chart_options' %}" style="width: 100%;height: 600px;"></canvas>
-    </div>
+  <div class='box round shadow big'style="width: 100% overflow-x: auto; overflow-y: hidden">
+      <div class="chartWrapper">
+      <div class="chartAreaWrapper" id="bar_chart_wrapper">
+        <div class="chartAreaWrapper2" id="bar_chart_wrapper_2">
+            <canvas id="bar_chart" data-url="{% url 'chart_options' %}"></canvas>
+        </div>
+      </div>
+          <canvas id="myChartAxis" height="300" width="0"></canvas>
+      </div>
+
   </div>
-    <div class='box round shadow'>
-      <h2>Average points</h2>
-        <hr>
-        <table style="width:100%" id="avgp">
-            {% for a, b in data.avgp %}
-              <tr>
-                <td>{{ a }}</td>
-                <th><label>{{ b }}</label></th>
-              </tr>
-            {% endfor %}
-        </table>
-    </div>
+    
+  <div class='box round shadow'>
+    <h2>Average points</h2>
+      <hr>
+      <table style="width:100%" id="avgp">
+          {% for a, b in data.avgp %}
+            <tr>
+              <td>{{ a }}</td>
+              <th><label>{{ b }}</label></th>
+            </tr>
+          {% endfor %}
+      </table>
+  </div>
 </div>
 
-<div class='box round shadow big' style="width: 75%; background-color: #FFFFFF">
-    <label for="order_points_checkbox">Order points switch
-    <input type="checkbox" name="order_points_checkbox" id="order_points_checkbox">
-<div id="ordercontainer">
-  <canvas id="order_chart"></canvas>
+<div class='box round shadow big'style="width: 100% overflow-x: auto; overflow-y: hidden">
+      <div class="chartWrapper">
+      <div class="chartAreaWrapper" id="order_chart_wrapper">
+            <input type="checkbox" name="order_points_checkbox" id="order_points_checkbox">
+        <div class="chartAreaWrapper2" id="order_chart_wrapper_2">
+            <canvas id="order_chart" style="height: 90%"></canvas>
+        </div>
+      </div>
+          <canvas id="orderChartAxis" height="300" width="0"></canvas>
+      </div>
 </div>
-</div>
+
+<!--<div class='box round shadow big' style="width: 100%; background-color: #DDEEDD">-->
+<!--    <input type="checkbox" name="order_points_checkbox" id="order_points_checkbox">-->
+<!--    <div id="ordercontainer" style="width: 100%;  min-height:300px">-->
+<!--        <canvas id="order_chart"></canvas>-->
+<!--    </div>-->
+<!--</div>-->
+
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<!--<script>-->
+<!--    var ctx = document.getElementById("myChart").getContext("2d");-->
+
+<!--        var chart = {-->
+<!--        options: {-->
+<!--          responsive: true,-->
+<!--          maintainAspectRatio: false,-->
+<!--          animation: {-->
+
+<!--                    onComplete: function(animation) {-->
+<!--                        var sourceCanvas = myLiveChart.chart.canvas;-->
+<!--                        var copyWidth = myLiveChart.scales['y-axis-0'].width - 10;-->
+<!--                        var copyHeight = myLiveChart.scales['y-axis-0'].height + myLiveChart.scales['y-axis-0'].top + 10;-->
+<!--                        var targetCtx = document.getElementById("myChartAxis").getContext("2d");-->
+<!--                        targetCtx.canvas.width = copyWidth;-->
+<!--                targetCtx.drawImage(sourceCanvas, 0, 0, copyWidth, copyHeight, 0, 0, copyWidth, copyHeight);-->
+<!--                    }-->
+<!--                }-->
+<!--      },-->
+<!--        type: 'bar',-->
+<!--        data: {-->
+<!--            labels: ["January", "February", "March", "April", "May", "June", "July", "January", "February", "March", "April", "May", "June", "July", "May", "June", "July"],-->
+<!--            datasets: [-->
+<!--                {-->
+<!--                    barThickness: 100,-->
+<!--&lt;!&ndash;                    barPercentage:1.5,&ndash;&gt;-->
+<!--                    label: "My First dataset",-->
+<!--                    fillColor: "rgba(220,220,220,0.2)",-->
+<!--                    strokeColor: "rgba(220,220,220,1)",-->
+<!--                    pointColor: "rgba(220,220,220,1)",-->
+<!--                    pointStrokeColor: "#fff",-->
+<!--                    pointHighlightFill: "#fff",-->
+<!--                    pointHighlightStroke: "rgba(220,220,220,1)",-->
+<!--                    data: [65, 59, 80, 81, 56, 55, 40, 65, 59, 80, 81, 56, 55, 40,1,2,3]-->
+<!--                }-->
+<!--            ]-->
+<!--        }};-->
+
+<!--</script>-->
 <script id="ha">
 var ajax_data=[];
-  var ctx = pie_chart.getContext("2d");
-  var chartData = {
-  }
+  var ctx = bar_chart.getContext("2d");
+  var chartData = {};
   var ch = new Chart(ctx, {
     type: 'bar',
     data: chartData,
 
     options: {
+      maintainAspectRatio: false,
       responsive: true,
       legend: {
         position: 'top',
@@ -171,8 +231,16 @@ var ajax_data=[];
         }]
       },
       animation: {
-            duration: 1000
+        duration: 1000,
+        onComplete: function(animation) {
+          var sourceCanvas = ch.chart.canvas;
+          var copyWidth = ch.scales['y-axis-0'].width - 10;
+          var copyHeight = ch.scales['y-axis-0'].height + ch.scales['y-axis-0'].top + 10;
+          var targetCtx = document.getElementById("myChartAxis").getContext("2d");
+          targetCtx.canvas.width = copyWidth;
+          targetCtx.drawImage(sourceCanvas, 0, 0, copyWidth, copyHeight, 0, 0, copyWidth, copyHeight);
         }
+      },
     }
   }
 );
@@ -182,8 +250,10 @@ var ajax_data=[];
     type: 'line',
     data: orderData,
     options: {
+      maintainAspectRatio: false,
       responsive: true,
       legend: {
+        display: false,
         position: 'top',
         onClick: function(e, legendItem) {
           var index = legendItem.datasetIndex;
@@ -230,11 +300,20 @@ function plot_bar_graph(data) {
   var len = chartData.datasets.length;
   chartData.labels = [bg_name];
   for (i = 0; i < len; i++) {
-    chartData.datasets.pop()
+    chartData.datasets.pop();
     ch.update(); // can be with number of milliseconds as duration
   }
+  $('.chartAreaWrapper2').width($('.chartAreaWrapper').width())
   data.data.forEach(function (a, i) {
+          if (i > 10){
+            var newwidth = $('.chartAreaWrapper2').width() + 30;
+            $('.chartAreaWrapper2').width(newwidth);
+          }
+<!--      $(bar_chart).css("width", 30*i) &lt;!&ndash;labels.length * 12 + 24;i/10,&ndash;&gt;-->
       chartData.datasets.push({
+<!--        barThickness: 'flex',-->
+        barPercentage: .9,
+        categoryPercentage: 1,
         label: data.labels[i],
         backgroundColor: data.colors[i],
         data: data.data[i],
@@ -266,6 +345,13 @@ function plot_order_graph(data, order_points_value) {
       orderData.datasets.pop()
       ch.update(); // can be with number of milliseconds as duration
     }
+  if (len > 10) {
+            var newwidth = document.getElementById('order_chart_wrapper').width + 10 * len;
+            document.getElementById('order_chart_wrapper_2').width = newwidth;
+  } else {
+            var newwidth = document.getElementById('order_chart_wrapper').width;
+            document.getElementById('order_chart_wrapper_2').width = newwidth;
+          };
   if (order_points_value) {
           order_points_id = 2;
           orderChart.options.scales.yAxes[0].ticks.reverse = true;
@@ -298,8 +384,8 @@ $("#order_points_checkbox").change( function() {
 });
 
 $("#id_name, #checkbox").change(function () {
-  var url = $("#pie_chart").attr("data-url");
-  var pie_chart = $("#pie_chart");
+  var url = $("#bar_chart").attr("data-url");
+  var bar_chart = $("#bar_chart");
   var order_chart = $("#order_chart");
   var sel = $(id_name);
   var chk = $(checkbox).prop('checked');
@@ -317,8 +403,8 @@ $("#id_name, #checkbox").change(function () {
         plot_bar_graph(data);
         plot_order_graph(data, order_points_value);
 
-      <!--$("#containerha").width(Math.max(800,chartData.datasets.length * 60)).height('600px');-->
-      <!--$("#pie_chart").width(Math.max(800,chartData.datasets.length * 60)).height('600px');-->
+<!--      $("#containerha").width(Math.max(800,chartData.datasets.length * 40)).height('600px');-->
+<!--      $("#bar_chart").width(Math.max(800,chartData.datasets.length * 40)).height('600px');-->
       $("#maxws").html(data.maxws);
       $("#minws").html(data.minws);
       $("#avgws").html(data.avgws);

@@ -19,6 +19,8 @@ urlpatterns = [
     path('hs/', views.highscores, name='highscores'),
     # ex: /polls/history/
     path('history/', views.history, name='history'),
+    # ex: /polls/playerstats/
+    path('playerstats/', views.playerstats, name='playerstats'),
 
 
     path('pie_chart/', views.pie_chart, name='pie-chart'),
@@ -27,6 +29,7 @@ urlpatterns = [
     # AJAX
     path('ajax/load_player_count/', views.load_player_count, name='load_player_count'),
     path('ajax/expansions_select_options/', views.expansions_select_options, name='expansions_select_options'),
+    path('ajax/load_playerstats/', views.load_playerstats, name='load_playerstats'),
     path('ajax/chart_options/', views.load_chart_data, name='chart_options'),
     path('ajax/get_history/', views.get_history, name='get_history'),
     path('ajax/randomizer/', views.randomizer, name='randomizer'),

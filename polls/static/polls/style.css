@@ -107,6 +107,10 @@ input:not([type=image]),button[type=submit],input[type=button],select  {
   /*flex-grow: 1;*/
 }
 
+.rotated {
+  transform: rotate(90deg); /* Equal to rotateZ(45deg) */
+  /*background-color: pink;*/
+}
 
 .input {
   margin: 12px;
@@ -144,3 +148,26 @@ input[type=image]{
   height: 45px;
 }
 
+/*for scale on graph*/
+
+.chartWrapper {
+    position: relative;
+
+}
+
+.chartWrapper > canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events:none;
+}
+.chartAreaWrapper {
+  overflow-x: scroll;
+    position: relative;
+    width: 100%;
+}
+
+.chartAreaWrapper2 {
+    position: relative;
+    height: 600px;
+}

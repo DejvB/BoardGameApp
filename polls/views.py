@@ -8,6 +8,8 @@ from django.db.models import Count, Sum, Q, Avg, Max, Min, F, ExpressionWrapper,
 from django.db.models.functions import ExtractWeek, ExtractWeekDay, ExtractMonth, ExtractYear, ExtractIsoYear
 from math import ceil
 
+def compute_score(o, n):
+    return (n-o+1)/n
 
 def index(request):
     latest_games_list = Gameplay.objects.order_by('-date')[:5]
@@ -270,7 +272,7 @@ def pie_chart(request):
         p_sum = 0
         queryset = Results.objects.filter(p_id__name=player).filter(order__gte = 1).values('p_id__name','gp_id__NumberOfPlayers','order')
         for query in queryset:
-            p_sum = p_sum + (query['gp_id__NumberOfPlayers'] - query['order'] + 1) / query['gp_id__NumberOfPlayers']
+            p_sum = p_sum + compute_score(query['order'], query['gp_id__NumberOfPlayers'])
         points.append([player, round(p_sum/len(queryset),3)])
     context['points'] = sorted(points, key=lambda x: -x[1])
     for i in range(6):
@@ -438,26 +440,27 @@ def load_chart_data(request):
 
     return JsonResponse(data={'labels': labels,
                               'data': data,
-                              'colors':colors,
+                              'colors': colors,
                               'display': display,
                               'names': names,
-                              'position':position,
-                              'maxws':maxws,
-                              'minws':minws,
-                              'avgws':avgws,
-                              'avgtot':avgtot,
-                              'maxnws':maxnws,
-                              'longest_gp':longest_gp,
-                              'sg':sg,
-                              'avgg':avgg,
-                              'avgmp':avgmp,
-                              'uw':uw,
-                              'pp':pp,
-                              'avgp':avgp,
-                              'first_gp':first_gp,
-                              'last_gp':last_gp,
-                              'nogp':nogp,
-                              'order_data':order_data,})
+                              'position': position,
+                              'maxws': maxws,
+                              'minws': minws,
+                              'avgws': avgws,
+                              'avgtot': avgtot,
+                              'maxnws': maxnws,
+                              'longest_gp': longest_gp,
+                              'sg': sg,
+                              'avgg': avgg,
+                              'avgmp': avgmp,
+                              'uw': uw,
+                              'pp': pp,
+                              'avgp': avgp,
+                              'first_gp': first_gp,
+                              'last_gp': last_gp,
+                              'nogp': nogp,
+                              'order_data': order_data,
+                              })
 
 def history(request):
     context = {}
@@ -471,3 +474,45 @@ def get_history(request):
     todate = request.GET.get('to')
     games = GameplayTable(Gameplay.objects.filter(date__range=[fromdate, todate]))
     return render(request, "polls/get_history.html", {"games": games})
+
+def playerstats(request):
+    numbers = [10, 20, 50, 100, 'all']
+    context = {'players': Player.objects.all().values('name', 'id').distinct().order_by('id'), 'numbers': numbers}
+    return render(request, 'polls/playerstats.html', context)
+
+import numpy as np
+
+def load_playerstats(request):
+    # elo()
+    p_id = request.GET.get('p_id')
+    number = request.GET.get('number')
+    if number == 'all':
+        number = 9999
+    else:
+        number = int(number)
+    p_name = Player.objects.filter(id=p_id).values('name')[0]['name']
+    results = Results.objects.filter(p_id__id=p_id).filter(order__gte=1).values('gp_id__name__name','gp_id__NumberOfPlayers','order', 'points').order_by('-id')[:number]
+    points = list(results.values_list('points', flat=True))[::-1]
+    order = list(results.values_list('order', flat=True))[::-1]
+    NoP = list(results.values_list('gp_id__NumberOfPlayers', flat=True))[::-1]
+    g_name = list(results.values_list('gp_id__name__name', flat=True))[::-1]
+    cummean = [cs/n for cs, n in zip(np.cumsum([compute_score(o, n) for o, n in zip(order, NoP)]), range(1, len(results)+1))]
+    # return render(request, "polls/load_playerstats.html", {"player": p_id})
+    return JsonResponse(data={"p_id": p_id,
+                              "p_name": p_name,
+                              "g_name": g_name,
+                              "order": order,
+                              "points": points,
+                              "NoP": NoP,
+                              "cummean": cummean,
+                              })
+
+
+# def elo():
+#     gms = Gameplay.objects.all().values()[0]
+#     gms = Gameplay.objects.get(id = 20)
+#     students = gms.classGameplayOf.all()
+#     print(students)
+#     ps = Player.objects.all()
+#     print(gms)
+#     return None
