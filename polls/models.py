@@ -9,6 +9,7 @@ class Player(models.Model):
 
     name = models.CharField(max_length=10)
     color = models.CharField(max_length=7, default='#000000')
+    elo = models.IntegerField(default=1000)
 
 
 class Boardgames(models.Model):
@@ -51,7 +52,7 @@ class Results(models.Model):
     def __str__(self):
         return self.gp_id.name.name
 
-    gp_id = models.ForeignKey(Gameplay, on_delete=models.CASCADE)
+    gp_id = models.ForeignKey(Gameplay, on_delete=models.CASCADE, related_name = "results")
     p_id = models.ForeignKey(Player, on_delete=models.CASCADE)
     order = models.IntegerField(default=0)
     points = models.IntegerField(default=0)
