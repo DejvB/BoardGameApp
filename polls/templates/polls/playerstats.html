@@ -28,42 +28,33 @@
 
     </div>
 </div>
-<!--    <div class='box round shadow'>-->
-<!--      <h2>Strikes</h2>-->
-<!--        <hr>-->
-<!--        <table style="width:100%">-->
-<!--          <tr>-->
-<!--            <td>Longest winning score:</td>-->
-<!--            <th><label id="maxws"></label></th>-->
-<!--          </tr>-->
-<!--          <tr>-->
-<!--            <td>Lowest winning score:</td>-->
-<!--            <th><label id="minws"></label></th>-->
-<!--          </tr>-->
-<!--          <tr>-->
-<!--            <td>Average winning score:</td>-->
-<!--            <th><label id="avgws"></label></th>-->
-<!--          </tr>-->
-<!--          <tr>-->
-<!--            <td>Average score:</td>-->
-<!--            <th><label id="avgtot"></label></th>-->
-<!--          </tr>-->
-<!--          <tr>-->
-<!--            <td>Highest non-winning score:</td>-->
-<!--            <th><label id="maxnws"></label></th>-->
-<!--          </tr>-->
-<!--        </table>-->
-<!--    </div>-->
 
-
-<!--</div>-->
-<!--  <div class='box round shadow big' style="width: 100%; overflow-x: auto; overflow-y: hidden">-->
-<!--    <div id="containerha" style="width: 100%;height: 600px;">-->
-<!--      <canvas id="line_chart" data-url="{% url 'load_playerstats' %}" style="width: 100%;height: 600px;"></canvas>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
-
+<div class='box round shadow'>
+  <h2>Strikes</h2>
+    <hr>
+    <table style="width:100%">
+      <tr>
+        <td>Longest winning strike:</td>
+        <th><label id="lws"></label></th>
+      </tr>
+      <tr>
+        <td>Longest loosing strike:</td>
+        <th><label id="lls"></label></th>
+      </tr>
+      <tr>
+        <td>Longest bad luck</td>
+        <th><label id="lbl"></label></th>
+      </tr>
+      <tr>
+        <td>Maximum ELO:</td>
+        <th><label id="maxelo"></label></th>
+      </tr>
+      <tr>
+        <td>Minimum ELO:</td>
+        <th><label id="minelo"></label></th>
+      </tr>
+    </table>
+</div>
 
 <div class='box round shadow big'style="width: 100% overflow-x: auto; overflow-y: hidden">
       <div class="chartWrapper">
@@ -155,6 +146,12 @@ $("#id_name, #id_number").change(function () {
           } else {
               $('.chartAreaWrapper2').width($('.chartAreaWrapper').width())
           }
+
+           $("#lws").html(data.lws);
+           $("#lls").html(data.lls);
+           $("#lbl").html(data.lbl);
+           $("#maxelo").html(data.maxelo);
+           $("#minelo").html(data.minelo);
 <!--      alert('Great dude');-->
     },
     failure: function(data) {
