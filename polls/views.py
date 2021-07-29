@@ -511,8 +511,14 @@ def get_history(request):
     games = GameplayTable(Gameplay.objects.filter(date__range=[fromdate, todate]))
     return render(request, "polls/get_history.html", {"games": games})
 
+elos = {}
+elo_history = {}
 
 def playerstats(request):
+    global elos
+    global elo_history
+    elo_history = {p.id: [] for p in Player.objects.all()}
+    elos = {p.id: 1000 for p in Player.objects.all()}
     numbers = [10, 20, 50, 100, 'all']
     context = {'players': Player.objects.all().values('name', 'id').distinct().order_by('id'), 'numbers': numbers}
     return render(request, 'polls/playerstats.html', context)
@@ -522,6 +528,7 @@ import numpy as np
 
 
 def load_playerstats(request):
+
     # reset_all_elo()
     elo_history = elo()
     # compute_tournament(Gameplay.objects.get(id = 336).results.all())
@@ -551,16 +558,25 @@ def load_playerstats(request):
     except:
         lls = 0
     try:
+        lnws = max(len(list(y)) for (c, y) in itertools.groupby(([a != 1 for a in order])) if c)
+    except:
+        lnws = 0
+    try:
         lbl = max(len(list(y)) for (c, y) in itertools.groupby(order) if c == 2)
     except:
         lbl = 0
 
     base = elo_history[int(p_id)]
-    base[0] = 1000 + base[0]
+    if base[0] < 100:
+        base[0] = 1000 + base[0]
     cummean = np.cumsum(base).tolist()[-number:]
 
+    meanelo = round(np.mean(cummean), 2)
+    celo = cummean[-1]
     maxelo = max(cummean)
     minelo = min(cummean)
+
+    print_all_elo()
     return JsonResponse(data={"p_id": p_id,
                               "p_name": p_name,
                               "g_name": g_name,
@@ -571,6 +587,9 @@ def load_playerstats(request):
                               "lws": lws,
                               "lls": lls,
                               "lbl": lbl,
+                              "lnws": lnws,
+                              "meanelo": meanelo,
+                              "celo": celo,
                               "maxelo": maxelo,
                               "minelo": minelo,
                               })
@@ -581,23 +600,15 @@ def update_elo_local(elos, changes):
     return None
 
 def elo():
-    elo_history = {p.id: [] for p in Player.objects.all()}
-    elos = {p.id: 1000 for p in Player.objects.all()}
+    if any([v != 1000 for v in elos.values()]):
+        return elo_history
+    # elo_history = {p.id: [] for p in Player.objects.all()}
+    # elos = {p.id: 1000 for p in Player.objects.all()}
     gms = Gameplay.objects.filter(with_results=True).order_by('id')
     for g in gms:
-        # print(g)
-        # changes = compute_tournament(g.results.all()) ##
-        changes = compute_tournament_local(g.results.all(), elos) #
-        update_elo_local(elos, changes) #
-        add_to_history(elo_history, changes) #
-        # update_elo(changes) ##
-    # print_all_elo()
-    # for key, value in elos.items():
-    #     name = Player.objects.get(id=key).name
-    #     print(name, value)
-    # print(elo_history[6])
-    # print(elo_history[7])
-    # print(elo_history[8])
+        changes = compute_tournament_local(g.results.all(), elos)
+        update_elo_local(elos, changes)
+        add_to_history(elo_history, changes)
     return elo_history
 
 
@@ -656,6 +667,6 @@ def print_all_elo():
     total_elo = 0
     for p in Player.objects.all():
         total_elo = total_elo + p.elo
-        print(p, p.elo)
-    print(total_elo)
+        # print(p, p.elo)
+    # print(total_elo)
     return None

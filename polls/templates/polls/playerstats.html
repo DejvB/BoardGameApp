@@ -27,36 +27,56 @@
         </form>
 
     </div>
+<!--</div>-->
+<!--<div class='container'>-->
+    <div class='box round shadow'>
+      <h2>Strikes</h2>
+        <hr>
+        <table style="width:100%">
+          <tr>
+            <td>Longest winning strike:</td>
+            <th><label id="lws"></label></th>
+          </tr>
+          <tr>
+            <td>Longest loosing strike:</td>
+            <th><label id="lls"></label></th>
+          </tr>
+          <tr>
+            <td>Longest bad luck</td>
+            <th><label id="lbl"></label></th>
+          </tr>
+          <tr>
+            <td>Longest non winning series:</td>
+            <th><label id="lnws"></label></th>
+          </tr>
+        </table>
+    </div>
+
+    <div class='box round shadow'>
+      <h2>ELO</h2>
+        <hr>
+        <table style="width:100%">
+          <tr>
+            <td>Average:</td>
+            <th><label id="meanelo"></label></th>
+          </tr>
+          <tr>
+            <td>Current:</td>
+            <th><label id="celo"></label></th>
+          </tr>
+          <tr>
+            <td>Maximum:</td>
+            <th><label id="maxelo"></label></th>
+          </tr>
+          <tr>
+            <td>Minimum:</td>
+            <th><label id="minelo"></label></th>
+          </tr>
+        </table>
+    </div>
 </div>
 
-<div class='box round shadow'>
-  <h2>Strikes</h2>
-    <hr>
-    <table style="width:100%">
-      <tr>
-        <td>Longest winning strike:</td>
-        <th><label id="lws"></label></th>
-      </tr>
-      <tr>
-        <td>Longest loosing strike:</td>
-        <th><label id="lls"></label></th>
-      </tr>
-      <tr>
-        <td>Longest bad luck</td>
-        <th><label id="lbl"></label></th>
-      </tr>
-      <tr>
-        <td>Maximum ELO:</td>
-        <th><label id="maxelo"></label></th>
-      </tr>
-      <tr>
-        <td>Minimum ELO:</td>
-        <th><label id="minelo"></label></th>
-      </tr>
-    </table>
-</div>
-
-<div class='box round shadow big'style="width: 100% overflow-x: auto; overflow-y: hidden">
+<div class='box round shadow big' style="width: 100% overflow-x: auto; overflow-y: hidden">
       <div class="chartWrapper">
       <div class="chartAreaWrapper">
         <div class="chartAreaWrapper2">
@@ -150,6 +170,9 @@ $("#id_name, #id_number").change(function () {
            $("#lws").html(data.lws);
            $("#lls").html(data.lls);
            $("#lbl").html(data.lbl);
+           $("#lnws").html(data.lnws);
+           $("#meanelo").html(data.meanelo);
+           $("#celo").html(data.celo);
            $("#maxelo").html(data.maxelo);
            $("#minelo").html(data.minelo);
 <!--      alert('Great dude');-->
