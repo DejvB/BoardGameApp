@@ -21,7 +21,10 @@ urlpatterns = [
     path('history/', views.history, name='history'),
     # ex: /polls/playerstats/
     path('playerstats/', views.playerstats, name='playerstats'),
-
+    # registration page
+    path("register/", views.register_request, name="register"),
+    # login page
+    path("login/", views.login_request, name="login"),
 
     path('pie_chart/', views.pie_chart, name='pie-chart'),
 

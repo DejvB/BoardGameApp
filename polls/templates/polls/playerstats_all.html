@@ -1,0 +1,187 @@
+{% extends "polls/header.html" %}
+{% block body %}
+<div class='container'>
+    <div class='box round shadow'>
+      <h2>Player stats</h2>
+        <hr>
+        <form method="post" id="GameplayForm" data-url="{% url 'load_playerstats' %}"  novalidate>
+
+            {% csrf_token %}
+            <table>
+                <tr><th>
+                <label for="id_name">Name:</label></th><td>
+                    <select name="name" required id="id_name">
+                        {% for p in players %}
+                              <option value="{{ p.id }}">{{ p.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <select name="name" required id="id_number">
+                        {% for n in numbers %}
+                              <option value="{{ n }}">{{ n }}</option>
+                        {% endfor %}
+                    </select>
+                </td></tr>
+            </table>
+        </form>
+
+    </div>
+<!--</div>-->
+<!--<div class='container'>-->
+    <div class='box round shadow'>
+      <h2>Strikes</h2>
+        <hr>
+        <table style="width:100%">
+          <tr>
+            <td>Longest winning strike:</td>
+            <th><label id="lws"></label></th>
+          </tr>
+          <tr>
+            <td>Longest loosing strike:</td>
+            <th><label id="lls"></label></th>
+          </tr>
+          <tr>
+            <td>Longest bad luck</td>
+            <th><label id="lbl"></label></th>
+          </tr>
+          <tr>
+            <td>Longest non winning series:</td>
+            <th><label id="lnws"></label></th>
+          </tr>
+        </table>
+    </div>
+
+    <div class='box round shadow'>
+      <h2>ELO</h2>
+        <hr>
+        <table style="width:100%">
+          <tr>
+            <td>Average:</td>
+            <th><label id="meanelo"></label></th>
+          </tr>
+          <tr>
+            <td>Current:</td>
+            <th><label id="celo"></label></th>
+          </tr>
+          <tr>
+            <td>Maximum:</td>
+            <th><label id="maxelo"></label></th>
+          </tr>
+          <tr>
+            <td>Minimum:</td>
+            <th><label id="minelo"></label></th>
+          </tr>
+        </table>
+    </div>
+</div>
+
+<div class='box round shadow big' style="width: 100% overflow-x: auto; overflow-y: hidden">
+      <div class="chartWrapper">
+      <div class="chartAreaWrapper">
+        <div class="chartAreaWrapper2">
+            <canvas id="line_chart" data-url="{% url 'load_playerstats' %}" style="width: 100%;height: 600px;"></canvas>
+        </div>
+      </div>
+          <canvas id="myChartAxis" height="300" width="0"></canvas>
+      </div>
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+
+
+<script>
+var ctx = document.getElementById('line_chart').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'line',
+            data: {
+            labels: ['1','2','3'],
+            datasets: [{
+                label: 'My First Dataset',
+                data: [4,6,5],
+                borderWidth: 1
+            }]
+        },
+        options: {
+          maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+function plot_line_graph(data) {
+    console.log(myChart);
+    console.log(myChart.config.data.datasets);
+    myChart.config.data = {
+        datasets: [{
+            label: data['p_name'],
+            data: data['cummean'],
+            radius:10,
+        }],
+    labels: data['g_name']
+    };
+    myChart.options.tooltips.callbacks.label = function(item, chart){
+        console.log(item);
+        var i = item.index;
+        return ['Game: ' + data.g_name[i],
+                'Position: ' + data.order[i],
+                'Number of Players: ' + data.NoP[i],
+                'Points: ' + data.points[i],
+                'Score: ' + data.cummean[i],
+                ];
+  }
+    myChart.update();
+    console.log(myChart.config.data);
+
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+}
+
+
+$("#id_name, #id_number").change(function () {
+  var url = $("#line_chart").attr("data-url");
+  var p_id = $(id_name).val();
+  var number = $(id_number).val();
+  $.ajax({
+    url: url,
+    data: {
+      'p_id': p_id,
+      'number': number,
+    },
+    success: function (data) {
+          plot_line_graph(data);
+          if (data['cummean'].length > 20) {
+              var newwidth = $('.chartAreaWrapper').width() + 10 * data['cummean'].length;
+              $('.chartAreaWrapper2').width(newwidth);
+          } else {
+              $('.chartAreaWrapper2').width($('.chartAreaWrapper').width())
+          }
+
+           $("#lws").html(data.lws);
+           $("#lls").html(data.lls);
+           $("#lbl").html(data.lbl);
+           $("#lnws").html(data.lnws);
+           $("#meanelo").html(data.meanelo);
+           $("#celo").html(data.celo);
+           $("#maxelo").html(data.maxelo);
+           $("#minelo").html(data.minelo);
+<!--      alert('Great dude');-->
+    },
+    failure: function(data) {
+<!--      alert('Got an error dude');-->
+    }
+  });
+}).change();
+</script>
+
+{% endblock %}
