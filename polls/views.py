@@ -55,7 +55,7 @@ def my_view(request):
 
 def index(request):
     username = my_view(request)
-    games_list = Gameplay.objects.all()
+    games_own_list = games_list = Gameplay.objects.all()
     results_list = Results.objects.all()
     boardgames_list = Boardgames.objects.all()
     if username:
