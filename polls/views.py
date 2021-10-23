@@ -109,6 +109,12 @@ def index(request):
                                                                                                     'week').annotate(
         Sum('time'), Count('time'))
     for stat in stats:
+        if week and stat['week'] != week[-1] + 1 and stat['week'] != 1:
+            for missing_week in range(week[-1] + 1, stat['week']):
+                week.append(missing_week)
+                totalTime.append(0)
+                totalTimestr.append(str(0))
+                totalCount.append(0)
         week.append(stat['week'])
         totalTime.append(stat['time__sum'].seconds * 1000)
         totalTimestr.append(str(stat['time__sum']))

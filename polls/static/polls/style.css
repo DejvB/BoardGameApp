@@ -76,6 +76,16 @@ input:not([type=image]),button[type=submit],input[type=button],select  {
   }
 }
 
+.headertext {
+  text-align: center;
+  border-spacing:0px;
+  padding: 5px 10px 5px 10px;
+  font-weight: 600;
+  font-family: Arial;
+  text-align: right;
+  color: white;
+}
+
 .box {
   display: inline;
   font-weight: 600;

@@ -1,5 +1,5 @@
 from django.urls import path
-
+from django.contrib.auth.views import LogoutView
 from . import views
 
 urlpatterns = [
@@ -25,6 +25,8 @@ urlpatterns = [
     path("register/", views.register_request, name="register"),
     # login page
     path("login/", views.login_request, name="login"),
+    # logout page
+    path("logout/", LogoutView.as_view(), name="logout"),
 
     path('pie_chart/', views.pie_chart, name='pie-chart'),
 
