@@ -1,0 +1,18 @@
+{% extends "polls/header.html" %}
+
+{% block body %}
+
+<!--Login--> 
+<div class="box round shadow">
+  <h1>Login</h1>
+  <form method="POST">
+    {% csrf_token %}
+      <table>
+        {{ login_form.as_table }}
+      </table>
+    <button class="btn btn-primary" type="submit">Login</button>
+  </form>
+  <p class="text-center">Don't have an account? <a href="/register">Create an account</a>.</p>
+</div>
+
+{% endblock %}

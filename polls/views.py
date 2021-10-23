@@ -13,32 +13,84 @@ def compute_score(o, n):
     return (n - o + 1) / n
 
 
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import AuthenticationForm
+# from django.contrib import messages
+
+def register_request(request):
+    if request.method == "POST":
+        form = NewUserForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, "Registration successful.")
+            return redirect('home')
+        messages.error(request, "Unsuccessful registration. Invalid information.")
+    form = NewUserForm()
+    return render(request=request, template_name="polls/register.html", context={"register_form": form})
+
+def login_request(request):
+    if request.method == "POST":
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.info(request, f"You are now logged in as {username}.")
+                return redirect("home")
+            else:
+                messages.error(request, "Invalid username or password.")
+        else:
+            messages.error(request, "Invalid username or password.")
+    form = AuthenticationForm()
+    return render(request=request, template_name="polls/login.html", context={"login_form": form})
+
+def my_view(request):
+    username = None
+    if request.user.is_authenticated:
+        username = request.user.username
+    return username
+
 def index(request):
-    latest_games_list = Gameplay.objects.order_by('-date')[:5]
-    best_companion = Results.objects.filter(~Q(p_id__name='Davi')).values('p_id__name').annotate(Sum('gp_id__time'),
-                                                                                                 Count(
-                                                                                                     'gp_id__time')).order_by(
-        '-gp_id__time__sum')[:5]
-    games_list = Gameplay.objects.values('name__name').annotate(game_count=Count('name__name')).annotate(
-        game_time=Sum('time'))
-    mostplayed_games_list = games_list.order_by('-game_count')[:5]
+    username = my_view(request)
+    games_list = Gameplay.objects.all()
+    results_list = Results.objects.all()
+    boardgames_list = Boardgames.objects.all()
+    if username:
+        games_own_list = games_list.filter(name__owner__name=username)
+        played_list = Results.objects.filter(p_id__name=username).values('gp_id__id')
+        # print(Results.objects.filter(p_id__name=username).values('gp_id__name__name'))
+        games_list = games_list.filter(id__in=played_list)
+        results_list = results_list.filter(gp_id__name__in=played_list).filter(~Q(p_id__name=username))
+        boardgames_list = boardgames_list.filter(owner__name=username)
+
+    players_list = results_list.values('p_id__name').annotate(Sum('gp_id__time'), Count('gp_id__time')).order_by('-gp_id__time__sum')
+    latest_games_list = games_list.order_by('-date')[:5]
+    games_name_list = games_list.values('name__name').annotate(game_count=Count('name__name')).annotate(game_time=Sum('time'))
+    best_companion = players_list[:5]
+
+    mostplayed_games_list = games_name_list.order_by('-game_count')[:5]
     # For bar plot it must be in list...
-    games_for_bar_list = games_list.filter(name__owner__name__in=['David', 'Bára']).order_by('-game_count')
-    mostplayed_games_list_names = [games_for_bar_list[i]['name__name'] for i in range(len(games_for_bar_list))]
-    mostplayed_games_list_values = [games_for_bar_list[i]['game_count'] for i in range(len(games_for_bar_list))]
-    # games in database which has not been played yet
-    not_played_list = list(Boardgames.objects.values('name').values_list('name', flat=True))
-    played_list = list(Gameplay.objects.values('name__name').values_list('name__name', flat=True))
-    not_played_list = [i for i in not_played_list if i not in played_list]
-    mostplayed_games_list_names.extend(not_played_list)
-    mostplayed_games_list_values.extend([0] * len(not_played_list))
-    leastplayed_games_list = games_list.filter(name__owner__name='David').order_by('game_count')[:5]
-    time_list = games_list.order_by('-game_time')[:5]
-    games_list = Gameplay.objects.values('name__name', 'date').annotate(game_count=Count('name__name'))
-    long_time_no_see_games_list = games_list.filter(name__owner__name='David').values('name__name') \
+    games_for_bar_list = games_name_list.order_by('-game_count')
+    leastplayed_games_list = games_name_list.order_by('game_count')[:5]
+    long_time_no_see_games_list = games_own_list.values('name__name') \
                                       .annotate(id__max=Max('id'),
                                                 today=Value(datetime.datetime.now(), DateTimeField())) \
                                       .order_by('id__max')[:5]
+    mostplayed_games_list_names = [games_for_bar_list[i]['name__name'] for i in range(len(games_for_bar_list))]
+    mostplayed_games_list_values = [games_for_bar_list[i]['game_count'] for i in range(len(games_for_bar_list))]
+    # games in database which has not been played yet
+    not_played_list = list(boardgames_list.values_list('name', flat=True))
+    played_list = list(games_name_list.values_list('name__name', flat=True))
+    not_played_list = [i for i in not_played_list if i not in played_list]
+    mostplayed_games_list_names.extend(not_played_list)
+    mostplayed_games_list_values.extend([0] * len(not_played_list))
+
+    time_list = games_name_list.order_by('-game_time')[:5]
+    # games_name_list = Gameplay.objects.values('name__name', 'date').annotate(game_count=Count('name__name'))
+
     context = {'latest_games_list': latest_games_list,
                'mostplayed_games_list': mostplayed_games_list,
                'leastplayed_games_list': leastplayed_games_list,
@@ -53,7 +105,7 @@ def index(request):
     totalTime = []
     totalTimestr = []
     totalCount = []
-    stats = Gameplay.objects.annotate(year=ExtractIsoYear('date'), week=ExtractWeek('date')).values('year',
+    stats = games_list.annotate(year=ExtractIsoYear('date'), week=ExtractWeek('date')).values('year',
                                                                                                     'week').annotate(
         Sum('time'), Count('time'))
     for stat in stats:
@@ -82,7 +134,7 @@ def index(request):
     totalTime_month = []
     totalTimestr_month = []
     totalCount_month = []
-    stats = Gameplay.objects.annotate(year=ExtractYear('date'), month=ExtractMonth('date')).values('year',
+    stats = games_list.annotate(year=ExtractYear('date'), month=ExtractMonth('date')).values('year',
                                                                                                    'month').annotate(
         Sum('time'), Count('time'))
     for stat in stats:
@@ -97,7 +149,7 @@ def index(request):
     context['totalCount_month'] = totalCount_month
 
     weekday = list(
-        Gameplay.objects.annotate(weekday=ExtractWeekDay('date')).values('weekday').annotate(Count('time')).values_list(
+        games_list.annotate(weekday=ExtractWeekDay('date')).values('weekday').annotate(Count('time')).values_list(
             'time__count', flat=True))
     weekday = weekday[1:] + [weekday[0]]
     context['weekday'] = weekday
@@ -331,8 +383,14 @@ def pie_chart(request):
 
 
 def highscores(request):
-    context = {'boardgames': Gameplay.objects.all().values('name__name').distinct().order_by('name__name')}
-    context['lastgame'] = Gameplay.objects.latest('date').name
+    username = my_view(request)
+    gameplays = Gameplay.objects.all()
+    if username:
+        played_list = Results.objects.filter(p_id__name=username).values('gp_id__id')
+        gameplays = gameplays.filter(id__in=played_list)
+
+    context = {'boardgames': gameplays.values('name__name').distinct().order_by('name__name')}
+    context['lastgame'] = gameplays.latest('date').name
 
     # datas = ['1','2','3']
     # colors = ['#FFB6C1','#ADD8E6','#90EE90','#ffcccb''#FFFF66']
@@ -348,6 +406,7 @@ from django.http import JsonResponse
 
 
 def load_chart_data(request):
+    username = my_view(request)
     labels = []
     data = []
     colors = []
@@ -359,9 +418,14 @@ def load_chart_data(request):
     bg_name = request.GET.get('name')
     p_count = request.GET.get('NoP')
     chk = request.GET.get('chk')
+    gameplays = Gameplay.objects.filter(name__name=bg_name)
     queryset = Results.objects.filter(gp_id__name__name=bg_name) \
         .filter(gp_id__with_results=True) \
         .values('gp_id', 'p_id__name', 'gp_id__NumberOfPlayers', 'points', 'order').order_by('-points')
+    if username:
+        played_list = Results.objects.filter(p_id__name=username).values('gp_id__id')
+        queryset = queryset.filter(gp_id__in=played_list)
+        gameplays = gameplays.filter(id__in=played_list)
     if chk == 'true':
         gp_queryset = list(Gameplay.objects.filter(name__name=bg_name).values_list('id', flat=True))
         gp_queryset_forloop = gp_queryset.copy()
@@ -397,12 +461,12 @@ def load_chart_data(request):
         maxnws = queryset.filter(order=2)[0]['points']
     except:
         maxnws = 0
-    queryset_gp = Gameplay.objects.filter(name__name=bg_name).values('time')
+    queryset_gp = gameplays.values('time')
     longest_gp = str(queryset_gp.order_by('-time')[0]['time'])
     sg = str(queryset_gp.order_by('time')[0]['time'])
     avgg = str(queryset_gp.aggregate(Avg('time'))['time__avg'])
 
-    gp_id_queryset = list(Gameplay.objects.filter(name__name=bg_name).values_list('id', flat=True))
+    gp_id_queryset = list(gameplays.values_list('id', flat=True))
     for gp_id in gp_id_queryset:
         q = queryset.filter(gp_id=gp_id)
         try:
@@ -416,13 +480,13 @@ def load_chart_data(request):
         'p_id__name']
     avgp = []
     pp = sorted(list(
-        Gameplay.objects.filter(name__name=bg_name).values('NumberOfPlayers').distinct().values_list('NumberOfPlayers',
+        gameplays.values('NumberOfPlayers').distinct().values_list('NumberOfPlayers',
                                                                                                      flat=True)))
     for i in pp:
         avgp.append(list(
             queryset.filter(gp_id__NumberOfPlayers=i).values('p_id__name', 'gp_id__NumberOfPlayers').annotate(
                 Avg('points')).order_by('-points__avg').values_list('p_id__name', 'points__avg')))
-    gp_list = list(Gameplay.objects.filter(name__name=bg_name).order_by('date').values_list('date', flat=True))
+    gp_list = list(gameplays.order_by('date').values_list('date', flat=True))
     first_gp = gp_list[0].date()
     last_gp = gp_list[-1].date()
     nogp = len(gp_list)
