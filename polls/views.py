@@ -32,10 +32,10 @@ def index(request):
     not_played_list = [i for i in not_played_list if i not in played_list]
     mostplayed_games_list_names.extend(not_played_list)
     mostplayed_games_list_values.extend([0] * len(not_played_list))
-    leastplayed_games_list = games_list.order_by('game_count')[:5]
+    leastplayed_games_list = games_list.filter(name__owner__name='David').order_by('game_count')[:5]
     time_list = games_list.order_by('-game_time')[:5]
     games_list = Gameplay.objects.values('name__name', 'date').annotate(game_count=Count('name__name'))
-    long_time_no_see_games_list = games_list.values('name__name') \
+    long_time_no_see_games_list = games_list.filter(name__owner__name='David').values('name__name') \
                                       .annotate(id__max=Max('id'),
                                                 today=Value(datetime.datetime.now(), DateTimeField())) \
                                       .order_by('id__max')[:5]
@@ -393,8 +393,10 @@ def load_chart_data(request):
     minws = queryset.filter(order=1).order_by('points')[0]['points']
     avgws = round(queryset.filter(order=1).aggregate(Avg('points'))['points__avg'], 2)
     avgtot = round(queryset.aggregate(Avg('points'))['points__avg'], 2)
-    maxnws = queryset.filter(order=2)[0]['points']
-
+    try:
+        maxnws = queryset.filter(order=2)[0]['points']
+    except:
+        maxnws = 0
     queryset_gp = Gameplay.objects.filter(name__name=bg_name).values('time')
     longest_gp = str(queryset_gp.order_by('-time')[0]['time'])
     sg = str(queryset_gp.order_by('time')[0]['time'])
@@ -406,6 +408,7 @@ def load_chart_data(request):
         try:
             diff.append(q.filter(order=1)[0]['points'] - q.filter(order=2)[0]['points'])
         except:
+            diff =[0]
             # empty queryset. You take id from all gp, not just from games with all three
             pass
     avgmp = round(sum(diff) / len(diff), 2)
