@@ -1,5 +1,6 @@
 from django.db import models
 import datetime
+from django.contrib.auth.models import User
 
 
 class Player(models.Model):
@@ -7,6 +8,7 @@ class Player(models.Model):
     def __str__(self):
         return self.name
 
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, default=None, blank=True)
     name = models.CharField(max_length=10)
     color = models.CharField(max_length=7, default='#000000')
     elo = models.IntegerField(default=1000)

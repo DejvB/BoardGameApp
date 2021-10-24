@@ -7,6 +7,8 @@ from .forms import *
 from django.db.models import Count, Sum, Q, Avg, Max, Min, F, ExpressionWrapper, fields, Value, DateTimeField
 from django.db.models.functions import ExtractWeek, ExtractWeekDay, ExtractMonth, ExtractYear, ExtractIsoYear
 from math import ceil
+from django.contrib.auth.decorators import login_required
+
 
 
 def compute_score(o, n):
@@ -17,6 +19,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 # from django.contrib import messages
 
+@login_required
 def register_request(request):
     if request.method == "POST":
         form = NewUserForm(request.POST)
@@ -28,6 +31,7 @@ def register_request(request):
         messages.error(request, "Unsuccessful registration. Invalid information.")
     form = NewUserForm()
     return render(request=request, template_name="polls/register.html", context={"register_form": form})
+
 
 def login_request(request):
     if request.method == "POST":
@@ -47,24 +51,26 @@ def login_request(request):
     form = AuthenticationForm()
     return render(request=request, template_name="polls/login.html", context={"login_form": form})
 
+
 def my_view(request):
-    username = None
+    userid = None
     if request.user.is_authenticated:
-        username = request.user.username
-    return username
+        userid = request.user.player.id
+    return userid
+
 
 def index(request):
-    username = my_view(request)
+    userid = my_view(request)
     games_own_list = games_list = Gameplay.objects.all()
     results_list = Results.objects.all()
     boardgames_list = Boardgames.objects.all()
-    if username:
-        games_own_list = games_list.filter(name__owner__name=username)
-        played_list = Results.objects.filter(p_id__name=username).values('gp_id__id')
-        # print(Results.objects.filter(p_id__name=username).values('gp_id__name__name'))
+    if userid:
+        games_own_list = games_list.filter(name__owner__id=userid)
+        played_list = Results.objects.filter(p_id__id=userid).values('gp_id__id')
+        # print(Results.objects.filter(p_id__name=userid).values('gp_id__name__name'))
         games_list = games_list.filter(id__in=played_list)
-        results_list = results_list.filter(gp_id__name__in=played_list).filter(~Q(p_id__name=username))
-        boardgames_list = boardgames_list.filter(owner__name=username)
+        results_list = results_list.filter(gp_id__name__in=played_list).filter(~Q(p_id__id=userid))
+        boardgames_list = boardgames_list.filter(owner__id=userid)
 
     players_list = results_list.values('p_id__name').annotate(Sum('gp_id__time'), Count('gp_id__time')).order_by('-gp_id__time__sum')
     latest_games_list = games_list.order_by('-date')[:5]
@@ -77,7 +83,7 @@ def index(request):
     leastplayed_games_list = games_name_list.order_by('game_count')[:5]
     long_time_no_see_games_list = games_own_list.values('name__name') \
                                       .annotate(id__max=Max('id'),
-                                                today=Value(datetime.datetime.now(), DateTimeField())) \
+                                                date=Max('date')) \
                                       .order_by('id__max')[:5]
     mostplayed_games_list_names = [games_for_bar_list[i]['name__name'] for i in range(len(games_for_bar_list))]
     mostplayed_games_list_values = [games_for_bar_list[i]['game_count'] for i in range(len(games_for_bar_list))]
@@ -162,6 +168,7 @@ def index(request):
     return render(request, 'polls/index.html', context)
 
 
+@login_required
 def add_boardgame(request):
     context = {}
     form = BoardgameForm()
@@ -175,6 +182,7 @@ def add_boardgame(request):
     return render(request, 'polls/add_boardgame.html', context)
 
 
+@login_required
 def add_play(request):
     context = {}
     gp_form = GameplayForm()
@@ -270,6 +278,7 @@ def basic_stats(request):
                               })
 
 
+@login_required
 def add_expansion(request):
     context = {}
     form = ExpansionForm()
@@ -283,6 +292,7 @@ def add_expansion(request):
     return render(request, 'polls/add_expansion.html', context)
 
 
+@login_required
 def add_player(request):
     context = {}
     form = PlayerForm()
@@ -300,6 +310,7 @@ from django.forms import formset_factory
 from django.contrib import messages
 
 
+@login_required
 def add_results(request):
     # if 'player_count' in request.session:
     #     print(request.session['player_count'])
@@ -389,14 +400,14 @@ def pie_chart(request):
 
 
 def highscores(request):
-    username = my_view(request)
+    userid = my_view(request)
     gameplays = Gameplay.objects.all()
-    if username:
-        played_list = Results.objects.filter(p_id__name=username).values('gp_id__id')
+    if userid:
+        played_list = Results.objects.filter(p_id__id=userid).values('gp_id__id')
         gameplays = gameplays.filter(id__in=played_list)
 
-    context = {'boardgames': gameplays.values('name__name').distinct().order_by('name__name')}
-    context['lastgame'] = gameplays.latest('date').name
+    context = {'boardgames': gameplays.values('name__name').distinct().order_by('name__name'),
+               'lastgame': gameplays.latest('date').name}
 
     # datas = ['1','2','3']
     # colors = ['#FFB6C1','#ADD8E6','#90EE90','#ffcccb''#FFFF66']
@@ -412,7 +423,7 @@ from django.http import JsonResponse
 
 
 def load_chart_data(request):
-    username = my_view(request)
+    userid = my_view(request)
     labels = []
     data = []
     colors = []
@@ -428,8 +439,8 @@ def load_chart_data(request):
     queryset = Results.objects.filter(gp_id__name__name=bg_name) \
         .filter(gp_id__with_results=True) \
         .values('gp_id', 'p_id__name', 'gp_id__NumberOfPlayers', 'points', 'order').order_by('-points')
-    if username:
-        played_list = Results.objects.filter(p_id__name=username).values('gp_id__id')
+    if userid:
+        played_list = Results.objects.filter(p_id__id=userid).values('gp_id__id')
         queryset = queryset.filter(gp_id__in=played_list)
         gameplays = gameplays.filter(id__in=played_list)
     if chk == 'true':
@@ -719,6 +730,10 @@ def compute_tournament_local(results, elos):
                                int(60 / len(results)))  # i is winner -> i is smaller
         changes[i.p_id.id] = changes[i.p_id.id] + elo_change
         changes[j.p_id.id] = changes[j.p_id.id] - elo_change
+    if 17 in changes.keys():  # Automa
+        changes[17] = 0
+    if 33 in changes.keys():  # Guest
+        changes[33] = 0
     return changes
 
 def update_elo(changes):
@@ -740,6 +755,6 @@ def print_all_elo():
     total_elo = 0
     for p in Player.objects.all():
         total_elo = total_elo + p.elo
-        # print(p, p.elo)
-    # print(total_elo)
+        print(p, p.elo)
+    print(total_elo)
     return None

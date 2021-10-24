@@ -35,7 +35,7 @@
 {% if long_time_no_see_games_list %}
     <ul>
     {% for b in long_time_no_see_games_list %}
-        <li>{{ b.name__name }}, {{ b.today.days }} days</li>
+        <li>{{ b.name__name }}, {{ b.date|timesince }}</li>
     {% endfor %}
     </ul>
 {% else %}
@@ -347,7 +347,14 @@ var config_bar = {
         legend: {
             position: 'left',
             display: true
-        }
+        },
+        scales: {
+        yAxes: [{
+            ticks: {
+                suggestedMin: 0
+            }
+        }]
+      },
       }
     };
 

@@ -8,20 +8,22 @@
         <!--Boardgame rules-->
     <!--</h1>-->
   <a href="{% url 'home' %}"><input type="image" src="{% static 'images/hut.png' %}"/></a>
-  <a href="{% url 'add_game' %}"><input type="image" src="{% static 'images/hut-add.png' %}"/></a>
-  <a href="{% url 'add_player' %}"><input type="image" src="{% static 'images/meeple-add.png' %}"/></a>
-  <a href="{% url 'add_expansion' %}"><input type="image" src="{% static 'images/huts-village.png' %}"/></a>
-  <a href="{% url 'add_play' %}"><input type="image" src="{% static 'images/meeple-circle.png' %}"/></a>
+  {% if request.user.username %}
+    <a href="{% url 'add_game' %}"><input type="image" src="{% static 'images/hut-add.png' %}"/></a>
+    <a href="{% url 'add_player' %}"><input type="image" src="{% static 'images/meeple-add.png' %}"/></a>
+    <a href="{% url 'add_expansion' %}"><input type="image" src="{% static 'images/huts-village.png' %}"/></a>
+    <a href="{% url 'add_play' %}"><input type="image" src="{% static 'images/meeple-circle.png' %}"/></a>
+  {% endif %}
   <a href="{% url 'highscores' %}"><input type="image" src="{% static 'images/trophy-cup.png' %}"/></a>
   <a href="{% url 'history' %}"><input type="image" src="{% static 'images/backward-time.png' %}"/></a>
-  <a href="{% url 'playerstats' %}"><input type="image" src="{% static 'images/backward-time.png' %}"/></a>
+  <a href="{% url 'playerstats' %}"><input type="image" src="{% static 'images/meeple-king.png' %}"/></a>
   <div  class="headertext" style="float: right;">
           {% if request.user.username %}
            <a>{{ request.user.username }} </a>
            <a href="{% url 'logout' %}">Log out</a>
           {% else %}
             <a href="{% url 'login' %}">Log in</a>
-           <a href="{% url 'register' %}">Register</a>
+           <a href="{% url 'register' %}">Sign up</a>
           {% endif %}
   </div>
   <!--<a href="{% url 'home' %}">Home</a>-->
