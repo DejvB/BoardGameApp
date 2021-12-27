@@ -22,8 +22,12 @@
                     </select>
                 </td></tr>
             </table>
-            <label for="checkbox">Jen all star team
-            <input type="checkbox" name="checkbox" id="checkbox">
+            {% if request.user.username %}
+                <label for="checkbox">All games
+                <input type="checkbox" name="checkbox" id="checkbox">
+            {% else %}
+                <input type="checkbox" name="checkbox" id="checkbox" hidden>
+            {% endif %}
         </form>
     </div>
     <div class='box round shadow'>
@@ -111,7 +115,7 @@
       </div>
 
   </div>
-    
+
   <div class='box round shadow'>
     <h2>Average points</h2>
       <hr>

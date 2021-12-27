@@ -450,22 +450,10 @@ def load_chart_data(request):
     queryset = Results.objects.filter(gp_id__name__name=bg_name) \
         .filter(gp_id__with_results=True) \
         .values('gp_id', 'p_id__name', 'gp_id__NumberOfPlayers', 'points', 'order').order_by('-points')
-    if userid:
+    if userid and chk != 'true':
         played_list = Results.objects.filter(p_id__id=userid).values('gp_id__id')
         queryset = queryset.filter(gp_id__in=played_list)
         gameplays = gameplays.filter(id__in=played_list)
-    if chk == 'true':
-        gp_queryset = list(Gameplay.objects.filter(name__name=bg_name).values_list('id', flat=True))
-        gp_queryset_forloop = gp_queryset.copy()
-        for gp in gp_queryset_forloop:
-            for n in ['David', 'Bára', 'Adam']:
-                if not queryset.filter(gp_id=gp).filter(p_id__name=n):
-                    gp_queryset.remove(gp)
-                    break
-        queryset = Results.objects.filter(gp_id__in=gp_queryset) \
-            .filter(gp_id__with_results=True) \
-            .values('p_id__name', 'gp_id__NumberOfPlayers',
-                    'points', 'order').order_by('-points')
 
     for query in queryset:
         if (str(query['gp_id__NumberOfPlayers'])) in labels:
