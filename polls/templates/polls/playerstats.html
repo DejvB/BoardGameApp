@@ -15,8 +15,8 @@
                             {% if request.user.username %}
                                 {%if p.name == request.user.username %}
                                     <option value="{{ p.id }}" selected>{{ p.name }}</option>
-                                {% else %}
-                                    <option value="{{ p.id }}">{{ p.name }}</option>
+                                <!--{% else %}-->
+                                <!--    <option value="{{ p.id }}">{{ p.name }}</option>-->
                                 {% endif %}
                             {% endif %}
                           <option value="{{ p.id }}">{{ p.name }}</option>
@@ -83,15 +83,31 @@
     </div>
 </div>
 
-<div class='box round shadow big' style="width: 100% overflow-x: auto; overflow-y: hidden">
-      <div class="chartWrapper">
-      <div class="chartAreaWrapper">
-        <div class="chartAreaWrapper2">
-            <canvas id="line_chart" data-url="{% url 'load_playerstats' %}" style="width: 100%;height: 600px;"></canvas>
-        </div>
-      </div>
-          <canvas id="myChartAxis" height="300" width="0"></canvas>
-      </div>
+<div class='container'>
+    <div class='box round shadow big' style="width: 100% overflow-x: auto; overflow-y: hidden">
+          <div class="chartWrapper">
+          <div class="chartAreaWrapper">
+            <div class="chartAreaWrapper2">
+                <canvas id="line_chart" data-url="{% url 'load_playerstats' %}" style="width: 100%;height: 600px;"></canvas>
+            </div>
+          </div>
+              <canvas id="myChartAxis" height="300" width="0"></canvas>
+          </div>
+    </div>
+    {% if request.user.username %}
+    <div class='box round shadow'>
+    <h2>Leaderboard</h2>
+      <hr>
+        <table style="width:100%" id="ElO table">
+          {% for pe in players_elo %}
+            <tr>
+              <td>{{ pe.name }}</td>
+              <th><label>{{ pe.elo }}</label></th>
+            </tr>
+          {% endfor %}
+      </table>
+    </div>
+    {% endif %}
 </div>
 
 
@@ -122,8 +138,8 @@ var myChart = new Chart(ctx, {
         }
     });
 function plot_line_graph(data) {
-    console.log(myChart);
-    console.log(myChart.config.data.datasets);
+    <!--console.log(myChart);-->
+    <!--console.log(myChart.config.data.datasets);-->
     myChart.config.data = {
         datasets: [{
             label: data['p_name'],
@@ -143,7 +159,7 @@ function plot_line_graph(data) {
                 ];
   }
     myChart.update();
-    console.log(myChart.config.data);
+    <!--      console.log(myChart.config.data);-->
 
         options: {
             scales: {

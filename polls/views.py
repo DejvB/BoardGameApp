@@ -58,6 +58,7 @@ def my_view(request):
         userid = request.user.player.id
     return userid
 
+import random
 
 def index(request):
     userid = my_view(request)
@@ -71,10 +72,11 @@ def index(request):
         results_list = results_list.filter(gp_id__id__in=played_list).filter(~Q(p_id__id=userid))
         boardgames_list = boardgames_list.filter(owner__id=userid)
     else:
-        Gameplay.objects.all().values('id')
-        games_list = games_own_list = Gameplay.objects.all().order_by('?')[:10]
-        results_list = Results.objects.all().order_by('?')[:10]
-        boardgames_list = Boardgames.objects.all().order_by('?')[:10]
+        gp_ids = random.choices(list(Gameplay.objects.all().values_list('id',flat=True)),k=10)
+        games_list = games_own_list = Gameplay.objects.filter(id__in=gp_ids)
+        results_list = Results.objects.filter(gp_id__id__in=gp_ids)
+        b_list = games_list.values_list('name__name')
+        boardgames_list = Boardgames.objects.filter(name__in=b_list)
 
 
     players_list = results_list.values('p_id__name').annotate(Sum('gp_id__time'), Count('gp_id__time')).order_by('-gp_id__time__sum')
@@ -410,6 +412,10 @@ def highscores(request):
     if userid:
         played_list = Results.objects.filter(p_id__id=userid).values('gp_id__id')
         gameplays = gameplays.filter(id__in=played_list)
+    else:
+        gp_ids = random.choices(list(Gameplay.objects.all().values_list('id',flat=True)),k=3)
+        gameplays = gameplays.filter(id__in=gp_ids)
+
 
     context = {'boardgames': gameplays.values('name__name').distinct().order_by('name__name'),
                'lastgame': gameplays.latest('date').name}
@@ -609,7 +615,9 @@ def playerstats(request):
     elo_history = {p.id: [] for p in Player.objects.all()}
     elos = {p.id: 1000 for p in Player.objects.all()}
     numbers = [10, 20, 50, 100, 'all']
-    context = {'players': Player.objects.all().values('name', 'id').distinct().order_by('id'), 'numbers': numbers}
+    context = {'players': Player.objects.all().values('name', 'id').distinct().order_by('name'),
+                'players_elo': Player.objects.all().values('name', 'elo').distinct().order_by('-elo'),
+                'numbers': numbers}
     return render(request, 'polls/playerstats.html', context)
 
 
@@ -617,17 +625,20 @@ import numpy as np
 
 
 def load_playerstats(request):
-
+    userid = my_view(request)
     # reset_all_elo()
     elo_history = elo()
+    # set_elo(elo_history)
     # compute_tournament(Gameplay.objects.get(id = 336).results.all())
-    print_all_elo()
+    # print_all_elo()
     p_id = request.GET.get('p_id')
     number = request.GET.get('number')
     if number == 'all':
         number = 9999
     else:
         number = int(number)
+    if not userid: # only five games for not logged user
+        number = 5
     p_name = Player.objects.filter(id=p_id).values('name')[0]['name']
     results = Results.objects.filter(p_id__id=p_id).filter(order__gte=1).values('gp_id__name__name',
                                                                                 'gp_id__NumberOfPlayers', 'order',
@@ -665,7 +676,7 @@ def load_playerstats(request):
     maxelo = max(cummean)
     minelo = min(cummean)
 
-    print_all_elo()
+    # print_all_elo()
     return JsonResponse(data={"p_id": p_id,
                               "p_name": p_name,
                               "g_name": g_name,
@@ -748,6 +759,14 @@ def update_elo(changes):
         p.save(update_fields=['elo'])
     return None
 
+def set_elo(elo):
+    for key, value in elo.items():
+        p = Player.objects.get(id=key)
+        if value[0] < 100:
+            value[0] = 1000
+        p.elo = sum(value)
+        p.save(update_fields=['elo'])
+    return None
 
 def reset_all_elo():
     for p in Player.objects.all():
