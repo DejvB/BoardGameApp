@@ -67,10 +67,15 @@ def index(request):
     if userid:
         games_own_list = games_list.filter(name__owner__id=userid)
         played_list = Results.objects.filter(p_id__id=userid).values('gp_id__id')
-        # print(Results.objects.filter(p_id__name=userid).values('gp_id__name__name'))
         games_list = games_list.filter(id__in=played_list)
-        results_list = results_list.filter(gp_id__name__in=played_list).filter(~Q(p_id__id=userid))
+        results_list = results_list.filter(gp_id__id__in=played_list).filter(~Q(p_id__id=userid))
         boardgames_list = boardgames_list.filter(owner__id=userid)
+    else:
+        Gameplay.objects.all().values('id')
+        games_list = games_own_list = Gameplay.objects.all().order_by('?')[:10]
+        results_list = Results.objects.all().order_by('?')[:10]
+        boardgames_list = Boardgames.objects.all().order_by('?')[:10]
+
 
     players_list = results_list.values('p_id__name').annotate(Sum('gp_id__time'), Count('gp_id__time')).order_by('-gp_id__time__sum')
     latest_games_list = games_list.order_by('-date')[:5]
@@ -626,8 +631,8 @@ def load_playerstats(request):
     p_name = Player.objects.filter(id=p_id).values('name')[0]['name']
     results = Results.objects.filter(p_id__id=p_id).filter(order__gte=1).values('gp_id__name__name',
                                                                                 'gp_id__NumberOfPlayers', 'order',
-                                                                                'points').order_by('-id')[:number]
-    points = list(results.values_list('points', flat=True))[::-1]
+                                                                                'gp_id__date').order_by('-id')[:number]
+    date = list(results.values_list('gp_id__date', flat=True))[::-1]
     order = list(results.values_list('order', flat=True))[::-1]
     NoP = list(results.values_list('gp_id__NumberOfPlayers', flat=True))[::-1]
     g_name = list(results.values_list('gp_id__name__name', flat=True))[::-1]
@@ -665,7 +670,7 @@ def load_playerstats(request):
                               "p_name": p_name,
                               "g_name": g_name,
                               "order": order,
-                              "points": points,
+                              "date": date,
                               "NoP": NoP,
                               "cummean": cummean,
                               "lws": lws,

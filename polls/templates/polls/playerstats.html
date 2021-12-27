@@ -12,7 +12,14 @@
                 <label for="id_name">Name:</label></th><td>
                     <select name="name" required id="id_name">
                         {% for p in players %}
-                              <option value="{{ p.id }}">{{ p.name }}</option>
+                            {% if request.user.username %}
+                                {%if p.name == request.user.username %}
+                                    <option value="{{ p.id }}" selected>{{ p.name }}</option>
+                                {% else %}
+                                    <option value="{{ p.id }}">{{ p.name }}</option>
+                                {% endif %}
+                            {% endif %}
+                          <option value="{{ p.id }}">{{ p.name }}</option>
                         {% endfor %}
                     </select>
                 </td>
@@ -30,19 +37,19 @@
 <!--</div>-->
 <!--<div class='container'>-->
     <div class='box round shadow'>
-      <h2>Strikes</h2>
+      <h2>Streaks</h2>
         <hr>
         <table style="width:100%">
           <tr>
-            <td>Longest winning strike:</td>
+            <td>Longest winning streak:</td>
             <th><label id="lws"></label></th>
           </tr>
           <tr>
-            <td>Longest loosing strike:</td>
+            <td>Longest losing streak:</td>
             <th><label id="lls"></label></th>
           </tr>
           <tr>
-            <td>Longest bad luck</td>
+            <td>Longest bad luck:</td>
             <th><label id="lbl"></label></th>
           </tr>
           <tr>
@@ -131,7 +138,7 @@ function plot_line_graph(data) {
         return ['Game: ' + data.g_name[i],
                 'Position: ' + data.order[i],
                 'Number of Players: ' + data.NoP[i],
-                'Points: ' + data.points[i],
+                'Date: ' + data.date[i],
                 'Score: ' + data.cummean[i],
                 ];
   }
