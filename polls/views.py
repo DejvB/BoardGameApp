@@ -446,6 +446,9 @@ def load_chart_data(request):
     bg_name = request.GET.get('name')
     p_count = request.GET.get('NoP')
     chk = request.GET.get('chk')
+    p_colors = Player.objects.all()
+    p_colors = {p_c.name: p_c.color for p_c in p_colors}
+
     gameplays = Gameplay.objects.filter(name__name=bg_name)
     queryset = Results.objects.filter(gp_id__name__name=bg_name) \
         .filter(gp_id__with_results=True) \
@@ -462,7 +465,7 @@ def load_chart_data(request):
             display.append(True)
         data.append([query['points']])
         # colors.append(c[query['p_id__name']])
-        colors.append(Player.objects.filter(name=query['p_id__name']).values_list('color', flat=True)[0])
+        colors.append(p_colors[query['p_id__name']])
         labels.append(str(query['gp_id__NumberOfPlayers']))
         names.append(query['p_id__name'])
         position.append(query['order'])
@@ -528,31 +531,7 @@ def load_chart_data(request):
         p_points.append({'x': count + 1, 'y': 'Nan'})
         if player_exists:
             order_data.append([p.name, p.color, p_order, p_points])
-    # print(order_data)
-    ## attempt without x and y and with global x axis
-    # order_data = []
-    # for p in Player.objects.all():
-    #     p_order = []
-    #     p_points = []
-    #     for ids in list(queryset.values('gp_id').order_by('gp_id').distinct().values_list('gp_id', flat=True)):
-    #         order = queryset.filter(p_id__name=p).filter(gp_id=ids).values('order','points')
-    #         if order:
-    #             p_order.append(order[0]['order'])
-    #             p_points.append(order[0]['points'])
-    #         else:
-    #             p_order.append('Nan')
-    #             p_points.append('Nan')
-    #     if p_order:
-    #         order_data.append([p.name, p.color, p_order, p_points])
-    # order_x_axis = range(1, len(list(queryset.values('gp_id').order_by('gp_id').distinct().values_list('gp_id', flat=True))) + 1)
-    # print(order_data)
 
-    # for i in pp:
-    #     hm = queryset.filter(gp_id__NumberOfPlayers=i).values('p_id__name', 'gp_id__NumberOfPlayers')
-    #     hm.
-    #     denominator = X.dot(X) - X.mean() * X.sum()
-    #     a = (X.dot(Y) - Y.mean() * X.sum()) / denominator
-    #     # b = (Y.mean() * X.dot(X) - X.mean() * X.dot(Y)) / denominator
 
     return JsonResponse(data={'labels': labels,
                               'data': data,
@@ -581,7 +560,7 @@ def load_chart_data(request):
 
 def history(request):
     context = {}
-    context['games'] = GameplayTable(Gameplay.objects.all().order_by('date'))
+    context['games'] = GameplayTable(Gameplay.objects.all().order_by('-date'))
     return render(request, 'polls/history.html', context)
 
 

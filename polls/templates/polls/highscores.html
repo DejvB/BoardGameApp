@@ -142,54 +142,9 @@
       </div>
 </div>
 
-<!--<div class='box round shadow big' style="width: 100%; background-color: #DDEEDD">-->
-<!--    <input type="checkbox" name="order_points_checkbox" id="order_points_checkbox">-->
-<!--    <div id="ordercontainer" style="width: 100%;  min-height:300px">-->
-<!--        <canvas id="order_chart"></canvas>-->
-<!--    </div>-->
-<!--</div>-->
-
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-<!--<script>-->
-<!--    var ctx = document.getElementById("myChart").getContext("2d");-->
 
-<!--        var chart = {-->
-<!--        options: {-->
-<!--          responsive: true,-->
-<!--          maintainAspectRatio: false,-->
-<!--          animation: {-->
-
-<!--                    onComplete: function(animation) {-->
-<!--                        var sourceCanvas = myLiveChart.chart.canvas;-->
-<!--                        var copyWidth = myLiveChart.scales['y-axis-0'].width - 10;-->
-<!--                        var copyHeight = myLiveChart.scales['y-axis-0'].height + myLiveChart.scales['y-axis-0'].top + 10;-->
-<!--                        var targetCtx = document.getElementById("myChartAxis").getContext("2d");-->
-<!--                        targetCtx.canvas.width = copyWidth;-->
-<!--                targetCtx.drawImage(sourceCanvas, 0, 0, copyWidth, copyHeight, 0, 0, copyWidth, copyHeight);-->
-<!--                    }-->
-<!--                }-->
-<!--      },-->
-<!--        type: 'bar',-->
-<!--        data: {-->
-<!--            labels: ["January", "February", "March", "April", "May", "June", "July", "January", "February", "March", "April", "May", "June", "July", "May", "June", "July"],-->
-<!--            datasets: [-->
-<!--                {-->
-<!--                    barThickness: 100,-->
-<!--&lt;!&ndash;                    barPercentage:1.5,&ndash;&gt;-->
-<!--                    label: "My First dataset",-->
-<!--                    fillColor: "rgba(220,220,220,0.2)",-->
-<!--                    strokeColor: "rgba(220,220,220,1)",-->
-<!--                    pointColor: "rgba(220,220,220,1)",-->
-<!--                    pointStrokeColor: "#fff",-->
-<!--                    pointHighlightFill: "#fff",-->
-<!--                    pointHighlightStroke: "rgba(220,220,220,1)",-->
-<!--                    data: [65, 59, 80, 81, 56, 55, 40, 65, 59, 80, 81, 56, 55, 40,1,2,3]-->
-<!--                }-->
-<!--            ]-->
-<!--        }};-->
-
-<!--</script>-->
 <script id="ha">
 var ajax_data=[];
   var ctx = bar_chart.getContext("2d");
@@ -325,8 +280,8 @@ function plot_bar_graph(data) {
         borderWidth: 3,
         borderSkipped: '',
       })
-      ch.update();
   })
+//   ch.update();
   ch.options.legend.labels.filter = function(item, chart){
     return data.display[item.datasetIndex];
     }

@@ -24,7 +24,7 @@ STATIC_ROOT = "/home/BoardGameApp/BoardGameApp/polls/static"
 SECRET_KEY = 'if9v^dieyj3!6)@d1807rizqmq2ery+kpt_65+e7f91u(suw&5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 

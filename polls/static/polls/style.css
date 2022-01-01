@@ -31,6 +31,7 @@ input:not([type=image]),button[type=submit],input[type=button],select  {
   text-decoration: none;
   margin: 4px 2px;
   cursor: pointer;
+  max-width:200px;
 }
 
 /* Navbar container */
