@@ -21,7 +21,7 @@
 
 
 
-    <button type="submit" name="run_script">Save gameplay</button>
+    <button type="submit" name="run_script" onclick="this.disabled=true,this.form.submit()">Save gameplay</button>
 </form>
 </div>
   <div class='box round shadow' id="basic_stats" basic_stats_url="{% url 'basic_stats' %}">

@@ -25,7 +25,7 @@ def register_request(request):
         form = NewUserForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
+            # login(request, user)
             messages.success(request, "Registration successful.")
             return redirect('home')
         messages.error(request, "Unsuccessful registration. Invalid information.")
@@ -55,7 +55,10 @@ def login_request(request):
 def my_view(request):
     userid = None
     if request.user.is_authenticated:
-        userid = request.user.player.id
+        try:
+            userid = request.user.player.id
+        except:
+            return None
     return userid
 
 import random

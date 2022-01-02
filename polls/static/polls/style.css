@@ -182,3 +182,24 @@ input[type=image]{
     position: relative;
     height: 600px;
 }
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background-color: transparent
+  }
+
+::-webkit-scrollbar-thumb {
+    background: rgb(136, 136, 136);
+    border-radius: 10px;
+  }
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(100, 100, 100);
+    border-radius: 10px;
+  }
+
+::-webkit-scrollbar-thumb:active {
+    background: rgb(68, 68, 68);
+    border-radius: 10px;
+  }
