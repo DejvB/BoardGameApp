@@ -8,6 +8,9 @@ class Player(models.Model):
     def __str__(self):
         return self.name
 
+    def get_owned(self, id):
+        return OwnBoardgame.objects.filter(p_id__id=id).values_list('bg_id__id', flat=True)
+
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, default=None, blank=True)
     name = models.CharField(max_length=10)
     color = models.CharField(max_length=7, default='#000000')
@@ -29,6 +32,7 @@ class Boardgames(models.Model):
     minNumberOfPlayers = models.IntegerField(default=2)
     maxNumberOfPlayers = models.IntegerField(default=4)
     type = models.CharField(max_length=50, default='Strategy', choices=gametype_choices)
+    bgg_id = models.IntegerField(default=1)
     # ordering = ['name']
 
 class Expansion(models.Model):
@@ -37,6 +41,17 @@ class Expansion(models.Model):
     basegame = models.ForeignKey(Boardgames, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
 
+class OwnBoardgame(models.Model):
+    def __str__(self):
+        return f'{self.bg_id.name} - {self.p_id.name}'
+    bg_id = models.ForeignKey(Boardgames, on_delete=models.CASCADE)
+    p_id = models.ForeignKey(Player, on_delete=models.CASCADE)
+
+class OwnExpansion(models.Model):
+    def __str__(self):
+        return f'{self.e_id.basegame.name} - {self.e_id.name} - {self.p_id.name}'
+    e_id = models.ForeignKey(Expansion, on_delete=models.CASCADE)
+    p_id = models.ForeignKey(Player, on_delete=models.CASCADE)
 
 class Gameplay(models.Model):
 

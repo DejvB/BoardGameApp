@@ -69,11 +69,12 @@ def index(request):
     results_list = Results.objects.all()
     boardgames_list = Boardgames.objects.all()
     if userid:
-        games_own_list = games_list.filter(name__owner__id=userid)
+        bg_owned_list = list(Player.objects.get(id=userid).get_owned(userid))
+        games_own_list = games_list.filter(name__id__in=bg_owned_list)
         played_list = Results.objects.filter(p_id__id=userid).values('gp_id__id')
         games_list = games_list.filter(id__in=played_list)
         results_list = results_list.filter(gp_id__id__in=played_list).filter(~Q(p_id__id=userid))
-        boardgames_list = boardgames_list.filter(owner__id=userid)
+        boardgames_list = boardgames_list.filter(id__in=bg_owned_list)
     else:
         gp_ids = random.choices(list(Gameplay.objects.all().values_list('id',flat=True)),k=10)
         games_list = games_own_list = Gameplay.objects.filter(id__in=gp_ids)
