@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class BoardgameForm(forms.ModelForm):
     class Meta:
         model = Boardgames
-        fields = ('name', 'type', 'owner', 'minNumberOfPlayers', 'maxNumberOfPlayers')
+        fields = ('name', 'type', 'minNumberOfPlayers', 'maxNumberOfPlayers')
 
 
 class GameplayForm(forms.ModelForm):

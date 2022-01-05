@@ -108,7 +108,7 @@
       $.ajax({                       // initialize an AJAX request
         url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load_player_count/)
         data: {
-          'name': bg_id
+          'id': bg_id
         },
         success: function (data) {   // `data` is the return of the `load_cities` view function
           $("#points").html("");

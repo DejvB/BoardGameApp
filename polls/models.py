@@ -28,7 +28,6 @@ class Boardgames(models.Model):
     gametype_choices = [('Classic','Classic'), ('Cooperative','Cooperative'), ('Party','Party'), ('Strategy','Strategy'), ('Family','Family')]
 
     name = models.CharField(max_length=50)
-    owner = models.ForeignKey(Player, on_delete=models.CASCADE)
     minNumberOfPlayers = models.IntegerField(default=2)
     maxNumberOfPlayers = models.IntegerField(default=4)
     type = models.CharField(max_length=50, default='Strategy', choices=gametype_choices)

@@ -14,21 +14,37 @@
                         <!--<option value="">-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
                         {% for b in boardgames %}
                            {%if b.name__name == lastgame.name %}
-                              <option value="{{ b.name__name }}" selected>{{ b.name__name }}</option>
+                              <option value="{{ b.name__id }}" selected>{{ b.name__name }}</option>
                            {% else %}
-                              <option value="{{ b.name__name }}">{{ b.name__name }}</option>
+                              <option value="{{ b.name__id }}">{{ b.name__name }}</option>
                             {% endif %}
                         {% endfor %}
                     </select>
                 </td></tr>
             </table>
             {% if request.user.username %}
-                <label for="checkbox">All games
-                <input type="checkbox" name="checkbox" id="checkbox">
+                <input type="checkbox" name="checkbox" id="checkbox" hidden>
             {% else %}
                 <input type="checkbox" name="checkbox" id="checkbox" hidden>
             {% endif %}
         </form>
+        <div>
+            <div style="width: 50%; float: left;">
+                <label for="checkbox"><img id="bgg_img" src="${ $bg_img }"></label>
+            </div>
+            <div style="width: 50%; float: right;">
+                <table>
+                    <tr>
+                        <td>Rank: </td>
+                        <th><label id="bgg_rank"></label></th>
+                    </tr>
+                    <tr>
+                        <td>Weight: </td>
+                        <th><label id="bgg_weight"></label></th>
+                    </tr>
+                </table>
+            </div>
+        </div>
     </div>
     <div class='box round shadow'>
       <h2>Stats</h2>
@@ -254,7 +270,8 @@ var ajax_data=[];
 
 <script>
 function plot_bar_graph(data) {
-  var bg_name = $(id_name).val();
+  var bg_id = $(id_name).val();
+  var bg_name = $("#id_name option:selected").text();
   var i;
   var len = chartData.datasets.length;
   chartData.labels = [bg_name];
@@ -333,7 +350,7 @@ function plot_order_graph(data, order_points_value) {
             spanGaps: false,
           })
         })
-        console.log(orderData);
+        // console.log(orderData);
         orderChart.update();
 }
 
@@ -349,12 +366,12 @@ $("#id_name, #checkbox").change(function () {
   var sel = $(id_name);
   var chk = $(checkbox).prop('checked');
   var order_points_value = $(order_points_checkbox).prop('checked');
-  var bg_name = $(id_name).val();
+  var bg_id = $(id_name).val();
   $.ajax({
     url: url,
     data: {
       'chk': chk,
-      'name': bg_name,
+      'id': bg_id,
     },
     success: function (data) {
         ajax_data = data;
@@ -378,6 +395,9 @@ $("#id_name, #checkbox").change(function () {
       $("#last_gp").html(data.last_gp);
       $("#nogp").html(data.nogp);
       $("#avgp").html("");
+      document.getElementById("bgg_img").src=data.bg_img;
+      $("#bgg_rank").html(data.bg_rank);
+      $("#bgg_weight").html(data.bg_weight);
       for (j = 0; j < data.pp.length; j++){
           <!--$("#avgp").append('<b>Number of Players: ' + data.pp[j] + '</b>')-->
           $("#avgp").append(data.pp[j])

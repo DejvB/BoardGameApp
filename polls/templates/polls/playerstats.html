@@ -149,7 +149,7 @@ function plot_line_graph(data) {
     labels: data['g_name']
     };
     myChart.options.tooltips.callbacks.label = function(item, chart){
-        console.log(item);
+        // console.log(item);
         var i = item.index;
         return ['Game: ' + data.g_name[i],
                 'Position: ' + data.order[i],

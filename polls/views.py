@@ -241,7 +241,7 @@ def randomizer(request):
 
 
 def expansions_select_options(request):
-    bg_id = request.GET.get('name')
+    bg_id = request.GET.get('id')
     Expansions = list(Expansion.objects.filter(basegame__id=bg_id).order_by('name').values_list('id', flat=True))
     ExpansionsNames = list(Expansion.objects.filter(basegame__id=bg_id).order_by('name').values_list('name', flat=True))
     Expansionformset = formset_factory(UsedExpansionForm, extra=0)  # len(Expansions))
@@ -256,7 +256,7 @@ def expansions_select_options(request):
 
 
 def load_player_count(request):
-    bg_id = request.GET.get('name')
+    bg_id = request.GET.get('id')
     playersRange = Boardgames.objects.filter(id=bg_id).values('minNumberOfPlayers', 'maxNumberOfPlayers')[0]
     minP = playersRange['minNumberOfPlayers']
     maxP = playersRange['maxNumberOfPlayers']
@@ -267,7 +267,7 @@ def load_player_count(request):
 
 def basic_stats(request):
     # basic stats for new gameplay page
-    bg_id = request.GET.get('name')
+    bg_id = request.GET.get('id')
     game_id = Gameplay.objects.filter(name__id=bg_id).values('id').order_by('-id')[0]['id']
     result = Results.objects.filter(gp_id__id=game_id).values('p_id__name', 'points')
     result = [[r['p_id__name'], r['points']] for r in result]
@@ -420,21 +420,75 @@ def highscores(request):
         gp_ids = random.choices(list(Gameplay.objects.all().values_list('id',flat=True)),k=3)
         gameplays = gameplays.filter(id__in=gp_ids)
 
-
-    context = {'boardgames': gameplays.values('name__name').distinct().order_by('name__name'),
+    context = {'boardgames': gameplays.values('name__name','name__id').distinct().order_by('name__name'),
                'lastgame': gameplays.latest('date').name}
 
-    # datas = ['1','2','3']
-    # colors = ['#FFB6C1','#ADD8E6','#90EE90','#ffcccb''#FFFF66']
-    # labels = ['a','b','v']
-    #
-    # context['labels'] = labels
-    # context['colors'] = colors
-    # context['data'] = datas
     return render(request, 'polls/highscores.html', context)
 
 
 from django.http import JsonResponse
+import requests
+from xml.etree import ElementTree as ET
+
+
+def get_bgg_info(bg_id):
+    bg_info = {}
+    bgg_id = Boardgames.objects.get(id=bg_id).bgg_id
+    if bgg_id == 1 or bgg_id == '1':
+        bgg_id = update_bgg_id(bg_id)
+    xml_root = ET.fromstring(requests.get(f'https://www.boardgamegeek.com/xmlapi2/thing?id={bgg_id}&stats=1').text)
+    bg_info['img'] =  xml_root.find('item').find('thumbnail').text
+    bg_info['id'] = xml_root.find('item').attrib['id']
+    rank = xml_root.find('item').find('statistics').find('ratings').find('average').attrib['value']
+    bg_info['rank'] = f'{float(rank):.2f}'
+    weight = xml_root.find('item').find('statistics').find('ratings').find('averageweight').attrib['value']
+    bg_info['weight'] = f'{float(weight):.2f}'
+    return bg_info
+#
+#
+#
+#     return bg_info
+    # get bgg_ id from bg_id or bg_name
+    # get xml about bg
+    # return info as dict
+
+        # p = Player.objects.get(id=key)
+        # if value[0] < 100:
+        #     value[0] = 1000
+        # p.elo = sum(value)
+        # p.save(update_fields=['elo'])
+def update_bgg_id(bg_id):
+    bg_name = Boardgames.objects.get(id=bg_id).name
+    xml_root = ET.fromstring(requests.get(f'https://www.boardgamegeek.com/xmlapi2/search?query={bg_name}&type=boardgame&exact=1').text)
+    if xml_root.find('item'):
+        bgg_id = xml_root.find('item').attrib['id']
+        if bgg_id:
+            bg = Boardgames.objects.get(id=bg_id)
+            bg.bgg_id = bgg_id
+            bg.save(update_fields=['bgg_id'])
+            return bgg_id
+    else:
+        return 2
+
+# def get_bgg_info(bg_id, typ):
+#     if typ == 'img':
+#         bgg_id = Boardgames.objects.get(id=bg_id).bgg_id
+#         if bgg_id == 1 or bgg_id == '1':
+#             bgg_id = get_bgg_info(bg_id, 'id')
+#         xml_root = ET.fromstring(requests.get(f'https://www.boardgamegeek.com/xmlapi2/thing?id={bgg_id}').text)
+#         return xml_root.find('item').find('thumbnail').text
+#     elif typ == 'id':
+#         bg_name = Boardgames.objects.get(id=bg_id).name
+#         xml_root = ET.fromstring(requests.get(f'https://www.boardgamegeek.com/xmlapi2/search?query={bg_name}&type=boardgame&exact=1').text)
+#         if xml_root.find('item'):
+#             bgg_id = xml_root.find('item').attrib['id']
+#             if bgg_id:
+#                 bg = Boardgames.objects.get(id=bg_id)
+#                 bg.bgg_id = bgg_id
+#                 bg.save(update_fields=['bgg_id'])
+#                 return bgg_id
+#         else:
+#             return 2
 
 
 def load_chart_data(request):
@@ -447,14 +501,15 @@ def load_chart_data(request):
     position = []
     diff = []
 
-    bg_name = request.GET.get('name')
+    bg_id = request.GET.get('id')
+    bg_info = get_bgg_info(bg_id)
     p_count = request.GET.get('NoP')
     chk = request.GET.get('chk')
     p_colors = Player.objects.all()
     p_colors = {p_c.name: p_c.color for p_c in p_colors}
 
-    gameplays = Gameplay.objects.filter(name__name=bg_name)
-    queryset = Results.objects.filter(gp_id__name__name=bg_name) \
+    gameplays = Gameplay.objects.filter(name__id=bg_id)
+    queryset = Results.objects.filter(gp_id__name__id=bg_id) \
         .filter(gp_id__with_results=True) \
         .values('gp_id', 'p_id__name', 'gp_id__NumberOfPlayers', 'points', 'order').order_by('-points')
     if userid and chk != 'true':
@@ -474,8 +529,6 @@ def load_chart_data(request):
         names.append(query['p_id__name'])
         position.append(query['order'])
 
-    # queryset = Results.objects.filter(gp_id__name__name=bg_name).values('gp_id', 'points', 'order').order_by('-points')
-    # print(queryset)
     maxws = queryset[0]['points']
     minws = queryset.filter(order=1).order_by('points')[0]['points']
     avgws = round(queryset.filter(order=1).aggregate(Avg('points'))['points__avg'], 2)
@@ -559,6 +612,9 @@ def load_chart_data(request):
                               'last_gp': last_gp,
                               'nogp': nogp,
                               'order_data': order_data,
+                              'bg_img': bg_info['img'],
+                              'bg_rank': bg_info['rank'],
+                              'bg_weight': bg_info['weight'],
                               })
 
 
