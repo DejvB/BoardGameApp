@@ -1,6 +1,15 @@
 from django.contrib import admin
 
-from .models import *
+from .models import (
+    Boardgames,
+    Expansion,
+    Gameplay,
+    OwnBoardgame,
+    OwnExpansion,
+    Player,
+    Results,
+    UsedExpansion,
+)
 
 admin.site.register(Boardgames)
 admin.site.register(OwnBoardgame)

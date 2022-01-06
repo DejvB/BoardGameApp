@@ -1,13 +1,15 @@
-from django.urls import path
 from django.contrib.auth.views import LogoutView
+from django.urls import path
+
 from . import views
+from .views import homepage
 
 urlpatterns = [
     # ex: /polls/
-    path('', views.index, name='home'),
+    path('', homepage.index, name='home'),
     # ex: /polls/add_boardgame/
     path('add_boardgame/', views.add_boardgame, name='add_game'),
-    # ex: /polls/add_play/       whole path http://127.0.0.1:8000/polls/add_play/
+    # ex: /polls/add_play/   whole path http://127.0.0.1:8000/polls/add_play/
     path('add_play/', views.add_play, name='add_play'),
     # ex: /polls/add_player/
     path('add_player/', views.add_player, name='add_player'),
@@ -22,22 +24,30 @@ urlpatterns = [
     # ex: /polls/playerstats/
     path('playerstats/', views.playerstats, name='playerstats'),
     # registration page
-    path("register/", views.register_request, name="register"),
+    path('register/', views.register_request, name='register'),
     # login page
-    path("login/", views.login_request, name="login"),
+    path('login/', views.login_request, name='login'),
     # logout page
-    path("logout/", LogoutView.as_view(), name="logout"),
-
+    path('logout/', LogoutView.as_view(), name='logout'),
     path('pie_chart/', views.pie_chart, name='pie-chart'),
-
-
     # AJAX
-    path('ajax/load_player_count/', views.load_player_count, name='load_player_count'),
-    path('ajax/expansions_select_options/', views.expansions_select_options, name='expansions_select_options'),
-    path('ajax/load_playerstats/', views.load_playerstats, name='load_playerstats'),
+    path(
+        'ajax/load_player_count/',
+        views.load_player_count,
+        name='load_player_count',
+    ),
+    path(
+        'ajax/expansions_select_options/',
+        views.expansions_select_options,
+        name='expansions_select_options',
+    ),
+    path(
+        'ajax/load_playerstats/',
+        views.load_playerstats,
+        name='load_playerstats',
+    ),
     path('ajax/chart_options/', views.load_chart_data, name='chart_options'),
     path('ajax/get_history/', views.get_history, name='get_history'),
     path('ajax/randomizer/', views.randomizer, name='randomizer'),
     path('ajax/basic_stats/', views.basic_stats, name='basic_stats'),
-
- ]
+]
