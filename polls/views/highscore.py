@@ -14,6 +14,7 @@ def highscores(request):
         played_list = Results.objects.filter(p_id__id=userid).values(
             'gp_id__id'
         )
+        played_list = Results.objects.all().values('gp_id__id')
         gameplays = gameplays.filter(id__in=played_list)
     else:
         gp_ids = random.choices(
@@ -154,8 +155,13 @@ def load_chart_data(request):
                 .values('points')
             )
             if order:
-                p_order.append({'x': count, 'y': order[0]['order']})
-                p_points.append({'x': count, 'y': points[0]['points']})
+                for o, pl in zip(order, points):
+                    # print(o)
+                    p_order.append({'x': count, 'y': o['order']})
+                    p_points.append({'x': count, 'y': pl['points']})
+
+                # p_order.append({'x': count, 'y': order[0]['order']})
+                # p_points.append({'x': count, 'y': points[0]['points']})
                 player_exists = True
             else:
                 p_order.append({'x': count, 'y': 'Nan'})

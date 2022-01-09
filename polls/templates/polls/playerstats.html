@@ -84,7 +84,7 @@
 </div>
 
 <div class='container'>
-    <div class='box round shadow big' style="width: 100% overflow-x: auto; overflow-y: hidden">
+    <div id="line_chart_div" class='box round shadow big' style="width: 100% overflow-x: auto; overflow-y: hidden">
           <div class="chartWrapper">
           <div class="chartAreaWrapper">
             <div class="chartAreaWrapper2">
@@ -95,7 +95,7 @@
           </div>
     </div>
     {% if request.user.username %}
-    <div class='box round shadow'>
+    <div id="leaderboard_div" class='box round shadow' style="overflow: auto">
     <h2>Leaderboard</h2>
       <hr>
         <table style="width:100%" id="ElO table">
@@ -172,6 +172,10 @@ function plot_line_graph(data) {
 
 
 $("#id_name, #id_number").change(function () {
+    if ($('#leaderboard_div').length){
+        var offsetHeight = document.getElementById('line_chart').offsetHeight+10;
+        document.getElementById('leaderboard_div').style.height = offsetHeight+'px';
+    }
   var url = $("#line_chart").attr("data-url");
   var p_id = $(id_name).val();
   var number = $(id_number).val();

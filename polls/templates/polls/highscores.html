@@ -29,6 +29,7 @@
             {% endif %}
         </form>
         <div>
+         <h4>let me know if the picture is wrong.</h4>
             <div style="width: 50%; float: left;">
                 <label for="checkbox"><img id="bgg_img" src="${ $bg_img }"></label>
             </div>
@@ -120,7 +121,7 @@
 
 
 <div class='container'>
-  <div class='box round shadow big'style="width: 100% overflow-x: auto; overflow-y: hidden">
+  <div id="bar_chart_div" class='box round shadow big'style="width: 100% overflow-x: auto; overflow-y: hidden">
       <div class="chartWrapper">
       <div class="chartAreaWrapper" id="bar_chart_wrapper">
         <div class="chartAreaWrapper2" id="bar_chart_wrapper_2">
@@ -132,7 +133,7 @@
 
   </div>
 
-  <div class='box round shadow'>
+  <div id="avg_points" class='box round shadow'style='overflow: auto'>
     <h2>Average points</h2>
       <hr>
       <table style="width:100%" id="avgp">
@@ -270,6 +271,8 @@ var ajax_data=[];
 
 <script>
 function plot_bar_graph(data) {
+  var offsetHeight = document.getElementById('bar_chart_div').offsetHeight-5; // shadow
+  document.getElementById('avg_points').style.height = offsetHeight+'px';
   var bg_id = $(id_name).val();
   var bg_name = $("#id_name option:selected").text();
   var i;
