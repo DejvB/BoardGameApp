@@ -46,7 +46,7 @@
             <th>Who cares...</th>
           </tr>
         </table>
-    </div>
+</div>
 
 <div class='box round shadow'>
       <h2>Last week/month/year stats</h2>
@@ -73,11 +73,26 @@
             <th><label id="maxnws"></label></th>
           </tr>
         </table>
-    </div>
+</div>
 
 <div class='box round shadow'>
       <h2>Add game to library</h2>
         <hr>
+      <form method="post" id="new_game_in_library" new_game_url="{% url 'new_game_in_library' %}" style="float: left;" novalidate>
+        {% csrf_token %}
+        <table>
+          {{ newgame_form.as_table }}
+        </table>
+        <button type="submit" name="add_game">Add new boardgame</button>
+      </form>
+
+      <form method="post" id="new_exp_in_library" new_game_url="{% url 'new_exp_in_library' %}" style="float: left;" novalidate>
+        {% csrf_token %}
+        <table>
+          {{ newexp_form.as_table }}
+        </table>
+        <button type="submit" name="add_exp">Add new expansion</button>
+      </form>
 </div>
 
 

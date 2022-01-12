@@ -9,6 +9,8 @@ from .models import (
     Player,
     Results,
     UsedExpansion,
+    OwnBoardgame,
+    OwnExpansion,
 )
 
 
@@ -86,3 +88,18 @@ class NewUserForm(UserCreationForm):
         return user
 
         # field_order = ['username', 'custom_field', 'password']
+
+
+class OwnBoardgameForm(forms.ModelForm):
+
+    class Meta:
+        model = OwnBoardgame
+        exclude = ()
+        widgets = {'p_id': forms.HiddenInput()}
+
+
+class OwnExpansionForm(forms.ModelForm):
+    class Meta:
+        model = OwnExpansion
+        exclude = ()
+        widgets = {'p_id': forms.HiddenInput()}
