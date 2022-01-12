@@ -1,7 +1,7 @@
 from django.db.models import Count
 from django.shortcuts import render
 
-from .. models import Player, Gameplay, Results
+from ..models import Gameplay, Player, Results
 
 
 def compute_score(o, n):
@@ -54,7 +54,7 @@ def pie_chart(request):
             p = queryset.filter(p_id__name=player)
             try:
                 data[i].append(p[0]['total'])
-            except:
+            except IndexError:
                 data[i].append(0)
             if i == 0:
                 labels.append(player)

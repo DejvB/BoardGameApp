@@ -4,9 +4,9 @@ from .models import Gameplay
 
 
 class GameplayTable(tables.Table):
-    NumberOfPlayers = tables.Column(verbose_name= 'NoP' )
-    players = tables.Column(accessor='get_players',
-                            verbose_name='Players')
+    NumberOfPlayers = tables.Column(verbose_name='NoP')
+    players = tables.Column(accessor='get_players', verbose_name='Players')
+
     class Meta:
         model = Gameplay
         exclude = (

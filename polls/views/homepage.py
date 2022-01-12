@@ -9,12 +9,15 @@ from django.db.models.functions import (
     ExtractWeekDay,
     ExtractYear,
 )
+from django.http import JsonResponse
 from django.shortcuts import render
 
+from ..models import Boardgames, Gameplay, Player, Results
 from .helpers import my_view
-from ..models import Player, Boardgames, Gameplay, Results
+
 
 def index(request):
+    request.session['test'] = 'Blue'
     userid = my_view(request)
     games_own_list = games_list = Gameplay.objects.all()
     results_list = Results.objects.all()
@@ -77,7 +80,6 @@ def index(request):
     mostplayed_games_list_values.extend([0] * len(not_played_list))
 
     time_list = games_name_list.order_by('-game_time')[:5]
-    # games_name_list = Gameplay.objects.values('name__name', 'date').annotate(game_count=Count('name__name'))
 
     context = {
         'latest_games_list': latest_games_list,
@@ -109,7 +111,10 @@ def index(request):
                 totalTimestr.append(str(0))
                 totalCount.append(0)
         week.append(stat['week'])
-        totalTime.append(stat['time__sum'].seconds * 1000)
+        totalTime.append(
+            stat['time__sum'].days * 1000 * 86400
+            + stat['time__sum'].seconds * 1000
+        )
         totalTimestr.append(str(stat['time__sum']))
         totalCount.append(stat['time__count'])
 
@@ -162,4 +167,10 @@ def index(request):
     )
     weekday = weekday[1:] + [weekday[0]]
     context['weekday'] = weekday
+    context['players'] = Player.objects.all()
     return render(request, 'polls/index.html', context)
+
+
+def god_button(request):
+    request.session['fake_id'] = request.GET.get('fake_id')
+    return JsonResponse(data={})

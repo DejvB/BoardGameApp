@@ -1,0 +1,84 @@
+{% extends "polls/header.html" %}
+{% block body %}
+<div class='box round shadow'>
+      <h2>Library</h2>
+        <hr>
+        <table style="width:100%">
+          <tr>
+            <td>Number of owned games:</td>
+            <th>{{NoG}}</th>
+          </tr>
+          <tr>
+            <td>Most often category:</td>
+            <th>
+              {% for moc in MoC %}
+              <a class="bubble">{{ moc.0 }} ({{ moc.1}})</a>
+<!--              {% if not forloop.last %},{% endif %}-->
+              {% empty %}
+                Nothing to show.
+              {% endfor %}
+            </th>
+          </tr>
+          <tr>
+            <td>Most often mechanic:</td>
+            <th>
+              {% for mom in MoM %}
+              <a class="bubble">{{ mom.0 }} ({{ mom.1}})</a>
+<!--              {% if not forloop.last %},{% endif %}-->
+              {% empty %}
+                Nothing to show.
+              {% endfor %}
+            </th>
+          </tr>
+          <tr>
+            <td>Most often designer:</td>
+            <th>
+              {% for mod in MoD %}
+              <a class="bubble">{{ mod.0 }} ({{ mod.1}})</a>
+<!--              {% if not forloop.last %},{% endif %}-->
+              {% empty %}
+                Nothing to show.
+              {% endfor %}
+            </th>
+          </tr>
+          <tr>
+            <td>Most often artist:</td>
+            <th>Who cares...</th>
+          </tr>
+        </table>
+    </div>
+
+<div class='box round shadow'>
+      <h2>Last week/month/year stats</h2>
+        <hr>
+        <table style="width:100%">
+          <tr>
+            <td>Played games this week:</td>
+            <th>{{week_diff.0}} ({{week_diff.0|add:week_diff.1}})</th>
+          </tr>
+          <tr>
+            <td>Played games this month:</td>
+            <th>{{month_diff.0}} ({{month_diff.0|add:month_diff.1}})</th>
+          </tr>
+          <tr>
+            <td>Played games this year:</td>
+            <th>{{year_diff.0}} ({{year_diff.0|add:year_diff.1}})</th>
+          </tr>
+          <tr>
+            <td>Average score:</td>
+            <th><label id="avgtot"></label></th>
+          </tr>
+          <tr>
+            <td>Highest non-winning score:</td>
+            <th><label id="maxnws"></label></th>
+          </tr>
+        </table>
+    </div>
+
+<div class='box round shadow'>
+      <h2>Add game to library</h2>
+        <hr>
+</div>
+
+
+{% endblock %}

@@ -1,14 +1,16 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
+
 from polls.forms import NewUserForm
+
 
 @login_required
 def register_request(request):
     if request.method == 'POST':
         form = NewUserForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            # user = form.save()
             # login(request, user)
             messages.success(request, 'Registration successful.')
             return redirect('home')

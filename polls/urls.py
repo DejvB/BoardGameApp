@@ -2,11 +2,10 @@ from django.contrib.auth.views import LogoutView
 from django.urls import path
 
 from . import views
-from .views import homepage
 
 urlpatterns = [
     # ex: /polls/
-    path('', homepage.index, name='home'),
+    path('', views.index, name='home'),
     # ex: /polls/add_boardgame/
     path('add_boardgame/', views.add_boardgame, name='add_game'),
     # ex: /polls/add_play/   whole path http://127.0.0.1:8000/polls/add_play/
@@ -30,6 +29,7 @@ urlpatterns = [
     # logout page
     path('logout/', LogoutView.as_view(), name='logout'),
     path('pie_chart/', views.pie_chart, name='pie-chart'),
+    path('userpage/', views.userpage, name='userpage'),
     # AJAX
     path(
         'ajax/load_player_count/',
@@ -50,4 +50,5 @@ urlpatterns = [
     path('ajax/get_history/', views.get_history, name='get_history'),
     path('ajax/randomizer/', views.randomizer, name='randomizer'),
     path('ajax/basic_stats/', views.basic_stats, name='basic_stats'),
+    path('ajax/god_button/', views.god_button, name='god_button'),
 ]

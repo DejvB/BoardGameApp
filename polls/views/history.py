@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
+from ..models import Gameplay
 from ..tables import GameplayTable
-from .. models import Gameplay
 
 
 def history(request):

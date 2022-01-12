@@ -7,3 +7,4 @@ from .login import *
 from .pie_graph import *
 from .registration import *
 from .statistics import *
+from .userpage import *

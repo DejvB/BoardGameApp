@@ -19,7 +19,7 @@
   <a href="{% url 'playerstats' %}"><input type="image" src="{% static 'images/meeple-king.png' %}"/></a>
   <div  class="headertext" style="float: right;">
           {% if request.user.username %}
-           <a>{{ request.user.username }} </a>
+           <a href="{% url 'userpage' %}">{{ request.user.username }} </a>
            <a href="{% url 'logout' %}">Log out</a>
           {% else %}
             <a href="{% url 'login' %}">Log in</a>

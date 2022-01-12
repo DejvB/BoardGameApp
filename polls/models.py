@@ -13,6 +13,13 @@ class Player(models.Model):
             'bg_id__id', flat=True
         )
 
+    def get_played(self, id):
+        return Gameplay.objects.filter(
+            id__in=list(
+                Results.objects.filter(p_id=id).values_list('gp_id', flat=True)
+            )
+        )
+
     user = models.OneToOneField(
         User, on_delete=models.SET_NULL, null=True, default=None, blank=True
     )
@@ -80,8 +87,9 @@ class Gameplay(models.Model):
         return self.name.name
 
     def get_players(self):
-        return ', '.join(list(self.results.all().values_list('p_id__name',
-                                                             flat=True)))
+        return ', '.join(
+            list(self.results.all().values_list('p_id__name', flat=True))
+        )
 
     name = models.ForeignKey(Boardgames, on_delete=models.CASCADE)
     NumberOfPlayers = models.IntegerField(default=0)

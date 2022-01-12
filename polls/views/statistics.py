@@ -1,10 +1,11 @@
 import itertools
 
 import numpy as np
-from django.shortcuts import render
 from django.http import JsonResponse
-from ..models import Player, Gameplay, Results
-from .helpers import my_view, computeKW
+from django.shortcuts import render
+
+from ..models import Gameplay, Player, Results
+from .helpers import computeKW, my_view
 
 elos = {}
 elo_history = {}
@@ -65,7 +66,7 @@ def load_playerstats(request):
         lws = max(
             len(list(y)) for (c, y) in itertools.groupby(order) if c == 1
         )
-    except:
+    except ValueError:
         lws = 0
     try:
         lls = max(
@@ -75,7 +76,7 @@ def load_playerstats(request):
             )
             if c
         )
-    except:
+    except ValueError:
         lls = 0
     try:
         lnws = max(
@@ -83,13 +84,13 @@ def load_playerstats(request):
             for (c, y) in itertools.groupby(([a != 1 for a in order]))
             if c
         )
-    except:
+    except ValueError:
         lnws = 0
     try:
         lbl = max(
             len(list(y)) for (c, y) in itertools.groupby(order) if c == 2
         )
-    except:
+    except ValueError:
         lbl = 0
 
     base = elo_history[int(p_id)]

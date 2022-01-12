@@ -4,18 +4,23 @@ from django.db.models import Avg, Count
 from django.http import JsonResponse
 from django.shortcuts import render
 
-from .helpers import my_view, get_bgg_info
-from .. models import Player, Gameplay, Results
+from ..models import Gameplay, Player, Results
+from .helpers import get_bgg_info, my_view
+
 
 def highscores(request):
+    if 'test' in request.session:
+        print(request.session['test'])
     userid = my_view(request)
     gameplays = Gameplay.objects.all()
     if userid:
         played_list = Results.objects.filter(p_id__id=userid).values(
             'gp_id__id'
         )
-        played_list = Results.objects.all().values('gp_id__id')
         gameplays = gameplays.filter(id__in=played_list)
+        if userid in ['6', '7']:
+            played_list = Results.objects.all().values('gp_id__id')
+            gameplays = Gameplay.objects.filter(id__in=played_list)
     else:
         gp_ids = random.choices(
             list(Gameplay.objects.all().values_list('id', flat=True)), k=3
@@ -28,7 +33,6 @@ def highscores(request):
         .order_by('name__name'),
         'lastgame': gameplays.latest('date').name,
     }
-
     return render(request, 'polls/highscores.html', context)
 
 
@@ -44,7 +48,6 @@ def load_chart_data(request):
 
     bg_id = request.GET.get('id')
     bg_info = get_bgg_info(bg_id)
-    p_count = request.GET.get('NoP')
     chk = request.GET.get('chk')
     p_colors = Player.objects.all()
     p_colors = {p_c.name: p_c.color for p_c in p_colors}
@@ -85,7 +88,7 @@ def load_chart_data(request):
     avgtot = round(queryset.aggregate(Avg('points'))['points__avg'], 2)
     try:
         maxnws = queryset.filter(order=2)[0]['points']
-    except:
+    except IndexError:
         maxnws = 0
     queryset_gp = gameplays.values('time')
     longest_gp = str(queryset_gp.order_by('-time')[0]['time'])
@@ -99,10 +102,8 @@ def load_chart_data(request):
             diff.append(
                 q.filter(order=1)[0]['points'] - q.filter(order=2)[0]['points']
             )
-        except:
+        except IndexError:
             diff = [0]
-            # empty queryset. You take id from all gp, not just from games with all three
-            pass
     avgmp = round(sum(diff) / len(diff), 2)
     uw = (
         queryset.filter(order=1)

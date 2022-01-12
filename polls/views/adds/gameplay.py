@@ -1,16 +1,20 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import Avg
 from django.forms import formset_factory
 from django.http import JsonResponse
-from django.db.models import Avg
 from django.shortcuts import redirect, render
-from polls.forms import UsedExpansionForm, GameplayForm
 
-from ...models import Expansion, Gameplay, Results
-from ..helpers import *
+from polls.forms import GameplayForm, UsedExpansionForm
+
+from ...models import Boardgames, Expansion, Gameplay, Results
+from ..helpers import get_last_gameplay
 
 
 @login_required
 def add_play(request):
+    last_game = get_last_gameplay(request, only_session=True)
+    if last_game and not last_game.results.all():
+        return redirect('add_results')
     context = {}
     gp_form = GameplayForm()
 
@@ -21,8 +25,7 @@ def add_play(request):
     e_formset = expansionformset(
         request.POST or None,
         initial=[
-            {'e_id': expansions[i], 'gp_id': bg_id}
-            for i in range(len(expansions))
+            {'e_id': expansions[i], 'gp_id': 0} for i in range(len(expansions))
         ],
     )
     if request.method == 'POST':
@@ -36,6 +39,7 @@ def add_play(request):
                 e = e_form.save()
                 e.gp_id = gp
                 e.save()
+            request.session['gameplay_id'] = gp.id
             if gp.with_results:
                 return redirect('add_results')
             else:
@@ -86,7 +90,6 @@ def expansions_select_options(request):
 
 def load_player_count(request):
     bg_id = request.GET.get('id')
-    print(bg_id)
     playersRange = Boardgames.objects.filter(id=bg_id).values(
         'minNumberOfPlayers', 'maxNumberOfPlayers'
     )[0]
