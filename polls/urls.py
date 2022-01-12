@@ -30,11 +30,21 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('pie_chart/', views.pie_chart, name='pie-chart'),
     path('userpage/', views.userpage, name='userpage'),
-    # AJAX
+    # AJAX new_game_in_library
     path(
         'ajax/load_player_count/',
         views.load_player_count,
         name='load_player_count',
+    ),
+    path(
+        'ajax/new_game_in_library/',
+        views.new_game_in_library,
+        name='new_game_in_library',
+    ),
+    path(
+        'ajax/new_exp_in_library/',
+        views.new_exp_in_library,
+        name='new_exp_in_library',
     ),
     path(
         'ajax/expansions_select_options/',

@@ -1,21 +1,16 @@
-import random
 from collections import Counter
 import datetime
-from django.db.models import Avg, Count
-from django.http import JsonResponse
 from django.db.models.functions import (
     ExtractIsoYear,
     ExtractMonth,
     ExtractWeek,
 )
-from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
-from polls.forms import PlayerForm
+from polls.forms import OwnBoardgameForm, OwnExpansionForm
 
 from .helpers import my_view, get_bgg_info
-from ..views import my_view
-from .. models import Player, Gameplay, Results, OwnBoardgame, Boardgames
+from .. models import Player, Boardgames
 
 
 @login_required
@@ -72,4 +67,34 @@ def userpage(request):
         'month_diff': month_diff,
         'year_diff': year_diff,
     })
+    context.update(new_game_in_library(request, userid))
+    context.update(new_exp_in_library(request, userid))
     return render(request, 'polls/userpage.html', context)
+
+
+def new_game_in_library(request, userid):
+    context = {}
+    newgame_form = OwnBoardgameForm(initial={'p_id': userid})
+    if request.method == 'POST' and 'add_game' in request.POST:
+        newgame_form = OwnBoardgameForm(request.POST)
+        if newgame_form.is_valid():
+            b = newgame_form.save()
+            b.save()
+        newgame_form = OwnBoardgameForm(initial={'p_id': userid})
+        # return redirect('home')
+    context['newgame_form'] = newgame_form
+    return context
+
+
+def new_exp_in_library(request, userid):
+    context = {}
+    newexp_form = OwnExpansionForm(initial={'p_id': userid})
+    if request.method == 'POST' and 'add_exp' in request.POST:
+        newexp_form = OwnExpansionForm(request.POST)
+        if newexp_form.is_valid():
+            e = newexp_form.save()
+            e.save()
+        newexp_form = OwnExpansionForm(initial={'p_id': userid})
+        # return redirect('home')
+    context['newexp_form'] = newexp_form
+    return context
