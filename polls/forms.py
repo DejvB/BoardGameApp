@@ -20,8 +20,23 @@ class BoardgameForm(forms.ModelForm):
         fields = ('name', 'type', 'minNumberOfPlayers', 'maxNumberOfPlayers')
 
 
+time_choices = (
+    (120, '2h'),
+    (60, '1h'),
+    (45, '45m'),
+    (30, '30m'),
+    (15, '15m'),
+    (10, '10m'),
+    (5, '5m'),
+)
+
+
 class GameplayForm(forms.ModelForm):
     name = forms.ModelChoiceField(Boardgames.objects.order_by('name'))
+    time = forms.MultipleChoiceField(choices=time_choices,
+                                           required=False,
+                                           widget=forms.CheckboxSelectMultiple(),
+                                           )
 
     class Meta:
         model = Gameplay

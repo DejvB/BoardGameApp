@@ -7,9 +7,24 @@
 <form method="post" id="GameplayForm" load_player_count_url="{% url 'load_player_count' %}" expansions_select_options_url="{% url 'expansions_select_options' %}" novalidate>
 
     {% csrf_token %}
-    <table>
-        {{ gp_form.as_table }}
-    </table>
+        {% for field in gp_form %}
+            {% if field.label == 'Time' %}
+                {{ field.errors }}
+                {{ field.label_tag }}
+                <div class="timebox">
+                {% for f in field %}
+                    {{ f.errors }}
+                    <input type="checkbox" class="timeboxch" id="{{ forloop.counter0 }}" name="{{ forloop.counter0 }}" value="{{ f.data.value }}">
+                    <label for="{{ forloop.counter0 }}" class="round">{{ f.choice_label  }}</label>
+                {% endfor %}
+                </div>
+            {% else %}
+            <p>
+                {{ field.errors }}
+                {{ field.label_tag }} {{ field }}
+            </p>
+            {% endif %}
+        {% endfor %}
     <div id="Expansion_formset_id">
         {{ e_formset.management_form }}
         {% for e_form in e_formset %}
