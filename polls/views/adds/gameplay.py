@@ -1,3 +1,4 @@
+from datetime import timedelta, datetime, date
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg
 from django.forms import formset_factory
@@ -10,18 +11,39 @@ from ...models import Boardgames, Expansion, Gameplay, Results
 from ..helpers import get_last_gameplay
 
 
+def get_time_length(req):
+    return sum(int(req.POST[f'{i}']) for i in range(8) if f'{i}' in req.POST)
+
+
+def get_nearest_to_5(minutes):
+    if minutes % 5 == 0:
+        return 0
+    elif minutes % 5 == 1:
+        return -1
+    elif minutes % 5 == 2:
+        return -2
+    elif minutes % 5 == 3:
+        return 2
+    else:
+        return 1
+
+
+def get_now():
+    d = datetime.now()
+    d = d + timedelta(minutes=get_nearest_to_5(d.minute))
+    return d.strftime('%Y-%m-%dT%H:%M')
+
 @login_required
 def add_play(request):
     last_game = get_last_gameplay(request, only_session=True)
     if last_game and not last_game.results.all():
         return redirect('add_results')
     context = {}
-    gp_form = GameplayForm()
-
+    gp_form = GameplayForm(request.POST or None, initial={'date': get_now()})
     expansions = []
     expansionformset = formset_factory(
         UsedExpansionForm, extra=0
-    )  # len(Expansions))
+    )
     e_formset = expansionformset(
         request.POST or None,
         initial=[
@@ -30,10 +52,11 @@ def add_play(request):
     )
     if request.method == 'POST':
         gp_form = GameplayForm(request.POST)
-        if (
-            gp_form.is_valid() and e_formset.is_valid()
-        ):  # can be and e_formset.is_valid()
-            gp = gp_form.save()
+        minutes = get_time_length(request)
+        if gp_form.is_valid() and e_formset.is_valid():
+            print(gp_form.cleaned_data['time'])
+            gp = gp_form.save(commit=False)
+            gp.time = timedelta(minutes=minutes)
             gp.save()
             for e_form in e_formset:
                 e = e_form.save()
