@@ -1,4 +1,5 @@
-from datetime import timedelta, datetime, date
+from datetime import datetime, timedelta
+
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg
 from django.forms import formset_factory
@@ -33,6 +34,7 @@ def get_now():
     d = d + timedelta(minutes=get_nearest_to_5(d.minute))
     return d.strftime('%Y-%m-%dT%H:%M')
 
+
 @login_required
 def add_play(request):
     last_game = get_last_gameplay(request, only_session=True)
@@ -41,9 +43,7 @@ def add_play(request):
     context = {}
     gp_form = GameplayForm(request.POST or None, initial={'date': get_now()})
     expansions = []
-    expansionformset = formset_factory(
-        UsedExpansionForm, extra=0
-    )
+    expansionformset = formset_factory(UsedExpansionForm, extra=0)
     e_formset = expansionformset(
         request.POST or None,
         initial=[
@@ -54,7 +54,6 @@ def add_play(request):
         gp_form = GameplayForm(request.POST)
         minutes = get_time_length(request)
         if gp_form.is_valid() and e_formset.is_valid():
-            print(gp_form.cleaned_data['time'])
             gp = gp_form.save(commit=False)
             gp.time = timedelta(minutes=minutes)
             gp.save()
