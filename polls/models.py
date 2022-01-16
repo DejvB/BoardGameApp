@@ -93,7 +93,7 @@ class Gameplay(models.Model):
 
     name = models.ForeignKey(Boardgames, on_delete=models.CASCADE)
     NumberOfPlayers = models.IntegerField(default=0)
-    date = models.DateTimeField(default=datetime.datetime.now())
+    date = models.DateTimeField(default=datetime.datetime.now)
     time = models.DurationField(default=datetime.timedelta(days=0, seconds=0))
     with_results = models.BooleanField(default=True)
 
@@ -117,3 +117,27 @@ class UsedExpansion(models.Model):
     gp_id = models.ForeignKey(Gameplay, on_delete=models.CASCADE)
     e_id = models.ForeignKey(Expansion, on_delete=models.CASCADE)
     used = models.BooleanField(default=False)
+
+
+class Mechanics(models.Model):
+    def __str__(self):
+        return self.name
+
+    name = models.CharField(max_length=50)
+    boardgame = models.ManyToManyField(Boardgames, related_name='mechanics')
+
+
+class Category(models.Model):
+    def __str__(self):
+        return self.name
+
+    name = models.CharField(max_length=50)
+    boardgame = models.ManyToManyField(Boardgames, related_name='category')
+
+
+class Designer(models.Model):
+    def __str__(self):
+        return self.name
+
+    name = models.CharField(max_length=50)
+    boardgame = models.ManyToManyField(Boardgames, related_name='designer')
