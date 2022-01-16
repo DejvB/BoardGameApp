@@ -83,7 +83,12 @@
         <table>
           {{ newgame_form.as_table }}
         </table>
-        <button type="submit" name="add_game">Add new boardgame</button>
+        <div class="tooltip">
+            <button type="submit" name="add_game">Add new boardgame</button>
+            {% if tooltip_board %}
+                <span class="tooltiptext show" id="myTooltip">{{ tooltip_board }}</span>
+            {% endif %}
+        </div>
       </form>
 
       <form method="post" id="new_exp_in_library" new_game_url="{% url 'new_exp_in_library' %}" style="float: left;" novalidate>
@@ -91,7 +96,12 @@
         <table>
           {{ newexp_form.as_table }}
         </table>
-        <button type="submit" name="add_exp">Add new expansion</button>
+        <div class="tooltip">
+            <button type="submit" name="add_exp">Add new expansion</button>
+            {% if tooltip_exp %}
+                <span class="tooltiptext show" id="myTooltip">{{ tooltip_exp }}</span>
+            {% endif %}
+        </div>
       </form>
 </div>
 

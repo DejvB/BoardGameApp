@@ -268,3 +268,55 @@ input[type=image]{
     background: rgb(68, 68, 68);
     border-radius: 10px;
   }
+
+/* Popup container */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+/* The actual popup (appears on top) */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: #3CB371;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px 0;
+  position: absolute;
+  z-index: 1;
+  top: 125%;
+  left: 50%;
+  margin-left: -60px; /* Use half of the width, to center the tooltip */
+}
+
+/* Popup arrow */
+.tooltip .tooltiptext::after {
+  content: " ";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #3CB371 transparent;
+}
+
+/* Toggle this class when clicking on the popup container (hide and show the popup) */
+.tooltip .show {
+  -webkit-animation: fading  4s;
+  animation: fading  4s
+}
+
+@-webkit-keyframes fading {
+  0% { opacity: 0; visibility: visible;}
+  50% { opacity: 1; }
+  100% { opacity: 0; visibility: hidden;}
+}
+
+@keyframes fading {
+  0% { opacity: 0; visibility: visible;}
+  50% { opacity: 1; }
+  100% { opacity: 0; visibility: hidden;}
+}
