@@ -6,11 +6,11 @@ from .models import (
     Boardgames,
     Expansion,
     Gameplay,
+    OwnBoardgame,
+    OwnExpansion,
     Player,
     Results,
     UsedExpansion,
-    OwnBoardgame,
-    OwnExpansion,
 )
 
 
@@ -33,10 +33,11 @@ time_choices = (
 
 class GameplayForm(forms.ModelForm):
     name = forms.ModelChoiceField(Boardgames.objects.order_by('name'))
-    time = forms.MultipleChoiceField(choices=time_choices,
-                                           required=False,
-                                           widget=forms.CheckboxSelectMultiple(),
-                                           )
+    time = forms.MultipleChoiceField(
+        choices=time_choices,
+        required=False,
+        widget=forms.CheckboxSelectMultiple(),
+    )
 
     class Meta:
         model = Gameplay
@@ -106,7 +107,6 @@ class NewUserForm(UserCreationForm):
 
 
 class OwnBoardgameForm(forms.ModelForm):
-
     class Meta:
         model = OwnBoardgame
         exclude = ()

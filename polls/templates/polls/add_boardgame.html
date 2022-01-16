@@ -10,7 +10,12 @@
     {{ form.as_table }}
     </table>
     {% csrf_token %}
-    <button type="submit" name="run_script">Save boardgame</button>
+    <div class="tooltip">
+        <button type="submit" name="run_script">Save boardgame</button>
+        {% if tooltip %}
+            <span class="tooltiptext show" id="myTooltip">{{ tooltip }}</span>
+        {% endif %}
+    </div>
 </form>
 </div>
 {% endblock %}

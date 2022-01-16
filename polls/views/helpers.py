@@ -109,3 +109,8 @@ def get_last_gameplay(request, only_session):
     else:
         last_game = Gameplay.objects.none()
     return last_game
+
+
+def show_success_tooltip(context, tooltip='tooltip'):
+    context.update({tooltip: 'Submit was successful.'})
+    return context

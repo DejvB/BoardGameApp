@@ -9,7 +9,12 @@
         <table>
             {{ form.as_table }}
         </table>
-        <button type="submit" name="run_script">Save player</button>
+        <div class="tooltip">
+            <button type="submit" name="run_script">Save player</button>
+            {% if tooltip %}
+                <span class="tooltiptext show" id="myTooltip">{{ tooltip }}</span>
+            {% endif %}
+        </div>
     </form>
 </div>
 

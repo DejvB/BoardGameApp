@@ -24,7 +24,12 @@
                     {{ form.as_table }}
                 </table>
                 {% if forloop.last %}
-<button type="submit" name="run_script">Save results</button>
+                    <div class="tooltip">
+                        <button type="submit" name="run_script">Save results</button>
+                        {% if tooltip %}
+                            <span class="tooltiptext show" id="myTooltip">{{ tooltip }}</span>
+                        {% endif %}
+                    </div>
                 {% endif %}
             </div>
         {% endfor %}
