@@ -12,7 +12,7 @@ from django.shortcuts import render
 from polls.forms import OwnBoardgameForm, OwnExpansionForm
 
 from ..models import Player
-from .helpers import get_bgg_info, my_view, show_success_tooltip
+from .helpers import get_bg_cmd, my_view, show_success_tooltip
 
 
 @login_required
@@ -26,12 +26,12 @@ def userpage(request):
         'rank': [],
         'designer': [],
     }
-    for bg_id in bg_owned_list[:3]:
-        bgg_info = get_bgg_info(bg_id)
-        data['rank'].append(bgg_info['rank'])
+    for bg_id in bg_owned_list[:52]:
+        bgg_info = get_bg_cmd(bg_id)
+        # data['rank'].append(bgg_info['rank'])
         data['mechanics'].extend(bgg_info['mechanics'])
         data['category'].extend(bgg_info['category'])
-        data['weight'].append(bgg_info['weight'])
+        # data['weight'].append(bgg_info['weight'])
         data['designer'].extend(bgg_info['designer'])
     context = {
         'NoG': len(bg_owned_list),

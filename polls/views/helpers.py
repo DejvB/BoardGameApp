@@ -4,7 +4,14 @@ from xml.etree import ElementTree as ET
 import numpy as np
 import requests
 
-from ..models import Boardgames, Gameplay, Player
+from ..models import (
+    Boardgames,
+    Category,
+    Designer,
+    Gameplay,
+    Mechanics,
+    Player,
+)
 
 
 def my_view(request):
@@ -39,8 +46,30 @@ def get_bgg_info(bg_id):
     bg_info['mechanics'] = [m.attrib['value'] for m in mechanics]
     mechanics = xml_root.findall("item//link[@type='boardgamedesigner']")
     bg_info['designer'] = [m.attrib['value'] for m in mechanics]
-    # print(bg_info)
+    update_bg_info(bg_id, bg_info)
     return bg_info
+
+
+def get_bg_cmd(bg_id):
+    bg_info = {}
+    if Boardgames.objects.get(id=bg_id).designer.all():
+        bg_info['category'] = Boardgames.objects.get(id=bg_id).category.all()
+        bg_info['mechanics'] = Boardgames.objects.get(id=bg_id).mechanics.all()
+        bg_info['designer'] = Boardgames.objects.get(id=bg_id).designer.all()
+        return bg_info
+    return get_bgg_info(bg_id)
+
+
+def update_bg_info(bg_id, bg_info):
+    for category in bg_info['category']:
+        cat, _ = Category.objects.get_or_create(name=category)
+        cat.boardgame.add(bg_id)
+    for mechanic in bg_info['mechanics']:
+        mech, _ = Mechanics.objects.get_or_create(name=mechanic)
+        mech.boardgame.add(bg_id)
+    for designer in bg_info['designer']:
+        des, _ = Designer.objects.get_or_create(name=designer)
+        des.boardgame.add(bg_id)
 
 
 def update_bgg_id(bg_id):
