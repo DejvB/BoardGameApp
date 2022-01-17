@@ -5,6 +5,7 @@ from django.shortcuts import render
 
 from polls.forms import ResultsForm
 
+from ...models import PlayerSpecifics
 from ..helpers import (
     compute_tournament,
     get_last_gameplay,
@@ -17,6 +18,11 @@ from ..helpers import (
 def add_results(request):
     context = {}
     last_game = get_last_gameplay(request, only_session=False)
+    specifics = PlayerSpecifics.objects.filter(
+        bg_id_id=last_game.name.id
+    ).values_list('id', 'name')
+    player_order = [(i, i) for i in range(last_game.NumberOfPlayers + 1)]
+    print(player_order)
     ResultsFormSet = formset_factory(ResultsForm, extra=0)
     if last_game.with_results:
         formset = ResultsFormSet(
@@ -26,6 +32,13 @@ def add_results(request):
                 for i in range(max(2, last_game.NumberOfPlayers))
             ],
         )
+
+        for form in formset:
+            form.fields['player_order'].choices = player_order
+            if specifics:
+                form.fields['player_specifics'].choices = specifics
+            else:
+                form.fields.pop('player_specifics')
     else:
         formset = ResultsFormSet(
             request.POST or None,

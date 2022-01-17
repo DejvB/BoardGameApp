@@ -53,7 +53,6 @@ class Boardgames(models.Model):
         max_length=50, default='Strategy', choices=gametype_choices
     )
     bgg_id = models.IntegerField(default=1)
-    # ordering = ['name']
 
 
 class Expansion(models.Model):
@@ -98,6 +97,14 @@ class Gameplay(models.Model):
     with_results = models.BooleanField(default=True)
 
 
+class PlayerSpecifics(models.Model):
+    def __str__(self):
+        return self.name
+
+    name = models.CharField(max_length=50)
+    bg_id = models.ForeignKey(Boardgames, on_delete=models.CASCADE)
+
+
 class Results(models.Model):
     def __str__(self):
         return self.gp_id.name.name
@@ -108,6 +115,10 @@ class Results(models.Model):
     p_id = models.ForeignKey(Player, on_delete=models.CASCADE)
     order = models.IntegerField(default=0)
     points = models.IntegerField(default=0)
+    player_order = models.IntegerField(default=0)
+    player_specifics = models.ForeignKey(
+        PlayerSpecifics, blank=True, null=True, on_delete=models.SET_NULL
+    )
 
 
 class UsedExpansion(models.Model):
