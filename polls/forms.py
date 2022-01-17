@@ -9,6 +9,7 @@ from .models import (
     OwnBoardgame,
     OwnExpansion,
     Player,
+    PlayerSpecifics,
     Results,
     UsedExpansion,
 )
@@ -84,6 +85,11 @@ class UsedExpansionForm(forms.ModelForm):
 
 
 class ResultsForm(forms.ModelForm):
+    player_specifics = forms.ModelChoiceField(
+        PlayerSpecifics.objects.order_by('name')
+    )
+    player_order = forms.ChoiceField()
+
     class Meta:
         model = Results
         exclude = ()

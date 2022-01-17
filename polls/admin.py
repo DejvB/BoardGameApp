@@ -10,6 +10,7 @@ from .models import (
     OwnBoardgame,
     OwnExpansion,
     Player,
+    PlayerSpecifics,
     Results,
     UsedExpansion,
 )
@@ -25,3 +26,4 @@ admin.site.register(UsedExpansion)
 admin.site.register(Category)
 admin.site.register(Mechanics)
 admin.site.register(Designer)
+admin.site.register(PlayerSpecifics)
