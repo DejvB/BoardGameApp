@@ -38,9 +38,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='gameplay',
             name='date',
-            field=models.DateTimeField(
-                default=datetime.datetime(2020, 10, 5, 18, 49, 24, 558028)
-            ),
+            field=models.DateTimeField(default=datetime.datetime(2020, 10, 5, 18, 49, 24, 558028)),
         ),
         migrations.CreateModel(
             name='UsedExpansion',

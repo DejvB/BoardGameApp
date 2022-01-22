@@ -14,23 +14,17 @@ def highscores(request):
     userid = my_view(request)
     gameplays = Gameplay.objects.all()
     if userid:
-        played_list = Results.objects.filter(p_id__id=userid).values(
-            'gp_id__id'
-        )
+        played_list = Results.objects.filter(p_id__id=userid).values('gp_id__id')
         gameplays = gameplays.filter(id__in=played_list)
         if userid in ['6', '7']:
             played_list = Results.objects.all().values('gp_id__id')
             gameplays = Gameplay.objects.filter(id__in=played_list)
     else:
-        gp_ids = random.choices(
-            list(Gameplay.objects.all().values_list('id', flat=True)), k=3
-        )
+        gp_ids = random.choices(list(Gameplay.objects.all().values_list('id', flat=True)), k=3)
         gameplays = gameplays.filter(id__in=gp_ids)
 
     context = {
-        'boardgames': gameplays.values('name__name', 'name__id')
-        .distinct()
-        .order_by('name__name'),
+        'boardgames': gameplays.values('name__name', 'name__id').distinct().order_by('name__name'),
         'lastgame': gameplays.latest('date').name,
     }
     return render(request, 'polls/highscores.html', context)
@@ -56,15 +50,11 @@ def load_chart_data(request):
     queryset = (
         Results.objects.filter(gp_id__name__id=bg_id)
         .filter(gp_id__with_results=True)
-        .values(
-            'gp_id', 'p_id__name', 'gp_id__NumberOfPlayers', 'points', 'order'
-        )
+        .values('gp_id', 'p_id__name', 'gp_id__NumberOfPlayers', 'points', 'order')
         .order_by('-points')
     )
     if userid and chk != 'true':
-        played_list = Results.objects.filter(p_id__id=userid).values(
-            'gp_id__id'
-        )
+        played_list = Results.objects.filter(p_id__id=userid).values('gp_id__id')
         queryset = queryset.filter(gp_id__in=played_list)
         gameplays = gameplays.filter(id__in=played_list)
 
@@ -82,9 +72,7 @@ def load_chart_data(request):
 
     maxws = queryset[0]['points']
     minws = queryset.filter(order=1).order_by('points')[0]['points']
-    avgws = round(
-        queryset.filter(order=1).aggregate(Avg('points'))['points__avg'], 2
-    )
+    avgws = round(queryset.filter(order=1).aggregate(Avg('points'))['points__avg'], 2)
     avgtot = round(queryset.aggregate(Avg('points'))['points__avg'], 2)
     try:
         maxnws = queryset.filter(order=2)[0]['points']
@@ -99,9 +87,7 @@ def load_chart_data(request):
     for gp_id in gp_id_queryset:
         q = queryset.filter(gp_id=gp_id)
         try:
-            diff.append(
-                q.filter(order=1)[0]['points'] - q.filter(order=2)[0]['points']
-            )
+            diff.append(q.filter(order=1)[0]['points'] - q.filter(order=2)[0]['points'])
         except IndexError:
             diff = [0]
     avgmp = round(sum(diff) / len(diff), 2)
@@ -112,13 +98,7 @@ def load_chart_data(request):
         .order_by('-p_id__name__count')[0]['p_id__name']
     )
     avgp = []
-    pp = sorted(
-        list(
-            gameplays.values('NumberOfPlayers')
-            .distinct()
-            .values_list('NumberOfPlayers', flat=True)
-        )
-    )
+    pp = sorted(list(gameplays.values('NumberOfPlayers').distinct().values_list('NumberOfPlayers', flat=True)))
     for i in pp:
         avgp.append(
             list(
@@ -140,21 +120,10 @@ def load_chart_data(request):
         count = 0
         p_order = [{'x': 0, 'y': 'Nan'}]
         p_points = [{'x': 0, 'y': 'Nan'}]
-        for ids in list(
-            queryset.values('gp_id')
-            .order_by('gp_id')
-            .distinct()
-            .values_list('gp_id', flat=True)
-        ):
+        for ids in list(queryset.values('gp_id').order_by('gp_id').distinct().values_list('gp_id', flat=True)):
             count += 1
-            order = (
-                queryset.filter(p_id__name=p).filter(gp_id=ids).values('order')
-            )
-            points = (
-                queryset.filter(p_id__name=p)
-                .filter(gp_id=ids)
-                .values('points')
-            )
+            order = queryset.filter(p_id__name=p).filter(gp_id=ids).values('order')
+            points = queryset.filter(p_id__name=p).filter(gp_id=ids).values('points')
             if order:
                 for o, pl in zip(order, points):
                     # print(o)

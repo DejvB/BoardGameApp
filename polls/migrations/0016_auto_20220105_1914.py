@@ -19,8 +19,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='gameplay',
             name='date',
-            field=models.DateTimeField(
-                default=datetime.datetime(2022, 1, 5, 19, 14, 30, 891086)
-            ),
+            field=models.DateTimeField(default=datetime.datetime(2022, 1, 5, 19, 14, 30, 891086)),
         ),
     ]

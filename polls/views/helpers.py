@@ -44,9 +44,7 @@ def scrape_bgg_info(bgg_id):
     bg_info['id'] = xml_root.find('item').attrib['id']
     rank = xml_root.find('item//statistics//ratings//average').attrib['value']
     bg_info['rank'] = f'{float(rank):.2f}'
-    weight = xml_root.find('item//statistics//ratings//averageweight').attrib[
-        'value'
-    ]
+    weight = xml_root.find('item//statistics//ratings//averageweight').attrib['value']
     bg_info['weight'] = f'{float(weight):.2f}'
     links = xml_root.findall("item//link[@type='boardgamecategory']")
     bg_info['category'] = [l.attrib['value'] for l in links]
@@ -104,16 +102,8 @@ def update_bg_info(bg_id, bg_info):
 
 def search_for_bgg_id(search_query):
     api_prefix = 'https://www.boardgamegeek.com/xmlapi2/'
-    xml_root = ET.fromstring(
-        requests.get(
-            f'{api_prefix}search?query={search_query}&type=boardgame'
-        ).text
-    )
-    neg_xml_root = ET.fromstring(
-        requests.get(
-            f'{api_prefix}search?query={search_query}&type=boardgameexpansion'
-        ).text
-    )
+    xml_root = ET.fromstring(requests.get(f'{api_prefix}search?query={search_query}&type=boardgame').text)
+    neg_xml_root = ET.fromstring(requests.get(f'{api_prefix}search?query={search_query}&type=boardgameexpansion').text)
     search_results = xml_root.findall('item')
     neg_search_results = neg_xml_root.findall('item')
     t_bgg_names = [bgg.find('name').attrib['value'] for bgg in search_results]
@@ -130,11 +120,7 @@ def search_for_bgg_id(search_query):
 def update_bgg_id(bg_id):
     api_prefix = 'https://www.boardgamegeek.com/xmlapi2/'
     bg_name = Boardgames.objects.get(id=bg_id).name
-    xml_root = ET.fromstring(
-        requests.get(
-            f'{api_prefix}search?query={bg_name}&type=boardgame&exact=1'
-        ).text
-    )
+    xml_root = ET.fromstring(requests.get(f'{api_prefix}search?query={bg_name}&type=boardgame&exact=1').text)
     if xml_root.find('item'):
         bgg_id = xml_root.find('item').attrib['id']
         if bgg_id:

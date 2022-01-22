@@ -85,9 +85,7 @@ class UsedExpansionForm(forms.ModelForm):
 
 
 class ResultsForm(forms.ModelForm):
-    player_specifics = forms.ModelChoiceField(
-        PlayerSpecifics.objects.order_by('name')
-    )
+    player_specifics = forms.ModelChoiceField(PlayerSpecifics.objects.order_by('name'))
     player_order = forms.ChoiceField()
 
     class Meta:

@@ -15,9 +15,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='gameplay',
             name='date',
-            field=models.DateTimeField(
-                default=datetime.datetime(2022, 1, 16, 18, 2, 48, 644993)
-            ),
+            field=models.DateTimeField(default=datetime.datetime(2022, 1, 16, 18, 2, 48, 644993)),
         ),
         migrations.CreateModel(
             name='Mechanics',
@@ -34,9 +32,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=50)),
                 (
                     'boardgame',
-                    models.ManyToManyField(
-                        related_name='mechanics', to='polls.Boardgames'
-                    ),
+                    models.ManyToManyField(related_name='mechanics', to='polls.Boardgames'),
                 ),
             ],
         ),
@@ -55,9 +51,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=50)),
                 (
                     'boardgame',
-                    models.ManyToManyField(
-                        related_name='category', to='polls.Boardgames'
-                    ),
+                    models.ManyToManyField(related_name='category', to='polls.Boardgames'),
                 ),
             ],
         ),

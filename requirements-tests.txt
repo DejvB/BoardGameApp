@@ -1,1 +1,3 @@
+black==21.12b0
+brunette
 isort

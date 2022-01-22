@@ -13,19 +13,14 @@ from ..helpers import compute_tournament, get_last_gameplay, show_success_toolti
 def add_results(request):
     context = {}
     last_game = get_last_gameplay(request, only_session=False)
-    specifics = PlayerSpecifics.objects.filter(
-        bg_id_id=last_game.name.id
-    ).values_list('id', 'name')
+    specifics = PlayerSpecifics.objects.filter(bg_id_id=last_game.name.id).values_list('id', 'name')
     player_order = [(i, i) for i in range(last_game.NumberOfPlayers + 1)]
     print(player_order)
     ResultsFormSet = formset_factory(ResultsForm, extra=0)
     if last_game.with_results:
         formset = ResultsFormSet(
             request.POST or None,
-            initial=[
-                {'order': i + 1, 'gp_id': last_game}
-                for i in range(max(2, last_game.NumberOfPlayers))
-            ],
+            initial=[{'order': i + 1, 'gp_id': last_game} for i in range(max(2, last_game.NumberOfPlayers))],
         )
 
         for form in formset:
@@ -37,10 +32,7 @@ def add_results(request):
     else:
         formset = ResultsFormSet(
             request.POST or None,
-            initial=[
-                {'order': 0, 'gp_id': last_game}
-                for _ in range(max(2, last_game.NumberOfPlayers))
-            ],
+            initial=[{'order': 0, 'gp_id': last_game} for _ in range(max(2, last_game.NumberOfPlayers))],
         )
     context['formset'] = formset
     if formset.is_valid():

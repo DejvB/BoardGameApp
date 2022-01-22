@@ -13,7 +13,5 @@ def history(request):
 def get_history(request):
     fromdate = request.GET.get('from')
     todate = request.GET.get('to')
-    games = GameplayTable(
-        Gameplay.objects.filter(date__range=[fromdate, todate])
-    )
+    games = GameplayTable(Gameplay.objects.filter(date__range=[fromdate, todate]))
     return render(request, 'polls/get_history.html', {'games': games})

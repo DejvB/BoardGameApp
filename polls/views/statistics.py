@@ -19,14 +19,8 @@ def playerstats(request):
     elos = {p.id: 1000 for p in Player.objects.all()}
     numbers = [10, 20, 50, 100, 'all']
     context = {
-        'players': Player.objects.all()
-        .values('name', 'id')
-        .distinct()
-        .order_by('name'),
-        'players_elo': Player.objects.all()
-        .values('name', 'elo')
-        .distinct()
-        .order_by('-elo'),
+        'players': Player.objects.all().values('name', 'id').distinct().order_by('name'),
+        'players_elo': Player.objects.all().values('name', 'elo').distinct().order_by('-elo'),
         'numbers': numbers,
     }
     return render(request, 'polls/playerstats.html', context)
@@ -64,33 +58,19 @@ def load_playerstats(request):
     NoP = list(results.values_list('gp_id__NumberOfPlayers', flat=True))[::-1]
     g_name = list(results.values_list('gp_id__name__name', flat=True))[::-1]
     try:
-        lws = max(
-            len(list(y)) for (c, y) in itertools.groupby(order) if c == 1
-        )
+        lws = max(len(list(y)) for (c, y) in itertools.groupby(order) if c == 1)
     except ValueError:
         lws = 0
     try:
-        lls = max(
-            len(list(y))
-            for (c, y) in itertools.groupby(
-                ([a == b for a, b in zip(order, NoP)])
-            )
-            if c
-        )
+        lls = max(len(list(y)) for (c, y) in itertools.groupby(([a == b for a, b in zip(order, NoP)])) if c)
     except ValueError:
         lls = 0
     try:
-        lnws = max(
-            len(list(y))
-            for (c, y) in itertools.groupby(([a != 1 for a in order]))
-            if c
-        )
+        lnws = max(len(list(y)) for (c, y) in itertools.groupby(([a != 1 for a in order])) if c)
     except ValueError:
         lnws = 0
     try:
-        lbl = max(
-            len(list(y)) for (c, y) in itertools.groupby(order) if c == 2
-        )
+        lbl = max(len(list(y)) for (c, y) in itertools.groupby(order) if c == 2)
     except ValueError:
         lbl = 0
 

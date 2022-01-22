@@ -26,9 +26,7 @@ def pie_chart(request):
             .values('p_id__name', 'gp_id__NumberOfPlayers', 'order')
         )
         for query in queryset:
-            p_sum = p_sum + compute_score(
-                query['order'], query['gp_id__NumberOfPlayers']
-            )
+            p_sum = p_sum + compute_score(query['order'], query['gp_id__NumberOfPlayers'])
         points.append([player, round(p_sum / len(queryset), 3)])
     context['points'] = sorted(points, key=lambda x: -x[1])
     for i in range(6):
@@ -43,12 +41,7 @@ def pie_chart(request):
 
         for player in players:
             if (
-                len(
-                    Results.objects.filter(p_id__name=player).values(
-                        'p_id__name'
-                    )
-                )
-                < 10
+                len(Results.objects.filter(p_id__name=player).values('p_id__name')) < 10
             ):  # this is kind of stupid - I could filter players before
                 continue
             p = queryset.filter(p_id__name=player)
@@ -58,11 +51,7 @@ def pie_chart(request):
                 data[i].append(0)
             if i == 0:
                 labels.append(player)
-                colors.append(
-                    Player.objects.filter(name=player).values_list(
-                        'color', flat=True
-                    )[0]
-                )
+                colors.append(Player.objects.filter(name=player).values_list('color', flat=True)[0])
     context['labels'] = labels
     context['colors'] = colors
     context['data0'] = data[0]

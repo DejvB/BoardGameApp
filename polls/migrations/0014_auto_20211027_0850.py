@@ -11,20 +11,18 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("polls", "0013_auto_20211024_2125"),
+        ('polls', '0013_auto_20211024_2125'),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name="gameplay",
-            name="date",
-            field=models.DateTimeField(
-                default=datetime.datetime(2021, 10, 27, 8, 50, 9, 970098)
-            ),
+            model_name='gameplay',
+            name='date',
+            field=models.DateTimeField(default=datetime.datetime(2021, 10, 27, 8, 50, 9, 970098)),
         ),
         migrations.AlterField(
-            model_name="player",
-            name="user",
+            model_name='player',
+            name='user',
             field=models.OneToOneField(
                 blank=True,
                 default=None,

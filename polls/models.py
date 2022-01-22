@@ -10,25 +10,18 @@ class Player(models.Model):
         return self.name
 
     def get_owned(self, id):
-        return OwnBoardgame.objects.filter(p_id__id=id).values_list(
-            'bg_id__id', flat=True
-        )
+        return OwnBoardgame.objects.filter(p_id__id=id).values_list('bg_id__id', flat=True)
 
     def get_played(self, id):
-        return Gameplay.objects.filter(
-            id__in=list(
-                Results.objects.filter(p_id=id).values_list('gp_id', flat=True)
-            )
-        )
+        return Gameplay.objects.filter(id__in=list(Results.objects.filter(p_id=id).values_list('gp_id', flat=True)))
 
-    user = models.OneToOneField(
-        User, on_delete=models.SET_NULL, null=True, default=None, blank=True
-    )
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, default=None, blank=True)
     name = models.CharField(max_length=10)
     color = models.CharField(max_length=7, default='#000000')
     elo = models.IntegerField(default=1000)
 
-no_image = 'https://cf.geekdo-images.com/zxVVmggfpHJpmnJY9j-k1w__square100/img/siQ9W5848OomWFJZY_SWYef6rpw=/100x100/filters:strip_icc()/pic1657689.jpg' # NOQA
+
+no_image = 'https://cf.geekdo-images.com/zxVVmggfpHJpmnJY9j-k1w__square100/img/siQ9W5848OomWFJZY_SWYef6rpw=/100x100/filters:strip_icc()/pic1657689.jpg'  # NOQA
 
 
 class Boardgames(models.Model):
@@ -36,10 +29,7 @@ class Boardgames(models.Model):
         return self.name
 
     def not_played_recently(self, d):
-        return (
-            self.lastTimePlayed
-            <= datetime.date.today() - datetime.timedelta(days=d)
-        )
+        return self.lastTimePlayed <= datetime.date.today() - datetime.timedelta(days=d)
 
     def to_dict(self):
         data = model_to_dict(self)
@@ -79,9 +69,7 @@ class OwnBoardgame(models.Model):
 
 class OwnExpansion(models.Model):
     def __str__(self):
-        return (
-            f'{self.e_id.basegame.name} - {self.e_id.name} - {self.p_id.name}'
-        )
+        return f'{self.e_id.basegame.name} - {self.e_id.name} - {self.p_id.name}'
 
     e_id = models.ForeignKey(Expansion, on_delete=models.CASCADE)
     p_id = models.ForeignKey(Player, on_delete=models.CASCADE)
@@ -92,9 +80,7 @@ class Gameplay(models.Model):
         return self.name.name
 
     def get_players(self):
-        return ', '.join(
-            list(self.results.all().values_list('p_id__name', flat=True))
-        )
+        return ', '.join(list(self.results.all().values_list('p_id__name', flat=True)))
 
     name = models.ForeignKey(Boardgames, on_delete=models.CASCADE)
     NumberOfPlayers = models.IntegerField(default=0)
@@ -115,16 +101,12 @@ class Results(models.Model):
     def __str__(self):
         return self.gp_id.name.name
 
-    gp_id = models.ForeignKey(
-        Gameplay, on_delete=models.CASCADE, related_name='results'
-    )
+    gp_id = models.ForeignKey(Gameplay, on_delete=models.CASCADE, related_name='results')
     p_id = models.ForeignKey(Player, on_delete=models.CASCADE)
     order = models.IntegerField(default=0)
     points = models.IntegerField(default=0)
     player_order = models.IntegerField(default=0)
-    player_specifics = models.ForeignKey(
-        PlayerSpecifics, blank=True, null=True, on_delete=models.SET_NULL
-    )
+    player_specifics = models.ForeignKey(PlayerSpecifics, blank=True, null=True, on_delete=models.SET_NULL)
 
 
 class UsedExpansion(models.Model):

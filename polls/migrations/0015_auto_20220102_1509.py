@@ -9,74 +9,72 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("polls", "0014_auto_20211027_0850"),
+        ('polls', '0014_auto_20211027_0850'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name="boardgames",
-            name="bgg_id",
+            model_name='boardgames',
+            name='bgg_id',
             field=models.IntegerField(default=1),
         ),
         migrations.AlterField(
-            model_name="gameplay",
-            name="date",
-            field=models.DateTimeField(
-                default=datetime.datetime(2022, 1, 2, 15, 9, 4, 893965)
-            ),
+            model_name='gameplay',
+            name='date',
+            field=models.DateTimeField(default=datetime.datetime(2022, 1, 2, 15, 9, 4, 893965)),
         ),
         migrations.CreateModel(
-            name="OwnExpansion",
+            name='OwnExpansion',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name="ID",
+                        verbose_name='ID',
                     ),
                 ),
                 (
-                    "e_id",
+                    'e_id',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="polls.expansion",
+                        to='polls.expansion',
                     ),
                 ),
                 (
-                    "p_id",
+                    'p_id',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="polls.player",
+                        to='polls.player',
                     ),
                 ),
             ],
         ),
         migrations.CreateModel(
-            name="OwnBoardgame",
+            name='OwnBoardgame',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name="ID",
+                        verbose_name='ID',
                     ),
                 ),
                 (
-                    "bg_id",
+                    'bg_id',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="polls.boardgames",
+                        to='polls.boardgames',
                     ),
                 ),
                 (
-                    "p_id",
+                    'p_id',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="polls.player",
+                        to='polls.player',
                     ),
                 ),
             ],

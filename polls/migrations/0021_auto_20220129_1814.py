@@ -17,7 +17,10 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='boardgames',
             name='img_link',
-            field=models.URLField(default='https://cf.geekdo-images.com/zxVVmggfpHJpmnJY9j-k1w__square100/img/siQ9W5848OomWFJZY_SWYef6rpw=/100x100/filters:strip_icc()/pic1657689.jpg', max_length=300),
+            field=models.URLField(
+                default='https://cf.geekdo-images.com/zxVVmggfpHJpmnJY9j-k1w__square100/img/siQ9W5848OomWFJZY_SWYef6rpw=/100x100/filters:strip_icc()/pic1657689.jpg',
+                max_length=300,
+            ),
         ),
         migrations.AddField(
             model_name='boardgames',

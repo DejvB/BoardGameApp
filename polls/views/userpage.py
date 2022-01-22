@@ -36,9 +36,7 @@ def userpage(request):
     # print(sorted(data['weight']))
     weight_bins = np.linspace(1, 5, 9)
     rank_bins = np.linspace(0, 10, 21)
-    year_bins = np.linspace(min(data['year']),
-                            max(data['year']),
-                            max(data['year']) - min(data['year']) + 1)
+    year_bins = np.linspace(min(data['year']), max(data['year']), max(data['year']) - min(data['year']) + 1)
     context = {
         'NoG': len(bg_owned_list),
         'ranks': list(np.histogram(data['rank'], bins=rank_bins)[0]),
@@ -59,9 +57,7 @@ def userpage(request):
     )
     # gameplays vs previous week
     curr_year, curr_week, _ = datetime.date.today().isocalendar()
-    prev_year, prev_week, _ = (
-        datetime.date.today() - datetime.timedelta(days=7)
-    ).isocalendar()
+    prev_year, prev_week, _ = (datetime.date.today() - datetime.timedelta(days=7)).isocalendar()
     week_diff = [
         games_list.filter(year=curr_year, week=curr_week).count(),
         -games_list.filter(year=prev_year, week=prev_week).count(),
