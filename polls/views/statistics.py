@@ -56,7 +56,7 @@ def load_playerstats(request):
             'order',
             'gp_id__date',
         )
-        .order_by('-id')[:number]
+        .order_by('-gp_id__date')[:number]
     )
     date = list(results.values_list('gp_id__date', flat=True))[::-1]
     order = list(results.values_list('order', flat=True))[::-1]
@@ -136,7 +136,7 @@ def elo():
         return elo_history
     # elo_history = {p.id: [] for p in Player.objects.all()}
     # elos = {p.id: 1000 for p in Player.objects.all()}
-    gms = Gameplay.objects.filter(with_results=True).order_by('id')
+    gms = Gameplay.objects.filter(with_results=True).order_by('date')
     for g in gms:
         changes = compute_tournament_local(g.results.all(), elos)
         update_elo_local(elos, changes)
