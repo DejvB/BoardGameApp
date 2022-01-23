@@ -320,3 +320,9 @@ input[type=image]{
   50% { opacity: 1; }
   100% { opacity: 0; visibility: hidden;}
 }
+
+a.fill-div {
+    display: block;
+    width: 100%;
+    text-decoration: none;
+}

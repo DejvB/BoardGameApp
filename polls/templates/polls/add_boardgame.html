@@ -1,21 +1,95 @@
 {% extends "polls/header.html" %}
 {% block body %}
-
-<div class='box round shadow'>
-  <h2>New boardgame</h2>
+<div class="box round shadow">
+    <h2>New boardgame</h2>
     <hr>
-<form method="post">
+    <form  method="post" id="GameplayForm"  novalidate>
     {% csrf_token %}
-    <table>
-    {{ form.as_table }}
-    </table>
-    {% csrf_token %}
-    <div class="tooltip">
-        <button type="submit" name="run_script">Save boardgame</button>
-        {% if tooltip %}
-            <span class="tooltiptext show" id="myTooltip">{{ tooltip }}</span>
-        {% endif %}
-    </div>
-</form>
+      <label for="bg_name">Boardgame name:</label>
+      <input type="text" id="bg_name" name="bg_name"><br><br>
+      <input type="submit" value="Search">
+      <br>
+      <a href="{% url 'add_bg_old' %}">If nothing found.</a>
+    </form>
 </div>
+{% if bgg_infos %}
+    {% for info in bgg_infos %}
+    <div class="big box round shadow" url="{% url 'bg_submit' %}" id="bg_box">
+        <div style="width: 25%; float: left;">
+            <label><img id="bgg_img" src="{{ info.img }}"></label>
+        </div>
+        <div style="width: 75%; float: right;">
+                <h2>{{info.name}}</h2>
+            <table>
+                <tr>
+                    <td>Rank: </td>
+                    <th>{{info.rank}}</th>
+                    <td>Playtime: </td>
+                    {% if info.minplaytime < info.maxplaytime %}
+                        <th>{{info.minplaytime}}-{{info.maxplaytime}} min</th>
+                    {% else %}
+                        <th>{{info.playtime}} min</th>
+                    {% endif %}
+                    <td>Age: </td>
+                    <th>{{info.minage}}+</th>
+                </tr>
+                <tr>
+                    <td>Weight: </td>
+                    <th>{{info.weight}}</th>
+                    <td>Players: </td>
+                    {% if info.minp < info.maxp %}
+                        <th>{{info.minp}}-{{info.maxp}}</th>
+                    {% else %}
+                        <th>{{info.minp}}</th>
+                    {% endif %}
+                    <td>Year: </td>
+                    <th>{{info.year}}</th>
+                </tr>
+                <tr>
+                    <td>Categories:</td>
+                    <th colspan="5">
+                      {% for cat in info.category %}
+                      <a class="bubble">{{ cat }}</a>
+                      {% endfor %}
+                    </th>
+                </tr>
+                <tr>
+                    <td>Mechanics:</td>
+                    <th colspan="5">
+                      {% for mech in info.mechanics %}
+                      <a class="bubble">{{ mech }}</a>
+                      {% endfor %}
+                    </th>
+                </tr>
+            </table>
+        <input type="button" id="add_bg_button" value="This one!" onclick="savegame({{ forloop.counter0 }})">
+        <input type="checkbox" id="I_also_own_this_{{ forloop.counter0 }}">
+        <label for="I_also_own_this_{{ forloop.counter0 }}">I also own this!</label>
+        </div>
+    </div>
+    {% endfor %}
+{% endif %}
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+    function savegame(bg_ind) {
+        var url = $("#bg_box").attr("url");
+        var own = $("#I_also_own_this_" + bg_ind).prop('checked');
+        console.log(url);
+        $.ajax({
+            url: url,
+            data: {
+                "bg_ind": bg_ind,
+                "own": own
+            },
+        success: function(data) {
+            if (data["created"]) {
+                alert("Boardgame created.");
+            } else {
+                alert("Boardgame already exists.");
+            }
+        }
+    })
+    }
+</script>
 {% endblock %}

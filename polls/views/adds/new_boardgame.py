@@ -59,5 +59,5 @@ def add_boardgame_old(request):
             b = form.save()
             b.save()
             show_success_tooltip(context)
-        return render(request, 'polls/add_boardgame_old.html', context)
-    return render(request, 'polls/add_boardgame_old.html', context)
+        return render(request, 'polls/add_boardgame.html', context)
+    return render(request, 'polls/add_boardgame.html', context)

@@ -1,4 +1,5 @@
 import itertools
+import time
 from xml.etree import ElementTree as ET
 
 import numpy as np
@@ -23,16 +24,35 @@ def my_view(request):
     return userid
 
 
-def get_bgg_info(bg_id):
+def scrape_bgg_info(bgg_id):
     api_prefix = 'https://www.boardgamegeek.com/xmlapi2/'
     bg_info = {}
-    bgg_id = Boardgames.objects.get(id=bg_id).bgg_id
-    if bgg_id == 1 or bgg_id == '1':
-        bgg_id = update_bgg_id(bg_id)
-    xml_root = ET.fromstring(
-        requests.get(f'{api_prefix}thing?id={bgg_id}&stats=1').text
-    )
-    bg_info['img'] = xml_root.find('item//thumbnail').text
+    req = requests.get(f'{api_prefix}thing?id={bgg_id}&stats=1')
+    print(req.status_code)
+    # if req.status_code == 429:
+    #     time.sleep(5)
+    #     req = requests.get(f'{api_prefix}thing?id={bgg_id}&stats=1')
+    t = 1
+    while req.status_code == 429 and t < 60:
+        print(t)
+        t *= 2
+        time.sleep(t)
+        req = requests.get(f'{api_prefix}thing?id={bgg_id}&stats=1')
+    xml_root = ET.fromstring(req.text)
+    bg_info['name'] = xml_root.find('item//name').attrib['value']
+    bg_info['type'] = xml_root.find('item').attrib['type']
+    try:
+        bg_info['img'] = xml_root.find('item//thumbnail').text
+    except AttributeError:
+        bg_info['img'] = ''
+    bg_info['minp'] = xml_root.find('item//minplayers').attrib['value']
+    bg_info['maxp'] = xml_root.find('item//maxplayers').attrib['value']
+    bg_info['minage'] = xml_root.find('item//minage').attrib['value']
+    bg_info['playtime'] = xml_root.find('item//playingtime').attrib['value']
+    bg_info['minplaytime'] = xml_root.find('item//minplaytime').attrib['value']
+    bg_info['maxplaytime'] = xml_root.find('item//maxplaytime').attrib['value']
+    bg_info['year'] = xml_root.find('item//yearpublished').attrib['value']
+
     bg_info['id'] = xml_root.find('item').attrib['id']
     rank = xml_root.find('item//statistics//ratings//average').attrib['value']
     bg_info['rank'] = f'{float(rank):.2f}'
@@ -46,6 +66,14 @@ def get_bgg_info(bg_id):
     bg_info['mechanics'] = [m.attrib['value'] for m in mechanics]
     mechanics = xml_root.findall("item//link[@type='boardgamedesigner']")
     bg_info['designer'] = [m.attrib['value'] for m in mechanics]
+    return bg_info
+
+
+def get_bgg_info(bg_id):
+    bgg_id = Boardgames.objects.get(id=bg_id).bgg_id
+    if bgg_id == 1 or bgg_id == '1':
+        bgg_id = update_bgg_id(bg_id)
+    bg_info = scrape_bgg_info(bgg_id)
     update_bg_info(bg_id, bg_info)
     return bg_info
 
@@ -70,6 +98,31 @@ def update_bg_info(bg_id, bg_info):
     for designer in bg_info['designer']:
         des, _ = Designer.objects.get_or_create(name=designer)
         des.boardgame.add(bg_id)
+
+
+def search_for_bgg_id(search_query):
+    api_prefix = 'https://www.boardgamegeek.com/xmlapi2/'
+    xml_root = ET.fromstring(
+        requests.get(
+            f'{api_prefix}search?query={search_query}&type=boardgame'
+        ).text
+    )
+    neg_xml_root = ET.fromstring(
+        requests.get(
+            f'{api_prefix}search?query={search_query}&type=boardgameexpansion'
+        ).text
+    )
+    search_results = xml_root.findall('item')
+    neg_search_results = neg_xml_root.findall('item')
+    t_bgg_names = [bgg.find('name').attrib['value'] for bgg in search_results]
+    t_bgg_ids = [bgg.attrib['id'] for bgg in search_results]
+    exp_ids = [bgg.attrib['id'] for bgg in neg_search_results]
+    bgg_names, bgg_ids = [], []
+    for name, nid in zip(t_bgg_names, t_bgg_ids):
+        if nid not in exp_ids:
+            bgg_names.append(name)
+            bgg_ids.append(nid)
+    return bgg_names, bgg_ids
 
 
 def update_bgg_id(bg_id):
