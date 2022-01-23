@@ -8,6 +8,8 @@ urlpatterns = [
     path('', views.index, name='home'),
     # ex: /polls/add_boardgame/
     path('add_boardgame/', views.add_boardgame, name='add_game'),
+    # ex: /polls/add_boardgame/
+    path('add_boardgame_old/', views.add_boardgame_old, name='add_bg_old'),
     # ex: /polls/add_play/   whole path http://127.0.0.1:8000/polls/add_play/
     path('add_play/', views.add_play, name='add_play'),
     # ex: /polls/add_player/
@@ -61,4 +63,5 @@ urlpatterns = [
     path('ajax/randomizer/', views.randomizer, name='randomizer'),
     path('ajax/basic_stats/', views.basic_stats, name='basic_stats'),
     path('ajax/god_button/', views.god_button, name='god_button'),
+    path('ajax/bg_submit/', views.bg_submit, name='bg_submit'),
 ]
