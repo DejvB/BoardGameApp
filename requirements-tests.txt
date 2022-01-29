@@ -1,3 +1,5 @@
 black==21.12b0
 brunette
+flake8
 isort
+pep8-naming
