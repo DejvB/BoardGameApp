@@ -18,7 +18,7 @@ from .models import (
 class BoardgameForm(forms.ModelForm):
     class Meta:
         model = Boardgames
-        fields = ('name', 'type', 'minNumberOfPlayers', 'maxNumberOfPlayers')
+        fields = ('name', 'minNumberOfPlayers', 'maxNumberOfPlayers')
 
 
 time_choices = (

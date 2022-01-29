@@ -27,6 +27,8 @@ class Player(models.Model):
     color = models.CharField(max_length=7, default='#000000')
     elo = models.IntegerField(default=1000)
 
+no_image = 'https://cf.geekdo-images.com/zxVVmggfpHJpmnJY9j-k1w__square100/img/siQ9W5848OomWFJZY_SWYef6rpw=/100x100/filters:strip_icc()/pic1657689.jpg' # NOQA
+
 
 class Boardgames(models.Model):
     def __str__(self):
@@ -38,21 +40,17 @@ class Boardgames(models.Model):
             <= datetime.date.today() - datetime.timedelta(days=d)
         )
 
-    gametype_choices = [
-        ('Classic', 'Classic'),
-        ('Cooperative', 'Cooperative'),
-        ('Party', 'Party'),
-        ('Strategy', 'Strategy'),
-        ('Family', 'Family'),
-    ]
-
     name = models.CharField(max_length=50)
     minNumberOfPlayers = models.IntegerField(default=2)
     maxNumberOfPlayers = models.IntegerField(default=4)
-    type = models.CharField(
-        max_length=50, default='Strategy', choices=gametype_choices
-    )
+    minage = models.IntegerField(default=10)
+    minplaytime = models.IntegerField(default=30)
+    maxplaytime = models.IntegerField(default=60)
+    year = models.IntegerField(default=2000)
+    weight = models.DecimalField(default=0, max_digits=4, decimal_places=2)
+    rank = models.DecimalField(default=5.5, max_digits=4, decimal_places=2)
     bgg_id = models.IntegerField(default=1)
+    img_link = models.URLField(default=no_image, max_length=300)
 
 
 class Expansion(models.Model):
