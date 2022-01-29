@@ -35,7 +35,7 @@ def load_playerstats(request):
     userid = my_view(request)
     # reset_all_elo()
     elo_history = elo()
-    # set_elo(elo_history)
+    set_elo(elo_history)
     # compute_tournament(Gameplay.objects.get(id = 336).results.all())
     # print_all_elo()
     p_id = request.GET.get('p_id')
@@ -172,9 +172,10 @@ def set_elo(elo):
     for key, value in elo.items():
         p = Player.objects.get(id=key)
         if value[0] < 100:
-            value[0] = 1000
-        p.elo = sum(value)
-        p.save(update_fields=['elo'])
+            value[0] += 1000
+        if sum(value) != p.elo:
+            p.elo = sum(value)
+            p.save(update_fields=['elo'])
     return None
 
 
