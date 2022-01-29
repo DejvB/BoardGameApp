@@ -40,7 +40,6 @@ def scrape_bgg_info(bgg_id):
         req = requests.get(f'{api_prefix}thing?id={bgg_id}&stats=1')
     xml_root = ET.fromstring(req.text)
     bg_info['name'] = xml_root.find('item//name').attrib['value']
-    bg_info['type'] = xml_root.find('item').attrib['type']
     try:
         bg_info['img'] = xml_root.find('item//thumbnail').text
     except AttributeError:
@@ -80,7 +79,7 @@ def get_bgg_info(bg_id):
 
 def get_bg_cmd(bg_id):
     bg_info = {}
-    if Boardgames.objects.get(id=bg_id).designer.all():
+    if Boardgames.objects.get(id=bg_id).weight != 0:
         bg_info['category'] = Boardgames.objects.get(id=bg_id).category.all()
         bg_info['mechanics'] = Boardgames.objects.get(id=bg_id).mechanics.all()
         bg_info['designer'] = Boardgames.objects.get(id=bg_id).designer.all()
@@ -89,6 +88,18 @@ def get_bg_cmd(bg_id):
 
 
 def update_bg_info(bg_id, bg_info):
+    bg = Boardgames.objects.get(id=bg_id)
+    # bg.name = bg_info['name']
+    bg.minNumberOfPlayers = bg_info['minp']
+    bg.maxNumberOfPlayers = bg_info['maxp']
+    bg.minage = bg_info['minage']
+    bg.minplaytime = bg_info['minplaytime']
+    bg.maxplaytime = bg_info['maxplaytime']
+    bg.year = bg_info['year']
+    bg.weight = bg_info['weight']
+    bg.rank = bg_info['rank']
+    bg.img_link = bg_info['img']
+    bg.save()
     for category in bg_info['category']:
         cat, _ = Category.objects.get_or_create(name=category)
         cat.boardgame.add(bg_id)

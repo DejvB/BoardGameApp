@@ -38,7 +38,6 @@ def bg_submit(request):
         name=bgg_info['name'],
         minNumberOfPlayers=int(bgg_info['minp']),
         maxNumberOfPlayers=int(bgg_info['maxp']),
-        type='Strategy',
         bgg_id=int(bgg_info['id']),
     )
     update_bg_info(bg.id, bgg_info)
