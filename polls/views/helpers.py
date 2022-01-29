@@ -47,7 +47,7 @@ def scrape_bgg_info(bgg_id):
     weight = xml_root.find('item//statistics//ratings//averageweight').attrib['value']
     bg_info['weight'] = f'{float(weight):.2f}'
     links = xml_root.findall("item//link[@type='boardgamecategory']")
-    bg_info['category'] = [l.attrib['value'] for l in links]
+    bg_info['category'] = [link.attrib['value'] for link in links]
     mechanics = xml_root.findall("item//link[@type='boardgamemechanic']")
     bg_info['mechanics'] = [m.attrib['value'] for m in mechanics]
     mechanics = xml_root.findall("item//link[@type='boardgamedesigner']")
