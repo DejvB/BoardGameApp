@@ -1,18 +1,14 @@
 import datetime
-import numpy as np
 from collections import Counter
 
+import numpy as np
 from django.contrib.auth.decorators import login_required
-from django.db.models.functions import (
-    ExtractIsoYear,
-    ExtractMonth,
-    ExtractWeek,
-)
+from django.db.models.functions import ExtractIsoYear, ExtractMonth, ExtractWeek
 from django.shortcuts import render
 
 from polls.forms import OwnBoardgameForm, OwnExpansionForm
 
-from ..models import Player, Boardgames
+from ..models import Boardgames, Player
 from .helpers import get_bgg_info, my_view, show_success_tooltip
 
 
