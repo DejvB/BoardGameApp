@@ -14,57 +14,43 @@
 </div>
 {% if bgg_infos %}
     {% for info in bgg_infos %}
-    <div class="big box round shadow" url="{% url 'bg_submit' %}" id="bg_box">
-        <div style="width: 25%; float: left;">
-            <label><img id="bgg_img" src="{{ info.img }}"></label>
+    <div class="box round shadow bgg_box" url="{% url 'bg_submit' %}" id="bg_box">
+        <div class="bgg_box_image">
+            <label><img id="bgg_img" src="{{ info.img }}" style="max-width: 100%;"></label>
         </div>
-        <div style="width: 75%; float: right;">
+        <div class="bgg_box_info">
                 <h2>{{info.name}}</h2>
-            <table>
-                <tr>
-                    <td>Rank: </td>
-                    <th>{{info.rank}}</th>
-                    <td>Playtime: </td>
-                    {% if info.minplaytime < info.maxplaytime %}
-                        <th>{{info.minplaytime}}-{{info.maxplaytime}} min</th>
-                    {% else %}
-                        <th>{{info.playtime}} min</th>
-                    {% endif %}
-                    <td>Age: </td>
-                    <th>{{info.minage}}+</th>
-                </tr>
-                <tr>
-                    <td>Weight: </td>
-                    <th>{{info.weight}}</th>
-                    <td>Players: </td>
+                <p class="bgg_box_row">Rank:
+                <strong>{{info.rank}}</strong>
+                </p>
+                <p class="bgg_box_row">Playtime:
+                {% if info.minplaytime < info.maxplaytime %}
+                    <strong>{{info.minplaytime}}-{{info.maxplaytime}} min</strong>
+                {% else %}
+                    <strong>{{info.playtime}} min</strong>
+                {% endif %}
+                </p>
+                <p class="bgg_box_row">Age:
+                <strong>{{info.minage}}+</strong>
+                </p>
+                <p class="bgg_box_row">Weight:
+                <strong>{{info.weight}}</strong>
+                </p>
+                <p class="bgg_box_row">Players:
                     {% if info.minp < info.maxp %}
-                        <th>{{info.minp}}-{{info.maxp}}</th>
+                        <strong>{{info.minp}}-{{info.maxp}}</strong>
                     {% else %}
-                        <th>{{info.minp}}</th>
+                        <strong>{{info.minp}}</strong>
                     {% endif %}
-                    <td>Year: </td>
-                    <th>{{info.year}}</th>
-                </tr>
-                <tr>
-                    <td>Categories:</td>
-                    <th colspan="5">
-                      {% for cat in info.category %}
-                      <a class="bubble">{{ cat }}</a>
-                      {% endfor %}
-                    </th>
-                </tr>
-                <tr>
-                    <td>Mechanics:</td>
-                    <th colspan="5">
-                      {% for mech in info.mechanics %}
-                      <a class="bubble">{{ mech }}</a>
-                      {% endfor %}
-                    </th>
-                </tr>
-            </table>
+                </p>
+                <p class="bgg_box_row">Year:
+                <strong>{{info.year}}</strong>
+                </p><br>
+        <p style="display: inline-block;">
         <input type="button" id="add_bg_button" value="This one!" onclick="savegame({{ forloop.counter0 }})">
         <input type="checkbox" id="I_also_own_this_{{ forloop.counter0 }}">
         <label for="I_also_own_this_{{ forloop.counter0 }}">I also own this!</label>
+        </p>
         </div>
     </div>
     {% endfor %}

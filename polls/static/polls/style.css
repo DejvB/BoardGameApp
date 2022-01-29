@@ -17,7 +17,7 @@ h2 {
 }
 
 input {
-  width: 100%;
+  /*width: 100%;*/
 }
 
 
@@ -39,7 +39,7 @@ input:not([type=image]),button[type=submit],input[type=button],select  {
   overflow: hidden;
   background-color: #3CB371;
   font-family: Arial;
-    width: 100%;
+  width: 100%;
 }
 
 /* Links inside the navbar */
@@ -112,18 +112,9 @@ input:not([type=image]),button[type=submit],input[type=button],select  {
 
 
 .big {
-  display: inline;
-  font-weight: 600;
-  font-family: Arial;
-  padding: 0px 10px 5px 10px;
-  float: left;
   margin-bottom: 15px;
   margin-top: 15px;
-  clear: both;
-  background-color: #B7ED97;/*#90EE90;*/
-  /*height: 50px;*/
   width: 980px;
-  /*flex-grow: 1;*/
 }
 
 .rotated {
@@ -325,4 +316,56 @@ a.fill-div {
     display: block;
     width: 100%;
     text-decoration: none;
+}
+
+.bgg_box_image {
+    width: 25%;
+    float: left;
+}
+
+.bgg_box_info {
+    width: 75%;
+    float: right;
+}
+
+.bgg_box_row {
+    margin: 10px 10px 10px 10px;
+    font-weight: normal;
+    display: inline-block;
+}
+
+.bgg_box {
+    width: 500px;
+    display: inline-block;
+    /*float: left;*/
+    /*clear: none;*/
+}
+
+
+@media only screen and (max-width: 1000px) {
+    .bgg_box_image {
+    width: 25%;
+    }
+
+    .bgg_box_info {
+        width: 75%;
+        float: left;
+    }
+
+    .bgg_box_row {
+        margin: 5px 10px 5px 10px;
+        font-weight: normal;
+        display: inline-block;
+        float: left;
+    }
+
+    .bgg_box_row strong {
+        width: 90%;
+        text-align: right;
+        /*margin-left: 100px*/
+    }
+
+    .bgg_box {
+        width: auto;
+    }
 }
