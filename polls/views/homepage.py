@@ -2,13 +2,7 @@ import random
 from math import ceil
 
 from django.db.models import Count, Max, Q, Sum
-from django.db.models.functions import (
-    ExtractIsoYear,
-    ExtractMonth,
-    ExtractWeek,
-    ExtractWeekDay,
-    ExtractYear,
-)
+from django.db.models.functions import ExtractIsoYear, ExtractMonth, ExtractWeek, ExtractWeekDay, ExtractYear
 from django.http import JsonResponse
 from django.shortcuts import render
 
