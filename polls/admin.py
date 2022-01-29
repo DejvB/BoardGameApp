@@ -15,6 +15,7 @@ from .models import (
     UsedExpansion,
 )
 
+
 admin.site.register(Boardgames)
 admin.site.register(OwnBoardgame)
 admin.site.register(Gameplay)

@@ -7,6 +7,7 @@ from django.shortcuts import render
 from ..models import Gameplay, Player, Results
 from .helpers import computeKW, my_view
 
+
 elos = {}
 elo_history = {}
 
