@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 
 from ..models import Gameplay, Player, Results
-from .helpers import computeKW, my_view
+from .helpers import compute_kw, my_view
 
 
 elos = {}
@@ -55,14 +55,14 @@ def load_playerstats(request):
     )
     date = list(results.values_list('gp_id__date', flat=True))[::-1]
     order = list(results.values_list('order', flat=True))[::-1]
-    NoP = list(results.values_list('gp_id__NumberOfPlayers', flat=True))[::-1]
+    no_p = list(results.values_list('gp_id__NumberOfPlayers', flat=True))[::-1]
     g_name = list(results.values_list('gp_id__name__name', flat=True))[::-1]
     try:
         lws = max(len(list(y)) for (c, y) in itertools.groupby(order) if c == 1)
     except ValueError:
         lws = 0
     try:
-        lls = max(len(list(y)) for (c, y) in itertools.groupby(([a == b for a, b in zip(order, NoP)])) if c)
+        lls = max(len(list(y)) for (c, y) in itertools.groupby(([a == b for a, b in zip(order, no_p)])) if c)
     except ValueError:
         lls = 0
     try:
@@ -92,7 +92,7 @@ def load_playerstats(request):
             'g_name': g_name,
             'order': order,
             'date': date,
-            'NoP': NoP,
+            'NoP': no_p,
             'cummean': cummean,
             'lws': lws,
             'lls': lls,
@@ -134,7 +134,7 @@ def add_to_history(hist, changes):
 def compute_tournament_local(results, elos):
     changes = {p.p_id.id: 0 for p in results}
     for i, j in itertools.combinations(results, 2):
-        elo_change = computeKW(
+        elo_change = compute_kw(
             elos[i.p_id.id],
             elos[j.p_id.id],
             (np.sign(j.order - i.order) + 1) / 2,

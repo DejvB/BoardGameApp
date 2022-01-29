@@ -42,8 +42,8 @@ class Boardgames(models.Model):
         return data
 
     name = models.CharField(max_length=50)
-    minNumberOfPlayers = models.IntegerField(default=2)
-    maxNumberOfPlayers = models.IntegerField(default=4)
+    min_number_of_players = models.IntegerField(default=2)
+    max_number_of_players = models.IntegerField(default=4)
     minage = models.IntegerField(default=10)
     minplaytime = models.IntegerField(default=30)
     maxplaytime = models.IntegerField(default=60)

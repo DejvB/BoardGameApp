@@ -72,13 +72,13 @@ def add_play(request):
 
 def expansions_select_options(request):
     bg_id = request.GET.get('id')
-    Expansions = list(Expansion.objects.filter(basegame__id=bg_id).order_by('name').values_list('id', flat=True))
-    ExpansionsNames = list(Expansion.objects.filter(basegame__id=bg_id).order_by('name').values_list('name', flat=True))
-    Expansionformset = formset_factory(UsedExpansionForm, extra=0)  # len(Expansions))
-    Gameplays = list(Gameplay.objects.all().order_by('name').values_list('name', flat=True))
-    e_formset = Expansionformset(
+    expansions = list(Expansion.objects.filter(basegame__id=bg_id).order_by('name').values_list('id', flat=True))
+    expansion_names = list(Expansion.objects.filter(basegame__id=bg_id).order_by('name').values_list('name', flat=True))
+    expansion_formset = formset_factory(UsedExpansionForm, extra=0)  # len(Expansions))
+    gameplays = list(Gameplay.objects.all().order_by('name').values_list('name', flat=True))
+    e_formset = expansion_formset(
         request.POST or None,
-        initial=[{'e_id': Expansions[i], 'gp_id': Gameplays[0]} for i in range(len(Expansions))],
+        initial=[{'e_id': expansions[i], 'gp_id': gameplays[0]} for i in range(len(expansions))],
     )
 
     return render(
@@ -86,8 +86,8 @@ def expansions_select_options(request):
         'polls/expansions_select_options.html',
         {
             'e_formset': e_formset,
-            'Expansions': Expansions,
-            'ExpansionsNames': ExpansionsNames,
+            'Expansions': expansions,
+            'ExpansionsNames': expansion_names,
             'tex': 'haha',
         },
     )
@@ -95,15 +95,15 @@ def expansions_select_options(request):
 
 def load_player_count(request):
     bg_id = request.GET.get('id')
-    playersRange = Boardgames.objects.filter(id=bg_id).values('minNumberOfPlayers', 'maxNumberOfPlayers')[0]
-    minP = playersRange['minNumberOfPlayers']
-    maxP = playersRange['maxNumberOfPlayers']
-    PossibleNumberOfPlayers = range(minP, maxP + 1)
+    players_range = Boardgames.objects.filter(id=bg_id).values('minNumberOfPlayers', 'maxNumberOfPlayers')[0]
+    min_p = players_range['minNumberOfPlayers']
+    max_p = players_range['maxNumberOfPlayers']
+    possible_number_of_players = range(min_p, max_p + 1)
 
     return render(
         request,
         'polls/players_dropdown_options.html',
-        {'PossibleNumberOfPlayers': PossibleNumberOfPlayers},
+        {'PossibleNumberOfPlayers': possible_number_of_players},
     )
 
 

@@ -16,9 +16,9 @@ def add_results(request):
     specifics = PlayerSpecifics.objects.filter(bg_id_id=last_game.name.id).values_list('id', 'name')
     player_order = [(i, i) for i in range(last_game.NumberOfPlayers + 1)]
     print(player_order)
-    ResultsFormSet = formset_factory(ResultsForm, extra=0)
+    results_formset = formset_factory(ResultsForm, extra=0)
     if last_game.with_results:
-        formset = ResultsFormSet(
+        formset = results_formset(
             request.POST or None,
             initial=[{'order': i + 1, 'gp_id': last_game} for i in range(max(2, last_game.NumberOfPlayers))],
         )
@@ -30,7 +30,7 @@ def add_results(request):
             else:
                 form.fields.pop('player_specifics')
     else:
-        formset = ResultsFormSet(
+        formset = results_formset(
             request.POST or None,
             initial=[{'order': 0, 'gp_id': last_game} for _ in range(max(2, last_game.NumberOfPlayers))],
         )

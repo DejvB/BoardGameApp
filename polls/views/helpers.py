@@ -1,6 +1,6 @@
 import itertools
 import time
-from xml.etree import ElementTree as ET
+from xml.etree import ElementTree
 
 import numpy as np
 import requests
@@ -26,7 +26,7 @@ def scrape_bgg_info(bgg_id):
         t *= 2
         time.sleep(t)
         req = requests.get(f'{api_prefix}thing?id={bgg_id}&stats=1')
-    xml_root = ET.fromstring(req.text)
+    xml_root = ElementTree.fromstring(req.text)
     bg_info['name'] = xml_root.find('item//name').attrib['value']
     bg_info['type'] = xml_root.find('item').attrib['type']
     try:
@@ -79,8 +79,8 @@ def get_bg_cmd(bg_id):
 def update_bg_info(bg_id, bg_info):
     bg = Boardgames.objects.get(id=bg_id)
     # bg.name = bg_info['name']
-    bg.minNumberOfPlayers = bg_info['minp']
-    bg.maxNumberOfPlayers = bg_info['maxp']
+    bg.min_number_of_players = bg_info['minp']
+    bg.max_number_of_players = bg_info['maxp']
     bg.minage = bg_info['minage']
     bg.minplaytime = bg_info['minplaytime']
     bg.maxplaytime = bg_info['maxplaytime']
@@ -102,8 +102,10 @@ def update_bg_info(bg_id, bg_info):
 
 def search_for_bgg_id(search_query):
     api_prefix = 'https://www.boardgamegeek.com/xmlapi2/'
-    xml_root = ET.fromstring(requests.get(f'{api_prefix}search?query={search_query}&type=boardgame').text)
-    neg_xml_root = ET.fromstring(requests.get(f'{api_prefix}search?query={search_query}&type=boardgameexpansion').text)
+    xml_root = ElementTree.fromstring(requests.get(f'{api_prefix}search?query={search_query}&type=boardgame').text)
+    neg_xml_root = ElementTree.fromstring(
+        requests.get(f'{api_prefix}search?query={search_query}&type=boardgameexpansion').text
+    )
     search_results = xml_root.findall('item')
     neg_search_results = neg_xml_root.findall('item')
     t_bgg_names = [bgg.find('name').attrib['value'] for bgg in search_results]
@@ -120,7 +122,7 @@ def search_for_bgg_id(search_query):
 def update_bgg_id(bg_id):
     api_prefix = 'https://www.boardgamegeek.com/xmlapi2/'
     bg_name = Boardgames.objects.get(id=bg_id).name
-    xml_root = ET.fromstring(requests.get(f'{api_prefix}search?query={bg_name}&type=boardgame&exact=1').text)
+    xml_root = ElementTree.fromstring(requests.get(f'{api_prefix}search?query={bg_name}&type=boardgame&exact=1').text)
     if xml_root.find('item'):
         bgg_id = xml_root.find('item').attrib['id']
         if bgg_id:
@@ -140,18 +142,18 @@ def update_elo(changes):
     return None
 
 
-def computeW(elo1, elo2):
+def compute_w(elo1, elo2):
     return 1 / (10 ** (-(elo1 - elo2) / 400) + 1)
 
 
-def computeKW(elo1, elo2, res, k=60):
-    return round(k * (res - computeW(elo1, elo2)))
+def compute_kw(elo1, elo2, res, k=60):
+    return round(k * (res - compute_w(elo1, elo2)))
 
 
 def compute_tournament(results):
     changes = {p.p_id.id: 0 for p in results}
     for i, j in itertools.combinations(results, 2):
-        elo_change = computeKW(
+        elo_change = compute_kw(
             i.p_id.elo,
             j.p_id.elo,
             (np.sign(j.order - i.order) + 1) / 2,

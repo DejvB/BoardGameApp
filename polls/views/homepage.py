@@ -71,9 +71,9 @@ def index(request):
     }
     # stats per week
     week = []
-    totalTime = []
-    totalTimestr = []
-    totalCount = []
+    total_time = []
+    total_timestr = []
+    total_count = []
     stats = (
         games_list.annotate(year=ExtractIsoYear('date'), week=ExtractWeek('date'))
         .values('year', 'week')
@@ -83,34 +83,34 @@ def index(request):
         if week and stat['week'] != week[-1] + 1 and stat['week'] != 1:
             for missing_week in range(week[-1] + 1, stat['week']):
                 week.append(missing_week)
-                totalTime.append(0)
-                totalTimestr.append(str(0))
-                totalCount.append(0)
+                total_time.append(0)
+                total_timestr.append(str(0))
+                total_count.append(0)
         week.append(stat['week'])
-        totalTime.append(stat['time__sum'].days * 1000 * 86400 + stat['time__sum'].seconds * 1000)
-        totalTimestr.append(str(stat['time__sum']))
-        totalCount.append(stat['time__count'])
+        total_time.append(stat['time__sum'].days * 1000 * 86400 + stat['time__sum'].seconds * 1000)
+        total_timestr.append(str(stat['time__sum']))
+        total_count.append(stat['time__count'])
 
     # avg time per game
-    avg = int(sum(totalTime) / sum(totalCount))
+    avg = int(sum(total_time) / sum(total_count))
     # max number of game equivalent to avg time per game
-    mg = ceil(max(totalTime) / (sum(totalTime) / sum(totalCount)))
-    mg = max(mg, max(totalCount))
+    mg = ceil(max(total_time) / (sum(total_time) / sum(total_count)))
+    mg = max(mg, max(total_count))
 
     # time equivalent to mg with avg time per game
     mt = mg * avg
     context['week'] = week
-    context['totalTime'] = totalTime
-    context['totalTimestr'] = totalTimestr
-    context['totalCount'] = totalCount
+    context['totalTime'] = total_time
+    context['total_timestr'] = total_timestr
+    context['totalCount'] = total_count
     context['mg'] = mg
     context['mt'] = mt
 
     # stats per month
     month = []
-    totalTime_month = []
-    totalTimestr_month = []
-    totalCount_month = []
+    total_time_month = []
+    total_timestr_month = []
+    total_count_month = []
     stats = (
         games_list.annotate(year=ExtractYear('date'), month=ExtractMonth('date'))
         .values('year', 'month')
@@ -118,14 +118,14 @@ def index(request):
     )
     for stat in stats:
         month.append(stat['month'])
-        totalTime_month.append(stat['time__sum'].days * 1000 * 86400 + stat['time__sum'].seconds * 1000)
-        totalTimestr_month.append(str(stat['time__sum']))
-        totalCount_month.append(stat['time__count'])
+        total_time_month.append(stat['time__sum'].days * 1000 * 86400 + stat['time__sum'].seconds * 1000)
+        total_timestr_month.append(str(stat['time__sum']))
+        total_count_month.append(stat['time__count'])
     # print(stats)
     context['month'] = month
-    context['totalTime_month'] = totalTime_month
-    context['totalTimestr_month'] = totalTimestr_month
-    context['totalCount_month'] = totalCount_month
+    context['totalTime_month'] = total_time_month
+    context['total_timestr_month'] = total_timestr_month
+    context['totalCount_month'] = total_count_month
 
     weekdays = list(
         games_list.annotate(weekday=ExtractWeekDay('date'))
