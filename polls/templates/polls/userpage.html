@@ -1,5 +1,6 @@
 {% extends "polls/header.html" %}
 {% block body %}
+
 <div class='box round shadow'>
       <h2>Library</h2>
         <hr>
@@ -13,7 +14,6 @@
             <th>
               {% for moc in MoC %}
               <a class="bubble">{{ moc.0 }} ({{ moc.1}})</a>
-<!--              {% if not forloop.last %},{% endif %}-->
               {% empty %}
                 Nothing to show.
               {% endfor %}
@@ -24,7 +24,6 @@
             <th>
               {% for mom in MoM %}
               <a class="bubble">{{ mom.0 }} ({{ mom.1}})</a>
-<!--              {% if not forloop.last %},{% endif %}-->
               {% empty %}
                 Nothing to show.
               {% endfor %}
@@ -35,7 +34,6 @@
             <th>
               {% for mod in MoD %}
               <a class="bubble">{{ mod.0 }} ({{ mod.1}})</a>
-<!--              {% if not forloop.last %},{% endif %}-->
               {% empty %}
                 Nothing to show.
               {% endfor %}
@@ -105,5 +103,133 @@
       </form>
 </div>
 
+<div class='big box round shadow'>
+  <input type="button" id="weights_button" value="Weights">
+  <input type="button" id="ranks_button" value="Ranks">
+  <input type="button" id="years_button" value="Years">
+  <div  id="weights_div">
+        <canvas id="Weights"></canvas>
+  </div>
+  <div id="ranks_div">
+        <canvas id="Ranks"></canvas>
+  </div>
+  <div id="years_div">
+        <canvas id="Years"></canvas>
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+
+<script>
+$('#weights_button,#ranks_button, #years_button').click(function(){
+  var this_div = $(this).val().toLowerCase()+'_div';
+  document.getElementById('weights_div').setAttribute('hidden','hidden');
+  document.getElementById('ranks_div').setAttribute('hidden','hidden');
+  document.getElementById('years_div').setAttribute('hidden','hidden');
+  document.getElementById(this_div).removeAttribute('hidden');
+});
+
+</script>
+
+<script>
+var ctx = document.getElementById("Weights").getContext('2d');
+var myChart = new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: {{ weight_bins }},
+    datasets: [{
+      label: 'Weights',
+      data: {{ weights }},
+      backgroundColor: 'rgba(255, 99, 132, 1)',
+      barPercentage: 1.1,
+    }]
+  },
+  options: {
+    scales: {
+      xAxes: [{
+        display: false,
+        ticks: {
+            max: 4.5,
+        }
+     }, {
+        display: true,
+        ticks: {
+            autoSkip: false,
+            max: 5,
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          beginAtZero:true
+        }
+      }]
+    }
+  }
+});
+
+var ctx2 = document.getElementById("Ranks").getContext('2d');
+var myChart2 = new Chart(ctx2, {
+  type: 'bar',
+  data: {
+    labels: {{ rank_bins }},
+    datasets: [{
+      label: 'Ranks',
+      data: {{ ranks }},
+      backgroundColor: 'rgba(255, 99, 132, 1)',
+      barPercentage: 1.1,
+    }]
+  },
+  options: {
+    scales: {
+      xAxes: [{
+        display: false,
+        ticks: {
+            max: 9.5,
+        }
+     }, {
+        display: true,
+        ticks: {
+            autoSkip: false,
+            max: 10,
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          beginAtZero:true
+        }
+      }]
+    }
+  }
+});
+
+var ctx3 = document.getElementById("Years").getContext('2d');
+var myChart3 = new Chart(ctx3, {
+  type: 'bar',
+  data: {
+    labels: {{ year_bins }},
+    datasets: [{
+      label: 'Years',
+      data: {{ years }},
+      backgroundColor: 'rgba(255, 99, 132, 1)',
+      barPercentage: 1.1,
+    }]
+  },
+  options: {
+    scales: {
+      xAxes: [{
+<!--        display: false,-->
+        ticks: {
+            max: 4.5,
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          beginAtZero:true
+        }
+      }]
+    }
+  }
+});
+</script>
 
 {% endblock %}

@@ -28,22 +28,18 @@ def scrape_bgg_info(bgg_id):
     api_prefix = 'https://www.boardgamegeek.com/xmlapi2/'
     bg_info = {}
     req = requests.get(f'{api_prefix}thing?id={bgg_id}&stats=1')
-    print(req.status_code)
-    # if req.status_code == 429:
-    #     time.sleep(5)
-    #     req = requests.get(f'{api_prefix}thing?id={bgg_id}&stats=1')
     t = 1
     while req.status_code == 429 and t < 60:
-        print(t)
         t *= 2
         time.sleep(t)
         req = requests.get(f'{api_prefix}thing?id={bgg_id}&stats=1')
     xml_root = ET.fromstring(req.text)
     bg_info['name'] = xml_root.find('item//name').attrib['value']
+    bg_info['type'] = xml_root.find('item').attrib['type']
     try:
-        bg_info['img'] = xml_root.find('item//thumbnail').text
+        bg_info['img_link'] = xml_root.find('item//thumbnail').text
     except AttributeError:
-        bg_info['img'] = ''
+        bg_info['img_link'] = ''
     bg_info['minp'] = xml_root.find('item//minplayers').attrib['value']
     bg_info['maxp'] = xml_root.find('item//maxplayers').attrib['value']
     bg_info['minage'] = xml_root.find('item//minage').attrib['value']
@@ -72,6 +68,8 @@ def get_bgg_info(bg_id):
     bgg_id = Boardgames.objects.get(id=bg_id).bgg_id
     if bgg_id == 1 or bgg_id == '1':
         bgg_id = update_bgg_id(bg_id)
+    if Boardgames.objects.get(id=bg_id).weight != 0:
+        return Boardgames.objects.get(id=bg_id).to_dict()
     bg_info = scrape_bgg_info(bgg_id)
     update_bg_info(bg_id, bg_info)
     return bg_info
@@ -98,7 +96,7 @@ def update_bg_info(bg_id, bg_info):
     bg.year = bg_info['year']
     bg.weight = bg_info['weight']
     bg.rank = bg_info['rank']
-    bg.img_link = bg_info['img']
+    bg.img_link = bg_info['img_link']
     bg.save()
     for category in bg_info['category']:
         cat, _ = Category.objects.get_or_create(name=category)

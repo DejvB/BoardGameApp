@@ -159,12 +159,15 @@ def index(request):
     context['totalTimestr_month'] = totalTimestr_month
     context['totalCount_month'] = totalCount_month
 
-    weekday = list(
+    weekdays = list(
         games_list.annotate(weekday=ExtractWeekDay('date'))
         .values('weekday')
         .annotate(Count('time'))
-        .values_list('time__count', flat=True)
+        .values_list('weekday', 'time__count')
     )
+    weekday = [0] * 7
+    for day in weekdays:
+        weekday[day[0] - 1] = day[1]
     weekday = weekday[1:] + [weekday[0]]
     context['weekday'] = weekday
     context['players'] = Player.objects.all()
