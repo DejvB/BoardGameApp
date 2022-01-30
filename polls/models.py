@@ -2,6 +2,7 @@ import datetime
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.forms.models import model_to_dict
 
 
 class Player(models.Model):
@@ -39,6 +40,13 @@ class Boardgames(models.Model):
             self.lastTimePlayed
             <= datetime.date.today() - datetime.timedelta(days=d)
         )
+
+    def to_dict(self):
+        data = model_to_dict(self)
+        data['mechanics'] = self.mechanics.all()
+        data['category'] = self.category.all()
+        data['designer'] = self.designer.all()
+        return data
 
     name = models.CharField(max_length=50)
     minNumberOfPlayers = models.IntegerField(default=2)

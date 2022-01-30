@@ -196,7 +196,7 @@ def load_chart_data(request):
             'last_gp': last_gp,
             'nogp': nogp,
             'order_data': order_data,
-            'bg_img': bg_info['img'],
+            'bg_img': bg_info['img_link'],
             'bg_rank': bg_info['rank'],
             'bg_weight': bg_info['weight'],
         }

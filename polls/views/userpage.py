@@ -1,4 +1,5 @@
 import datetime
+import numpy as np
 from collections import Counter
 
 from django.contrib.auth.decorators import login_required
@@ -11,8 +12,8 @@ from django.shortcuts import render
 
 from polls.forms import OwnBoardgameForm, OwnExpansionForm
 
-from ..models import Player
-from .helpers import get_bg_cmd, my_view, show_success_tooltip
+from ..models import Player, Boardgames
+from .helpers import get_bgg_info, my_view, show_success_tooltip
 
 
 @login_required
@@ -20,21 +21,36 @@ def userpage(request):
     userid = my_view(request)
     bg_owned_list = Player.objects.get(id=userid).get_owned(userid)
     data = {
+        'rank': [],
         'weight': [],
+        'year': [],
         'mechanics': [],
         'category': [],
-        'rank': [],
         'designer': [],
     }
-    for bg_id in bg_owned_list[:52]:
-        bgg_info = get_bg_cmd(bg_id)
-        # data['rank'].append(bgg_info['rank'])
+    for bg_id in bg_owned_list:
+        bgg_info = get_bgg_info(bg_id)
+        # print(bgg_info)
+        data['rank'].append(float(bgg_info['rank']))
+        data['weight'].append(float(bgg_info['weight']))
+        data['year'].append(int(bgg_info['year']))
         data['mechanics'].extend(bgg_info['mechanics'])
         data['category'].extend(bgg_info['category'])
-        # data['weight'].append(bgg_info['weight'])
         data['designer'].extend(bgg_info['designer'])
+    # print(sorted(data['weight']))
+    weight_bins = np.linspace(1, 5, 9)
+    rank_bins = np.linspace(0, 10, 21)
+    year_bins = np.linspace(min(data['year']),
+                            max(data['year']),
+                            max(data['year']) - min(data['year']) + 1)
     context = {
         'NoG': len(bg_owned_list),
+        'ranks': list(np.histogram(data['rank'], bins=rank_bins)[0]),
+        'weight_bins': list(weight_bins),
+        'rank_bins': list(rank_bins),
+        'year_bins': list(year_bins),
+        'weights': list(np.histogram(data['weight'], bins=weight_bins)[0]),
+        'years': list(np.histogram(data['year'], bins=year_bins)[0]),
         'MoC': Counter(data['category']).most_common(3),
         'MoM': Counter(data['mechanics']).most_common(3),
         'MoD': Counter(data['designer']).most_common(3),
