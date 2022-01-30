@@ -1,12 +1,13 @@
 from django.contrib.auth.decorators import login_required
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 
 from polls.forms import ExpansionForm
 from polls.views.helpers import show_success_tooltip
 
 
-@login_required
-def add_expansion(request):
+@login_required  # type:ignore
+def add_expansion(request: HttpRequest) -> HttpResponse:
     context = {}
     form = ExpansionForm()
     context['form'] = form

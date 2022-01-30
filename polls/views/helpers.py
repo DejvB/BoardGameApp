@@ -1,14 +1,16 @@
 import itertools
 import time
+from typing import Any, Collection, Dict, List, Optional, Tuple
 from xml.etree import ElementTree
 
 import numpy as np
 import requests
+from django.http import HttpRequest
 
 from polls.models import Boardgames, Category, Designer, Gameplay, Mechanics, Player
 
 
-def my_view(request):
+def my_view(request: HttpRequest) -> Optional[int]:
     userid = None
     if request.user.is_authenticated:
         userid = request.user.player.id
@@ -17,7 +19,7 @@ def my_view(request):
     return userid
 
 
-def scrape_bgg_info(bgg_id):
+def scrape_bgg_info(bgg_id: int) -> Dict[str, Any]:
     api_prefix = 'https://www.boardgamegeek.com/xmlapi2/'
     bg_info = {}
     req = requests.get(f'{api_prefix}thing?id={bgg_id}&stats=1')
@@ -27,24 +29,24 @@ def scrape_bgg_info(bgg_id):
         time.sleep(t)
         req = requests.get(f'{api_prefix}thing?id={bgg_id}&stats=1')
     xml_root = ElementTree.fromstring(req.text)
-    bg_info['name'] = xml_root.find('item//name').attrib['value']
-    bg_info['type'] = xml_root.find('item').attrib['type']
+    bg_info['name'] = xml_root.find('item//name').attrib['value']  # type: ignore
+    bg_info['type'] = xml_root.find('item').attrib['type']  # type: ignore
     try:
-        bg_info['img_link'] = xml_root.find('item//thumbnail').text
+        bg_info['img_link'] = xml_root.find('item//thumbnail').text  # type: ignore
     except AttributeError:
         bg_info['img_link'] = ''
-    bg_info['minp'] = xml_root.find('item//minplayers').attrib['value']
-    bg_info['maxp'] = xml_root.find('item//maxplayers').attrib['value']
-    bg_info['minage'] = xml_root.find('item//minage').attrib['value']
-    bg_info['playtime'] = xml_root.find('item//playingtime').attrib['value']
-    bg_info['minplaytime'] = xml_root.find('item//minplaytime').attrib['value']
-    bg_info['maxplaytime'] = xml_root.find('item//maxplaytime').attrib['value']
-    bg_info['year'] = xml_root.find('item//yearpublished').attrib['value']
+    bg_info['minp'] = xml_root.find('item//minplayers').attrib['value']  # type: ignore
+    bg_info['maxp'] = xml_root.find('item//maxplayers').attrib['value']  # type: ignore
+    bg_info['minage'] = xml_root.find('item//minage').attrib['value']  # type: ignore
+    bg_info['playtime'] = xml_root.find('item//playingtime').attrib['value']  # type: ignore
+    bg_info['minplaytime'] = xml_root.find('item//minplaytime').attrib['value']  # type: ignore
+    bg_info['maxplaytime'] = xml_root.find('item//maxplaytime').attrib['value']  # type: ignore
+    bg_info['year'] = xml_root.find('item//yearpublished').attrib['value']  # type: ignore
 
-    bg_info['id'] = xml_root.find('item').attrib['id']
-    rank = xml_root.find('item//statistics//ratings//average').attrib['value']
+    bg_info['id'] = xml_root.find('item').attrib['id']  # type: ignore
+    rank = xml_root.find('item//statistics//ratings//average').attrib['value']  # type: ignore
     bg_info['rank'] = f'{float(rank):.2f}'
-    weight = xml_root.find('item//statistics//ratings//averageweight').attrib['value']
+    weight = xml_root.find('item//statistics//ratings//averageweight').attrib['value']  # type: ignore
     bg_info['weight'] = f'{float(weight):.2f}'
     links = xml_root.findall("item//link[@type='boardgamecategory']")
     bg_info['category'] = [link.attrib['value'] for link in links]
@@ -55,18 +57,18 @@ def scrape_bgg_info(bgg_id):
     return bg_info
 
 
-def get_bgg_info(bg_id):
+def get_bgg_info(bg_id: int) -> Dict[str, Any]:
     bgg_id = Boardgames.objects.get(id=bg_id).bgg_id
     if bgg_id == 1 or bgg_id == '1':
         bgg_id = update_bgg_id(bg_id)
     if Boardgames.objects.get(id=bg_id).weight != 0:
-        return Boardgames.objects.get(id=bg_id).to_dict()
+        return Boardgames.objects.get(id=bg_id).to_dict()  # type: ignore
     bg_info = scrape_bgg_info(bgg_id)
     update_bg_info(bg_id, bg_info)
     return bg_info
 
 
-def get_bg_cmd(bg_id):
+def get_bg_cmd(bg_id: int) -> Dict[str, Any]:
     bg_info = {}
     if Boardgames.objects.get(id=bg_id).weight != 0:
         bg_info['category'] = Boardgames.objects.get(id=bg_id).category.all()
@@ -76,7 +78,7 @@ def get_bg_cmd(bg_id):
     return get_bgg_info(bg_id)
 
 
-def update_bg_info(bg_id, bg_info):
+def update_bg_info(bg_id: int, bg_info: Dict[str, Any]) -> None:
     bg = Boardgames.objects.get(id=bg_id)
     # bg.name = bg_info['name']
     bg.min_number_of_players = bg_info['minp']
@@ -100,7 +102,7 @@ def update_bg_info(bg_id, bg_info):
         des.boardgame.add(bg_id)
 
 
-def search_for_bgg_id(search_query):
+def search_for_bgg_id(search_query: str) -> Tuple[List[str], List[int]]:
     api_prefix = 'https://www.boardgamegeek.com/xmlapi2/'
     xml_root = ElementTree.fromstring(requests.get(f'{api_prefix}search?query={search_query}&type=boardgame').text)
     neg_xml_root = ElementTree.fromstring(
@@ -108,7 +110,7 @@ def search_for_bgg_id(search_query):
     )
     search_results = xml_root.findall('item')
     neg_search_results = neg_xml_root.findall('item')
-    t_bgg_names = [bgg.find('name').attrib['value'] for bgg in search_results]
+    t_bgg_names = [bgg.find('name').attrib['value'] for bgg in search_results]  # type: ignore
     t_bgg_ids = [bgg.attrib['id'] for bgg in search_results]
     exp_ids = [bgg.attrib['id'] for bgg in neg_search_results]
     bgg_names, bgg_ids = [], []
@@ -116,25 +118,25 @@ def search_for_bgg_id(search_query):
         if nid not in exp_ids:
             bgg_names.append(name)
             bgg_ids.append(nid)
-    return bgg_names, bgg_ids
+    return bgg_names, bgg_ids  # type: ignore
 
 
-def update_bgg_id(bg_id):
+def update_bgg_id(bg_id: int) -> Optional[int]:  # type: ignore
     api_prefix = 'https://www.boardgamegeek.com/xmlapi2/'
     bg_name = Boardgames.objects.get(id=bg_id).name
     xml_root = ElementTree.fromstring(requests.get(f'{api_prefix}search?query={bg_name}&type=boardgame&exact=1').text)
     if xml_root.find('item'):
-        bgg_id = xml_root.find('item').attrib['id']
+        bgg_id = xml_root.find('item').attrib['id']  # type: ignore
         if bgg_id:
             bg = Boardgames.objects.get(id=bg_id)
             bg.bgg_id = bgg_id
             bg.save(update_fields=['bgg_id'])
-            return bgg_id
+            return bgg_id  # type: ignore
     else:
         return 2
 
 
-def update_elo(changes):
+def update_elo(changes: Dict[int, int]) -> None:
     for key, value in changes.items():
         p = Player.objects.get(id=key)
         p.elo = p.elo + value
@@ -142,15 +144,15 @@ def update_elo(changes):
     return None
 
 
-def compute_w(elo1, elo2):
+def compute_w(elo1: int, elo2: int) -> float:
     return 1 / (10 ** (-(elo1 - elo2) / 400) + 1)
 
 
-def compute_kw(elo1, elo2, res, k=60):
+def compute_kw(elo1: int, elo2: int, res: int, k: int = 60) -> int:
     return round(k * (res - compute_w(elo1, elo2)))
 
 
-def compute_tournament(results):
+def compute_tournament(results: Collection[Any]) -> Dict[int, int]:
     changes = {p.p_id.id: 0 for p in results}
     for i, j in itertools.combinations(results, 2):
         elo_change = compute_kw(
@@ -164,7 +166,7 @@ def compute_tournament(results):
     return changes
 
 
-# def update_session(request):
+# def update_session(request: HttpRequest) -> HttpResponse:
 #     if not request.is_ajax() or not request.method == 'POST':
 #         return HttpResponseNotAllowed(['POST',])
 #
@@ -172,7 +174,7 @@ def compute_tournament(results):
 #     return HttpResponse('ok')
 
 
-def get_last_gameplay(request, only_session):
+def get_last_gameplay(request: HttpRequest, only_session: bool) -> Any:
     if 'gameplay_id' in request.session:
         gp_id = request.session['gameplay_id']
         last_game = Gameplay.objects.get(id=gp_id)
@@ -183,6 +185,6 @@ def get_last_gameplay(request, only_session):
     return last_game
 
 
-def show_success_tooltip(context, tooltip='tooltip'):
+def show_success_tooltip(context: Dict[str, Any], tooltip: str = 'tooltip') -> Dict[str, Any]:
     context.update({tooltip: 'Submit was successful.'})
     return context

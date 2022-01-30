@@ -1,7 +1,8 @@
 import itertools
+from typing import Any, Collection, Dict, List
 
 import numpy as np
-from django.http import JsonResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render
 
 from polls.models import Gameplay, Player, Results
@@ -9,10 +10,10 @@ from polls.views.helpers import compute_kw, my_view
 
 
 elos = {}
-elo_history = {}
+elo_history: Dict[int, List[int]] = {}
 
 
-def playerstats(request):
+def playerstats(request: HttpRequest) -> HttpResponse:
     global elos
     global elo_history
     elo_history = {p.id: [] for p in Player.objects.all()}
@@ -26,7 +27,7 @@ def playerstats(request):
     return render(request, 'polls/playerstats.html', context)
 
 
-def load_playerstats(request):
+def load_playerstats(request: HttpRequest) -> JsonResponse:
     userid = my_view(request)
     # reset_all_elo()
     elo_history = elo()
@@ -79,7 +80,7 @@ def load_playerstats(request):
         base[0] = 1000 + base[0]
     cummean = np.cumsum(base).tolist()[-number:]
 
-    meanelo = round(np.mean(cummean), 2)
+    meanelo = round(np.mean(cummean), 2)  # type: ignore
     celo = cummean[-1]
     maxelo = max(cummean)
     minelo = min(cummean)
@@ -106,13 +107,13 @@ def load_playerstats(request):
     )
 
 
-def update_elo_local(elos, changes):
+def update_elo_local(elos: Dict[int, int], changes: Dict[int, int]) -> None:
     for key, value in changes.items():
         elos[key] = elos[key] + value
     return None
 
 
-def elo():
+def elo() -> Dict[int, List[int]]:
     if any([v != 1000 for v in elos.values()]):
         return elo_history
     # elo_history = {p.id: [] for p in Player.objects.all()}
@@ -125,13 +126,13 @@ def elo():
     return elo_history
 
 
-def add_to_history(hist, changes):
+def add_to_history(hist: Dict[int, List[int]], changes: Dict[int, int]) -> None:
     for key, value in changes.items():
         hist[key].append(value)
     return None
 
 
-def compute_tournament_local(results, elos):
+def compute_tournament_local(results: Collection[Any], elos: Dict[int, int]) -> Dict[int, int]:
     changes = {p.p_id.id: 0 for p in results}
     for i, j in itertools.combinations(results, 2):
         elo_change = compute_kw(
@@ -149,7 +150,7 @@ def compute_tournament_local(results, elos):
     return changes
 
 
-def set_elo(elo):
+def set_elo(elo: Dict[int, List[int]]) -> None:
     for key, value in elo.items():
         p = Player.objects.get(id=key)
         if value[0] < 100:
@@ -160,14 +161,14 @@ def set_elo(elo):
     return None
 
 
-def reset_all_elo():
+def reset_all_elo() -> None:
     for p in Player.objects.all():
         p.elo = 1000
         p.save(update_fields=['elo'])
     return None
 
 
-def print_all_elo():
+def print_all_elo() -> None:
     total_elo = 0
     for p in Player.objects.all():
         total_elo = total_elo + p.elo

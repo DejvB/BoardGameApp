@@ -1,4 +1,5 @@
 import datetime
+from typing import Any, Dict
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -6,13 +7,13 @@ from django.forms.models import model_to_dict
 
 
 class Player(models.Model):
-    def __str__(self):
+    def __str__(self) -> models.CharField:
         return self.name
 
-    def get_owned(self, id):
+    def get_owned(self, id: int) -> Any:
         return OwnBoardgame.objects.filter(p_id__id=id).values_list('bg_id__id', flat=True)
 
-    def get_played(self, id):
+    def get_played(self, id: int) -> Any:
         return Gameplay.objects.filter(id__in=list(Results.objects.filter(p_id=id).values_list('gp_id', flat=True)))
 
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, default=None, blank=True)
@@ -28,18 +29,18 @@ no_image = (
 
 
 class Boardgames(models.Model):
-    def __str__(self):
+    def __str__(self) -> models.CharField:
         return self.name
 
-    def not_played_recently(self, d):
-        return self.lastTimePlayed <= datetime.date.today() - datetime.timedelta(days=d)
+    def not_played_recently(self, d: int) -> bool:
+        return self.lastTimePlayed <= datetime.date.today() - datetime.timedelta(days=d)  # type: ignore
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
         data = model_to_dict(self)
         data['mechanics'] = self.mechanics.all()
         data['category'] = self.category.all()
         data['designer'] = self.designer.all()
-        return data
+        return data  # type: ignore
 
     name = models.CharField(max_length=50)
     min_number_of_players = models.IntegerField(default=2)
@@ -55,7 +56,7 @@ class Boardgames(models.Model):
 
 
 class Expansion(models.Model):
-    def __str__(self):
+    def __str__(self) -> models.CharField:
         return self.name
 
     basegame = models.ForeignKey(Boardgames, on_delete=models.CASCADE)
@@ -63,7 +64,7 @@ class Expansion(models.Model):
 
 
 class OwnBoardgame(models.Model):
-    def __str__(self):
+    def __str__(self) -> str:
         return f'{self.bg_id.name} - {self.p_id.name}'
 
     bg_id = models.ForeignKey(Boardgames, on_delete=models.CASCADE)
@@ -71,7 +72,7 @@ class OwnBoardgame(models.Model):
 
 
 class OwnExpansion(models.Model):
-    def __str__(self):
+    def __str__(self) -> str:
         return f'{self.e_id.basegame.name} - {self.e_id.name} - {self.p_id.name}'
 
     e_id = models.ForeignKey(Expansion, on_delete=models.CASCADE)
@@ -79,10 +80,10 @@ class OwnExpansion(models.Model):
 
 
 class Gameplay(models.Model):
-    def __str__(self):
+    def __str__(self) -> Any:
         return self.name.name
 
-    def get_players(self):
+    def get_players(self) -> str:
         return ', '.join(list(self.results.all().values_list('p_id__name', flat=True)))
 
     name = models.ForeignKey(Boardgames, on_delete=models.CASCADE)
@@ -93,7 +94,7 @@ class Gameplay(models.Model):
 
 
 class PlayerSpecifics(models.Model):
-    def __str__(self):
+    def __str__(self) -> models.CharField:
         return self.name
 
     name = models.CharField(max_length=50)
@@ -101,7 +102,7 @@ class PlayerSpecifics(models.Model):
 
 
 class Results(models.Model):
-    def __str__(self):
+    def __str__(self) -> Any:
         return self.gp_id.name.name
 
     gp_id = models.ForeignKey(Gameplay, on_delete=models.CASCADE, related_name='results')
@@ -113,7 +114,7 @@ class Results(models.Model):
 
 
 class UsedExpansion(models.Model):
-    def __str__(self):
+    def __str__(self) -> Any:
         return self.gp_id.name.name
 
     gp_id = models.ForeignKey(Gameplay, on_delete=models.CASCADE)
@@ -122,7 +123,7 @@ class UsedExpansion(models.Model):
 
 
 class Mechanics(models.Model):
-    def __str__(self):
+    def __str__(self) -> models.CharField:
         return self.name
 
     name = models.CharField(max_length=50)
@@ -130,7 +131,7 @@ class Mechanics(models.Model):
 
 
 class Category(models.Model):
-    def __str__(self):
+    def __str__(self) -> models.CharField:
         return self.name
 
     name = models.CharField(max_length=50)
@@ -138,7 +139,7 @@ class Category(models.Model):
 
 
 class Designer(models.Model):
-    def __str__(self):
+    def __str__(self) -> models.CharField:
         return self.name
 
     name = models.CharField(max_length=50)

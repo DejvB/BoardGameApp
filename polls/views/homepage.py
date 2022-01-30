@@ -1,16 +1,17 @@
 import random
 from math import ceil
+from typing import List
 
 from django.db.models import Count, Max, Q, Sum
 from django.db.models.functions import ExtractIsoYear, ExtractMonth, ExtractWeek, ExtractWeekDay, ExtractYear
-from django.http import JsonResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render
 
 from polls.models import Boardgames, Gameplay, Player, Results
 from polls.views.helpers import my_view
 
 
-def index(request):
+def index(request: HttpRequest) -> HttpResponse:
     request.session['test'] = 'Blue'
     userid = my_view(request)
     games_own_list = games_list = Gameplay.objects.all()
@@ -70,7 +71,7 @@ def index(request):
         'mostplayed_games_list_values': mostplayed_games_list_values,
     }
     # stats per week
-    week = []
+    week: List[int] = []
     total_time = []
     total_timestr = []
     total_count = []
@@ -142,6 +143,6 @@ def index(request):
     return render(request, 'polls/index.html', context)
 
 
-def god_button(request):
+def god_button(request: HttpRequest) -> JsonResponse:
     request.session['fake_id'] = request.GET.get('fake_id')
     return JsonResponse(data={})

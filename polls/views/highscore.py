@@ -1,14 +1,14 @@
 import random
 
 from django.db.models import Avg, Count
-from django.http import JsonResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render
 
 from polls.models import Gameplay, Player, Results
 from polls.views.helpers import get_bgg_info, my_view
 
 
-def highscores(request):
+def highscores(request: HttpRequest) -> HttpResponse:
     if 'test' in request.session:
         print(request.session['test'])
     userid = my_view(request)
@@ -30,7 +30,7 @@ def highscores(request):
     return render(request, 'polls/highscores.html', context)
 
 
-def load_chart_data(request):
+def load_chart_data(request: HttpRequest) -> JsonResponse:
     userid = my_view(request)
     labels = []
     data = []

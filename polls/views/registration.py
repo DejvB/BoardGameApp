@@ -1,12 +1,13 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 
 from polls.forms import NewUserForm
 
 
-@login_required
-def register_request(request):
+@login_required  # type: ignore
+def register_request(request: HttpRequest) -> HttpResponse:
     if request.method == 'POST':
         form = NewUserForm(request.POST)
         if form.is_valid():

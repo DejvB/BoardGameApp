@@ -1,9 +1,11 @@
 import datetime
 from collections import Counter
+from typing import Any, Dict, List, Optional
 
 import numpy as np
 from django.contrib.auth.decorators import login_required
 from django.db.models.functions import ExtractIsoYear, ExtractMonth, ExtractWeek
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 
 from polls.forms import OwnBoardgameForm, OwnExpansionForm
@@ -11,11 +13,11 @@ from polls.models import Player
 from polls.views.helpers import get_bgg_info, my_view, show_success_tooltip
 
 
-@login_required
-def userpage(request):
+@login_required  # type: ignore
+def userpage(request: HttpRequest) -> HttpResponse:
     userid = my_view(request)
     bg_owned_list = Player.objects.get(id=userid).get_owned(userid)
-    data = {
+    data: Dict[str, List[Any]] = {
         'rank': [],
         'weight': [],
         'year': [],
@@ -88,8 +90,8 @@ def userpage(request):
     return render(request, 'polls/userpage.html', context)
 
 
-def new_game_in_library(request, userid):
-    context = {}
+def new_game_in_library(request: HttpRequest, userid: Optional[int]) -> Dict[str, Any]:
+    context: Dict[str, Any] = {}
     newgame_form = OwnBoardgameForm(initial={'p_id': userid})
     if request.method == 'POST' and 'add_game' in request.POST:
         newgame_form = OwnBoardgameForm(request.POST)
@@ -103,8 +105,8 @@ def new_game_in_library(request, userid):
     return context
 
 
-def new_exp_in_library(request, userid):
-    context = {}
+def new_exp_in_library(request: HttpRequest, userid: Optional[int]) -> Dict[str, Any]:
+    context: Dict[str, Any] = {}
     newexp_form = OwnExpansionForm(initial={'p_id': userid})
     if request.method == 'POST' and 'add_exp' in request.POST:
         newexp_form = OwnExpansionForm(request.POST)

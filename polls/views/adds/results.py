@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.forms import formset_factory
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 
 from polls.forms import ResultsForm
@@ -8,8 +9,8 @@ from polls.models import PlayerSpecifics
 from polls.views.helpers import compute_tournament, get_last_gameplay, show_success_tooltip, update_elo
 
 
-@login_required
-def add_results(request):
+@login_required  # type:ignore
+def add_results(request: HttpRequest) -> HttpResponse:
     context = {}
     last_game = get_last_gameplay(request, only_session=False)
     specifics = PlayerSpecifics.objects.filter(bg_id_id=last_game.name.id).values_list('id', 'name')

@@ -1,25 +1,28 @@
+from typing import Any, Dict, List
+
 from django.db.models import Count
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 
 from polls.models import Gameplay, Player, Results
 
 
-def compute_score(o, n):
+def compute_score(o: int, n: int) -> float:
     return (n - o + 1) / n
 
 
-def pie_chart(request):
+def pie_chart(request: HttpRequest) -> HttpResponse:
     labels = []
-    data = []
+    data: List[List[int]] = []
     colors = []
-    context = {}
+    context: Dict[str, List[int]] = {}
     players = Player.objects.order_by('name').values_list('name', flat=True)
     gp_queryset = list(Gameplay.objects.values_list('id', flat=True))
 
     # points
-    points = []
+    points: List[List[Any]] = []
     for player in players:
-        p_sum = 0
+        p_sum: float = 0
         queryset = (
             Results.objects.filter(p_id__name=player)
             .filter(order__gte=1)
@@ -28,7 +31,7 @@ def pie_chart(request):
         for query in queryset:
             p_sum = p_sum + compute_score(query['order'], query['gp_id__NumberOfPlayers'])
         points.append([player, round(p_sum / len(queryset), 3)])
-    context['points'] = sorted(points, key=lambda x: -x[1])
+    context['points'] = sorted(points, key=lambda x: -x[1])  # type: ignore
     for i in range(6):
         data.append([])
 

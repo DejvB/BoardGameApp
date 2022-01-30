@@ -1,12 +1,13 @@
 from django.contrib.auth.decorators import login_required
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 
 from polls.forms import PlayerForm
 from polls.views.helpers import show_success_tooltip
 
 
-@login_required
-def add_player(request):
+@login_required  # type:ignore
+def add_player(request: HttpRequest) -> HttpResponse:
     context = {}
     form = PlayerForm()
     context['form'] = form

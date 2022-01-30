@@ -1,10 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 
 
-def login_request(request):
+def login_request(request: HttpRequest) -> HttpResponse:
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
