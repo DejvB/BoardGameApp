@@ -46,16 +46,10 @@ class GameplayForm(forms.ModelForm):
         widgets = {
             'NumberOfPlayers': forms.widgets.Select(),
             'date': forms.widgets.DateTimeInput(
-                format='%Y-%m-%d %H:%M',
-                attrs={
-                    'class': 'myDateClass',
-                    'type': 'datetime-local',
-                },
+                format='%Y-%m-%d %H:%M', attrs={'class': 'myDateClass', 'type': 'datetime-local'}
             ),
         }
-        labels = {
-            'NumberOfPlayers': 'Number of players',
-        }
+        labels = {'NumberOfPlayers': 'Number of players'}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

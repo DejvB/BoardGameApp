@@ -34,31 +34,11 @@ urlpatterns = [
     path('pie_chart/', views.pie_chart, name='pie-chart'),
     path('userpage/', views.userpage, name='userpage'),
     # AJAX new_game_in_library
-    path(
-        'ajax/load_player_count/',
-        views.load_player_count,
-        name='load_player_count',
-    ),
-    path(
-        'ajax/new_game_in_library/',
-        views.new_game_in_library,
-        name='new_game_in_library',
-    ),
-    path(
-        'ajax/new_exp_in_library/',
-        views.new_exp_in_library,
-        name='new_exp_in_library',
-    ),
-    path(
-        'ajax/expansions_select_options/',
-        views.expansions_select_options,
-        name='expansions_select_options',
-    ),
-    path(
-        'ajax/load_playerstats/',
-        views.load_playerstats,
-        name='load_playerstats',
-    ),
+    path('ajax/load_player_count/', views.load_player_count, name='load_player_count'),
+    path('ajax/new_game_in_library/', views.new_game_in_library, name='new_game_in_library'),
+    path('ajax/new_exp_in_library/', views.new_exp_in_library, name='new_exp_in_library'),
+    path('ajax/expansions_select_options/', views.expansions_select_options, name='expansions_select_options'),
+    path('ajax/load_playerstats/', views.load_playerstats, name='load_playerstats'),
     path('ajax/chart_options/', views.load_chart_data, name='chart_options'),
     path('ajax/get_history/', views.get_history, name='get_history'),
     path('ajax/randomizer/', views.randomizer, name='randomizer'),

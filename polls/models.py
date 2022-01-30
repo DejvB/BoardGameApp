@@ -21,7 +21,10 @@ class Player(models.Model):
     elo = models.IntegerField(default=1000)
 
 
-no_image = 'https://cf.geekdo-images.com/zxVVmggfpHJpmnJY9j-k1w__square100/img/siQ9W5848OomWFJZY_SWYef6rpw=/100x100/filters:strip_icc()/pic1657689.jpg'  # NOQA
+no_image = (
+    'https://cf.geekdo-images.com/zxVVmggfpHJpmnJY9j-k1w__square100/img/siQ9W5848OomWFJZY_SWYef6rpw='
+    '/100x100/filters:strip_icc()/pic1657689.jpg'
+)
 
 
 class Boardgames(models.Model):

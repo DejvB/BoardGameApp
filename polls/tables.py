@@ -9,7 +9,4 @@ class GameplayTable(tables.Table):
 
     class Meta:
         model = Gameplay
-        exclude = (
-            'time',
-            'ID',
-        )
+        exclude = ('time', 'ID')
