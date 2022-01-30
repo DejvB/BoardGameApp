@@ -5,7 +5,7 @@ from xml.etree import ElementTree
 import numpy as np
 import requests
 
-from ..models import Boardgames, Category, Designer, Gameplay, Mechanics, Player
+from polls.models import Boardgames, Category, Designer, Gameplay, Mechanics, Player
 
 
 def my_view(request):

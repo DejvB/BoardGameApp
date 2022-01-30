@@ -7,9 +7,8 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
 from polls.forms import GameplayForm, UsedExpansionForm
-
-from ...models import Boardgames, Expansion, Gameplay, Results
-from ..helpers import get_last_gameplay
+from polls.models import Boardgames, Expansion, Gameplay, Results
+from polls.views.helpers import get_last_gameplay
 
 
 def get_time_length(req):

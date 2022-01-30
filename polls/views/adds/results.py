@@ -4,9 +4,8 @@ from django.forms import formset_factory
 from django.shortcuts import render
 
 from polls.forms import ResultsForm
-
-from ...models import PlayerSpecifics
-from ..helpers import compute_tournament, get_last_gameplay, show_success_tooltip, update_elo
+from polls.models import PlayerSpecifics
+from polls.views.helpers import compute_tournament, get_last_gameplay, show_success_tooltip, update_elo
 
 
 @login_required

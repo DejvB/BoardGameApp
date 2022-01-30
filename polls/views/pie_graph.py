@@ -1,7 +1,7 @@
 from django.db.models import Count
 from django.shortcuts import render
 
-from ..models import Gameplay, Player, Results
+from polls.models import Gameplay, Player, Results
 
 
 def compute_score(o, n):

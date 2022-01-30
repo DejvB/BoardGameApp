@@ -6,8 +6,8 @@ from django.db.models.functions import ExtractIsoYear, ExtractMonth, ExtractWeek
 from django.http import JsonResponse
 from django.shortcuts import render
 
-from ..models import Boardgames, Gameplay, Player, Results
-from .helpers import my_view
+from polls.models import Boardgames, Gameplay, Player, Results
+from polls.views.helpers import my_view
 
 
 def index(request):

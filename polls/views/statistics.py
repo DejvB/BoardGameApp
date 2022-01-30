@@ -4,8 +4,8 @@ import numpy as np
 from django.http import JsonResponse
 from django.shortcuts import render
 
-from ..models import Gameplay, Player, Results
-from .helpers import compute_kw, my_view
+from polls.models import Gameplay, Player, Results
+from polls.views.helpers import compute_kw, my_view
 
 
 elos = {}

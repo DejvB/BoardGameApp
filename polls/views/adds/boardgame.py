@@ -3,9 +3,8 @@ from django.http import JsonResponse
 from django.shortcuts import render
 
 from polls.forms import BoardgameForm
-
-from ...models import Boardgames, OwnBoardgame
-from ..helpers import scrape_bgg_info, search_for_bgg_id, show_success_tooltip, update_bg_info
+from polls.models import Boardgames, OwnBoardgame
+from polls.views.helpers import scrape_bgg_info, search_for_bgg_id, show_success_tooltip, update_bg_info
 
 
 @login_required

@@ -2,8 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
 from polls.forms import ExpansionForm
-
-from ..helpers import show_success_tooltip
+from polls.views.helpers import show_success_tooltip
 
 
 @login_required

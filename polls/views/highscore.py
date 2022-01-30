@@ -4,8 +4,8 @@ from django.db.models import Avg, Count
 from django.http import JsonResponse
 from django.shortcuts import render
 
-from ..models import Gameplay, Player, Results
-from .helpers import get_bgg_info, my_view
+from polls.models import Gameplay, Player, Results
+from polls.views.helpers import get_bgg_info, my_view
 
 
 def highscores(request):
