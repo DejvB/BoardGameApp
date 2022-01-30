@@ -7,7 +7,7 @@ from django.db.models.functions import ExtractIsoYear, ExtractMonth, ExtractWeek
 from django.shortcuts import render
 
 from polls.forms import OwnBoardgameForm, OwnExpansionForm
-from polls.models import Boardgames, Player
+from polls.models import Player
 from polls.views.helpers import get_bgg_info, my_view, show_success_tooltip
 
 
