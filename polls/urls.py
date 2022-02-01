@@ -16,6 +16,7 @@ urlpatterns = [
     path('add_player/', views.add_player, name='add_player'),
     # ex: /polls/add_expansion/
     path('add_expansion/', views.add_expansion, name='add_expansion'),
+    path('add_expansion_old/', views.add_expansion_old, name='add_exp_old'),
     # ex: /polls/add_results/
     path('add_results/', views.add_results, name='add_results'),
     # ex: /polls/hs/
@@ -64,4 +65,5 @@ urlpatterns = [
     path('ajax/basic_stats/', views.basic_stats, name='basic_stats'),
     path('ajax/god_button/', views.god_button, name='god_button'),
     path('ajax/bg_submit/', views.bg_submit, name='bg_submit'),
+    path('ajax/exp_submit/', views.exp_submit, name='exp_submit'),
 ]

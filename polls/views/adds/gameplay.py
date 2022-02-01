@@ -1,14 +1,14 @@
 from datetime import datetime, timedelta
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import Avg
+from django.db.models import Avg, Min, Max, Q
 from django.forms import formset_factory
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 
 from polls.forms import GameplayForm, UsedExpansionForm
 
-from ...models import Boardgames, Expansion, Gameplay, Results
+from ...models import Boardgames, Gameplay, Results
 from ..helpers import get_last_gameplay
 
 
@@ -75,12 +75,12 @@ def add_play(request):
 def expansions_select_options(request):
     bg_id = request.GET.get('id')
     Expansions = list(
-        Expansion.objects.filter(basegame__id=bg_id)
+        Boardgames.objects.filter(basegame__id=bg_id)
         .order_by('name')
         .values_list('id', flat=True)
     )
     ExpansionsNames = list(
-        Expansion.objects.filter(basegame__id=bg_id)
+        Boardgames.objects.filter(basegame__id=bg_id)
         .order_by('name')
         .values_list('name', flat=True)
     )
@@ -112,11 +112,13 @@ def expansions_select_options(request):
 
 def load_player_count(request):
     bg_id = request.GET.get('id')
-    playersRange = Boardgames.objects.filter(id=bg_id).values(
+    playersRange = (Boardgames.objects.filter(Q(basegame__id=bg_id) |
+                                              Q(id=bg_id))
+                                      .values(
         'minNumberOfPlayers', 'maxNumberOfPlayers'
-    )[0]
-    minP = playersRange['minNumberOfPlayers']
-    maxP = playersRange['maxNumberOfPlayers']
+    ).aggregate(Min('minNumberOfPlayers'), Max('maxNumberOfPlayers')))
+    minP = playersRange['minNumberOfPlayers__min']
+    maxP = playersRange['maxNumberOfPlayers__max']
     PossibleNumberOfPlayers = range(minP, maxP + 1)
 
     return render(

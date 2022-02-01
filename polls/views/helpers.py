@@ -134,6 +134,17 @@ def search_for_bgg_id(search_query):
     return bgg_names, bgg_ids
 
 
+def search_for_exp_id(bgg_id):
+    api_prefix = 'https://www.boardgamegeek.com/xmlapi2/'
+    xml_root = ET.fromstring(
+        requests.get(f'{api_prefix}thing?id={bgg_id}').text
+    )
+    search_results = xml_root.findall("item//link[@type='boardgameexpansion']")
+    bgg_names = [bgg.attrib['value'] for bgg in search_results]
+    bgg_ids = [bgg.attrib['id'] for bgg in search_results]
+    return bgg_names, bgg_ids
+
+
 def update_bgg_id(bg_id):
     api_prefix = 'https://www.boardgamegeek.com/xmlapi2/'
     bg_name = Boardgames.objects.get(id=bg_id).name

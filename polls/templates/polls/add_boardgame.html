@@ -70,9 +70,17 @@
             },
         success: function(data) {
             if (data["created"]) {
-                alert("Boardgame created.");
+                if (data["added"]) {
+                    alert("Boardgame created and added to your collection.");
+                } else {
+                    alert("Boardgame created.");
+                }
             } else {
-                alert("Boardgame already exists.");
+                if (data["added"]) {
+                    alert("Boardgame exists, but has been added to your collection.");
+                } else {
+                    alert("Boardgame already exists.");
+                }
             }
         }
     })

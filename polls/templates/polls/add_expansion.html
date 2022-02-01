@@ -4,18 +4,97 @@
 <div class='box round shadow'>
     <h2>New expansion</h2>
     <hr>
-    <form method="post">
-        {% csrf_token %}
-        <table>
-            {{ form.as_table }}
-        </table>
-        <div class="tooltip">
-            <button type="submit" name="run_script">Save Expansion</button>
-            {% if tooltip %}
-                <span class="tooltiptext show" id="myTooltip">{{ tooltip }}</span>
+    <form  method="post" id="GameplayForm"  novalidate>
+    {% csrf_token %}
+      <label for="bg_name">Boardgame name:</label>
+      <select id="bg_name" name="bg_name">
+          {% for b in boardgames %}
+            {% if b.bgg_id == selected %}
+                <option value="{{ b.bgg_id }}" selected>{{ b.name }}</option>
+            {% else %}
+                <option value="{{ b.bgg_id }}">{{ b.name }}</option>
             {% endif %}
-        </div>
+          {% endfor %}
+      </select><br><br>
+      <input type="submit" value="Search">
+      <br>
+      <a href="{% url 'add_exp_old' %}">If nothing found.</a>
     </form>
 </div>
+{% if bgg_infos %}
+    {% for info in bgg_infos %}
+    <div class="box round shadow bgg_box" url="{% url 'exp_submit' %}" id="bg_box">
+        <div class="bgg_box_image">
+            <label><img id="bgg_img" src="{{ info.img_link }}" style="max-width: 100%;"></label>
+        </div>
+        <div class="bgg_box_info">
+                <h2>{{info.name}}</h2>
+                <p class="bgg_box_row">Rank:
+                <strong>{{info.rank}}</strong>
+                </p>
+                <p class="bgg_box_row">Playtime:
+                {% if info.minplaytime < info.maxplaytime %}
+                    <strong>{{info.minplaytime}}-{{info.maxplaytime}} min</strong>
+                {% else %}
+                    <strong>{{info.playtime}} min</strong>
+                {% endif %}
+                </p>
+                <p class="bgg_box_row">Age:
+                <strong>{{info.minage}}+</strong>
+                </p>
+                <p class="bgg_box_row">Weight:
+                <strong>{{info.weight}}</strong>
+                </p>
+                <p class="bgg_box_row">Players:
+                    {% if info.minp < info.maxp %}
+                        <strong>{{info.minp}}-{{info.maxp}}</strong>
+                    {% else %}
+                        <strong>{{info.minp}}</strong>
+                    {% endif %}
+                </p>
+                <p class="bgg_box_row">Year:
+                <strong>{{info.year}}</strong>
+                </p><br>
+        <p style="display: inline-block;">
+        <input type="button" id="add_bg_button" value="This one!" onclick="savegame({{ forloop.counter0 }})">
+        <input type="checkbox" id="I_also_own_this_{{ forloop.counter0 }}">
+        <label for="I_also_own_this_{{ forloop.counter0 }}">I also own this!</label>
+        </p>
+        </div>
+    </div>
+    {% endfor %}
+{% endif %}
 
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+    function savegame(bg_ind) {
+        var url = $("#bg_box").attr("url");
+        var own = $("#I_also_own_this_" + bg_ind).prop('checked');
+        var basegame = $("#bg_name").val();
+        console.log(url);
+        $.ajax({
+            url: url,
+            data: {
+                "bg_ind": bg_ind,
+                "own": own,
+                "basegame": basegame,
+            },
+        success: function(data) {
+            if (data["created"]) {
+                if (data["added"]) {
+                    alert("Boardgame created and added to your collection.");
+                } else {
+                    alert("Boardgame created.");
+                }
+            } else {
+                if (data["added"]) {
+                    alert("Boardgame exists, but has been added to your collection.");
+                } else {
+                    alert("Boardgame already exists.");
+                }
+            }
+        }
+    })
+    }
+</script>
 {% endblock %}

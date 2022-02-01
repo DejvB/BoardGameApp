@@ -4,10 +4,8 @@ from django.contrib.auth.models import User
 
 from .models import (
     Boardgames,
-    Expansion,
     Gameplay,
     OwnBoardgame,
-    OwnExpansion,
     Player,
     PlayerSpecifics,
     Results,
@@ -33,7 +31,9 @@ time_choices = (
 
 
 class GameplayForm(forms.ModelForm):
-    name = forms.ModelChoiceField(Boardgames.objects.order_by('name'))
+    name = forms.ModelChoiceField(Boardgames.objects
+                                  .filter(standalone=True)
+                                  .order_by('name'))
     time = forms.MultipleChoiceField(
         choices=time_choices,
         required=False,
@@ -65,14 +65,6 @@ class GameplayForm(forms.ModelForm):
 class PlayerForm(forms.ModelForm):
     class Meta:
         model = Player
-        exclude = ()
-
-
-class ExpansionForm(forms.ModelForm):
-    basegame = forms.ModelChoiceField(Boardgames.objects.order_by('name'))
-
-    class Meta:
-        model = Expansion
         exclude = ()
 
 
@@ -115,12 +107,5 @@ class NewUserForm(UserCreationForm):
 class OwnBoardgameForm(forms.ModelForm):
     class Meta:
         model = OwnBoardgame
-        exclude = ()
-        widgets = {'p_id': forms.HiddenInput()}
-
-
-class OwnExpansionForm(forms.ModelForm):
-    class Meta:
-        model = OwnExpansion
         exclude = ()
         widgets = {'p_id': forms.HiddenInput()}
