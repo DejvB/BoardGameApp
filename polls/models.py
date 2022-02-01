@@ -59,7 +59,10 @@ class Boardgames(models.Model):
     rank = models.DecimalField(default=5.5, max_digits=4, decimal_places=2)
     bgg_id = models.IntegerField(default=1)
     img_link = models.URLField(default=no_image, max_length=300)
-    basegame = models.ManyToManyField('self', related_name='expansion')
+    basegame = models.ManyToManyField('self',
+                                      related_name='expansion',
+                                      symmetrical=False,
+                                      blank=True)
     standalone = models.BooleanField(default=True)
 
 
