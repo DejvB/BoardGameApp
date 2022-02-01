@@ -59,14 +59,8 @@ class Boardgames(models.Model):
     rank = models.DecimalField(default=5.5, max_digits=4, decimal_places=2)
     bgg_id = models.IntegerField(default=1)
     img_link = models.URLField(default=no_image, max_length=300)
-
-
-class Expansion(models.Model):
-    def __str__(self):
-        return self.name
-
-    basegame = models.ForeignKey(Boardgames, on_delete=models.CASCADE)
-    name = models.CharField(max_length=50)
+    basegame = models.ManyToManyField('self', related_name='expansion')
+    standalone = models.BooleanField(default=True)
 
 
 class OwnBoardgame(models.Model):
@@ -74,16 +68,6 @@ class OwnBoardgame(models.Model):
         return f'{self.bg_id.name} - {self.p_id.name}'
 
     bg_id = models.ForeignKey(Boardgames, on_delete=models.CASCADE)
-    p_id = models.ForeignKey(Player, on_delete=models.CASCADE)
-
-
-class OwnExpansion(models.Model):
-    def __str__(self):
-        return (
-            f'{self.e_id.basegame.name} - {self.e_id.name} - {self.p_id.name}'
-        )
-
-    e_id = models.ForeignKey(Expansion, on_delete=models.CASCADE)
     p_id = models.ForeignKey(Player, on_delete=models.CASCADE)
 
 
@@ -132,7 +116,7 @@ class UsedExpansion(models.Model):
         return self.gp_id.name.name
 
     gp_id = models.ForeignKey(Gameplay, on_delete=models.CASCADE)
-    e_id = models.ForeignKey(Expansion, on_delete=models.CASCADE)
+    e_id = models.ForeignKey(Boardgames, on_delete=models.CASCADE, null=True)
     used = models.BooleanField(default=False)
 
 

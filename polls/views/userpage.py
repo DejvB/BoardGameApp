@@ -10,7 +10,7 @@ from django.db.models.functions import (
 )
 from django.shortcuts import render
 
-from polls.forms import OwnBoardgameForm, OwnExpansionForm
+from polls.forms import OwnBoardgameForm
 
 from ..models import Player, Boardgames
 from .helpers import get_bgg_info, my_view, show_success_tooltip
@@ -114,14 +114,14 @@ def new_game_in_library(request, userid):
 
 def new_exp_in_library(request, userid):
     context = {}
-    newexp_form = OwnExpansionForm(initial={'p_id': userid})
+    newexp_form = OwnBoardgameForm(initial={'p_id': userid})
     if request.method == 'POST' and 'add_exp' in request.POST:
-        newexp_form = OwnExpansionForm(request.POST)
+        newexp_form = OwnBoardgameForm(request.POST)
         if newexp_form.is_valid():
             e = newexp_form.save()
             e.save()
             show_success_tooltip(context, 'tooltip_exp')
-        newexp_form = OwnExpansionForm(initial={'p_id': userid})
+        newexp_form = OwnBoardgameForm(initial={'p_id': userid})
         # return redirect('home')
     context['newexp_form'] = newexp_form
     return context
