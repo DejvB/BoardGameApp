@@ -53,7 +53,7 @@ def exp_submit(request):
 
     return JsonResponse(data={'created': created,
                               'added': added,
-                              })
+                              'own': request.GET.get('own') == 'true'})
 
 
 @login_required
