@@ -30,14 +30,12 @@ def userpage(request):
     }
     for bg_id in bg_owned_list:
         bgg_info = get_bgg_info(bg_id)
-        # print(bgg_info)
         data['rank'].append(float(bgg_info['rank']))
         data['weight'].append(float(bgg_info['weight']))
         data['year'].append(int(bgg_info['year']))
         data['mechanics'].extend(bgg_info['mechanics'])
         data['category'].extend(bgg_info['category'])
         data['designer'].extend(bgg_info['designer'])
-    # print(sorted(data['weight']))
     weight_bins = np.linspace(1, 5, 9)
     rank_bins = np.linspace(0, 10, 21)
     year_bins = np.linspace(min(data['year']),
@@ -107,7 +105,6 @@ def new_game_in_library(request, userid):
             b.save()
             show_success_tooltip(context, 'tooltip_board')
         newgame_form = OwnBoardgameForm(initial={'p_id': userid})
-        # return redirect('home')
     context['newgame_form'] = newgame_form
     return context
 
@@ -122,6 +119,5 @@ def new_exp_in_library(request, userid):
             e.save()
             show_success_tooltip(context, 'tooltip_exp')
         newexp_form = OwnBoardgameForm(initial={'p_id': userid})
-        # return redirect('home')
     context['newexp_form'] = newexp_form
     return context

@@ -110,10 +110,10 @@
   <div  id="weights_div">
         <canvas id="Weights"></canvas>
   </div>
-  <div id="ranks_div">
+  <div id="ranks_div" hidden="hidden">
         <canvas id="Ranks"></canvas>
   </div>
-  <div id="years_div">
+  <div id="years_div" hidden="hidden">
         <canvas id="Years"></canvas>
   </div>
 </div>
@@ -140,7 +140,7 @@ var myChart = new Chart(ctx, {
     datasets: [{
       label: 'Weights',
       data: {{ weights }},
-      backgroundColor: 'rgba(255, 99, 132, 1)',
+      backgroundColor: 'rgba(60, 179, 113, 1)',
       barPercentage: 1.1,
     }]
   },
@@ -175,7 +175,7 @@ var myChart2 = new Chart(ctx2, {
     datasets: [{
       label: 'Ranks',
       data: {{ ranks }},
-      backgroundColor: 'rgba(255, 99, 132, 1)',
+      backgroundColor: 'rgba(60, 179, 113, 1)',
       barPercentage: 1.1,
     }]
   },
@@ -210,7 +210,7 @@ var myChart3 = new Chart(ctx3, {
     datasets: [{
       label: 'Years',
       data: {{ years }},
-      backgroundColor: 'rgba(255, 99, 132, 1)',
+      backgroundColor: 'rgba(60, 179, 113, 1)',
       barPercentage: 1.1,
     }]
   },
