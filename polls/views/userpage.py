@@ -81,7 +81,7 @@ def userpage(request):
     # gameplays vs previous month
     year_diff = [
         games_list.filter(year=curr_year).count(),
-        -games_list.filter(year=prev_year).count(),
+        -games_list.filter(year=curr_year - 1).count(),
     ]
     context.update(
         {
