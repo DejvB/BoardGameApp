@@ -10,7 +10,7 @@ from django.db.models.functions import (
 )
 from django.shortcuts import render
 
-from polls.forms import OwnBoardgameForm
+from polls.forms import OwnBoardgameForm, OwnExpansionForm
 
 from ..models import Player, Boardgames
 from .helpers import get_bgg_info, my_view, show_success_tooltip
@@ -30,14 +30,12 @@ def userpage(request):
     }
     for bg_id in bg_owned_list:
         bgg_info = get_bgg_info(bg_id)
-        # print(bgg_info)
         data['rank'].append(float(bgg_info['rank']))
         data['weight'].append(float(bgg_info['weight']))
         data['year'].append(int(bgg_info['year']))
         data['mechanics'].extend(bgg_info['mechanics'])
         data['category'].extend(bgg_info['category'])
         data['designer'].extend(bgg_info['designer'])
-    # print(sorted(data['weight']))
     weight_bins = np.linspace(1, 5, 9)
     rank_bins = np.linspace(0, 10, 21)
     year_bins = np.linspace(min(data['year']),
@@ -83,7 +81,7 @@ def userpage(request):
     # gameplays vs previous month
     year_diff = [
         games_list.filter(year=curr_year).count(),
-        -games_list.filter(year=prev_year).count(),
+        -games_list.filter(year=curr_year - 1).count(),
     ]
     context.update(
         {
@@ -107,21 +105,26 @@ def new_game_in_library(request, userid):
             b.save()
             show_success_tooltip(context, 'tooltip_board')
         newgame_form = OwnBoardgameForm(initial={'p_id': userid})
-        # return redirect('home')
     context['newgame_form'] = newgame_form
     return context
 
 
 def new_exp_in_library(request, userid):
     context = {}
-    newexp_form = OwnBoardgameForm(initial={'p_id': userid})
+    newexp_form = OwnExpansionForm(initial={'p_id': userid},)
     if request.method == 'POST' and 'add_exp' in request.POST:
-        newexp_form = OwnBoardgameForm(request.POST)
+        newexp_form = OwnExpansionForm(request.POST)
         if newexp_form.is_valid():
-            e = newexp_form.save()
+            e = newexp_form.save(commit=False)
+            e.bg_id = newexp_form.cleaned_data['expansion']
             e.save()
             show_success_tooltip(context, 'tooltip_exp')
-        newexp_form = OwnBoardgameForm(initial={'p_id': userid})
-        # return redirect('home')
+        newexp_form = OwnExpansionForm(initial={'p_id': userid})
     context['newexp_form'] = newexp_form
     return context
+
+
+def expansions_dropdown_options(request):
+    basegame_id = request.GET.get('basegame_id')
+    expansions = Boardgames.objects.filter(basegame__id=basegame_id).order_by('name')
+    return render(request, 'polls/expansions_dropdown_options.html', {'expansions': expansions})

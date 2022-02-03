@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.forms import formset_factory
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from polls.forms import ResultsForm
 
@@ -22,7 +22,6 @@ def add_results(request):
         bg_id_id=last_game.name.id
     ).values_list('id', 'name')
     player_order = [(i, i) for i in range(last_game.NumberOfPlayers + 1)]
-    print(player_order)
     ResultsFormSet = formset_factory(ResultsForm, extra=0)
     if last_game.with_results:
         formset = ResultsFormSet(
@@ -47,6 +46,13 @@ def add_results(request):
                 for _ in range(max(2, last_game.NumberOfPlayers))
             ],
         )
+
+        for form in formset:
+            form.fields['player_order'].choices = player_order
+            if specifics:
+                form.fields['player_specifics'].choices = specifics
+            else:
+                form.fields.pop('player_specifics')
     context['formset'] = formset
     if formset.is_valid():
         messages.success(request, 'Form submission successful')
@@ -57,5 +63,5 @@ def add_results(request):
         if last_game.with_results:
             changes = compute_tournament(last_game.results.all())
             update_elo(changes)
-        return render(request, 'polls/add_results.html', context)
+        return redirect('highscores')
     return render(request, 'polls/add_results.html', context)

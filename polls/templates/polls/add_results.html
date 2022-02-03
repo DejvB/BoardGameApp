@@ -25,7 +25,7 @@
                 </table>
                 {% if forloop.last %}
                     <div class="tooltip">
-                        <button type="submit" name="run_script">Save results</button>
+                        <button type="submit" name="run_script" onclick="this.disabled=true,this.form.submit()">Save results</button>
                         {% if tooltip %}
                             <span class="tooltiptext show" id="myTooltip">{{ tooltip }}</span>
                         {% endif %}
