@@ -3,7 +3,7 @@ from django.urls import path
 
 from . import views
 
-from .views import helpers
+from .views import helpers, gamebrary
 
 urlpatterns = [
     # ex: /polls/
@@ -35,6 +35,8 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('pie_chart/', views.pie_chart, name='pie-chart'),
     path('userpage/', views.userpage, name='userpage'),
+    path('userpage/gamebrary/', gamebrary.gamebrary, name='gamebrary'),
+    path('userpage/gamebrary/<str:sort_key>/', gamebrary.gamebrary, name='gamebrary'),
     # AJAX new_game_in_library
     path(
         'ajax/load_player_count/',

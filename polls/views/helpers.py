@@ -48,15 +48,15 @@ def scrape_bgg_info(bgg_id):
     bg_info['playtime'] = xml_root.find('item//playingtime').attrib['value']
     bg_info['minplaytime'] = xml_root.find('item//minplaytime').attrib['value']
     bg_info['maxplaytime'] = xml_root.find('item//maxplaytime').attrib['value']
-    bg_info['year'] = xml_root.find('item//yearpublished').attrib['value']
+    bg_info['year'] = int(xml_root.find('item//yearpublished').attrib['value'])
 
     bg_info['id'] = xml_root.find('item').attrib['id']
     rank = xml_root.find('item//statistics//ratings//average').attrib['value']
-    bg_info['rank'] = f'{float(rank):.2f}'
+    bg_info['rank'] = float(f'{float(rank):.2f}')
     weight = xml_root.find('item//statistics//ratings//averageweight').attrib[
         'value'
     ]
-    bg_info['weight'] = f'{float(weight):.2f}'
+    bg_info['weight'] = float(f'{float(weight):.2f}')
     links = xml_root.findall("item//link[@type='boardgamecategory']")
     bg_info['category'] = [l.attrib['value'] for l in links]
     mechanics = xml_root.findall("item//link[@type='boardgamemechanic']")

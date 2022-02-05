@@ -1,0 +1,44 @@
+{% extends "polls/header.html" %}
+{% block body %}
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<div class="box round shadow" id="sort_box">
+    <h2>Your Gamebrary</h2>
+    <hr>
+    <form action="{% url 'gamebrary'%}name" style="float: left;">
+      <input type="submit" id="name_sort" value="Name">
+    </form>
+    <form action="{% url 'gamebrary'%}rank" style="float: left;">
+      <input type="submit" id="rank_sort" value="Rank">
+    </form>
+    <form action="{% url 'gamebrary'%}weight" style="float: left;">
+      <input type="submit" id="weight_sort" value="Weight">
+    </form>
+    <form action="{% url 'gamebrary'%}year" style="float: left;">
+      <input type="submit" id="year_sort" value="Year">
+    </form>
+</div>
+
+
+<script>
+function load_boardgame_box(bg_ind) {
+    var url = $("#boardgame_box_" + bg_ind).attr("boardgame_box_url");
+    $.ajax({
+        url: url,
+        data: {
+            "bg_ind": bg_ind,
+            "with_submit": '',
+        },
+        success: function(data) {
+            $("#boardgame_box_" + bg_ind).html(data);
+        }
+    })
+}
+</script>
+{% for game in gamebrary %}
+    <div id="boardgame_box_{{ forloop.counter0 }}" boardgame_box_url="{% url 'boardgame_box' %}"></div>
+    <script type="text/javascript">
+       load_boardgame_box({{ forloop.counter0 }});
+    </script>
+{% endfor %}
+{% endblock %}
