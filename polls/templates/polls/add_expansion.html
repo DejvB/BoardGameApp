@@ -1,6 +1,23 @@
 {% extends "polls/header.html" %}
 {% block body %}
 
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+function load_boardgame_box(bg_ind) {
+    var url = $("#boardgame_box_" + bg_ind).attr("boardgame_box_url");
+    $.ajax({
+        url: url,
+        data: {
+            "bg_ind": bg_ind,
+            "with_submit": 'True',
+        },
+        success: function(data) {
+        $("#boardgame_box_" + bg_ind).html(data);
+        }
+    })
+}
+</script>
+
 <div class='box round shadow'>
     <h2>New expansion</h2>
     <hr>
@@ -23,52 +40,17 @@
 </div>
 {% if bgg_infos %}
     {% for info in bgg_infos %}
-    <div class="box round shadow bgg_box" url="{% url 'exp_submit' %}" id="bg_box">
-        <div class="bgg_box_image">
-            <label><img id="bgg_img" src="{{ info.img_link }}" style="max-width: 100%;"></label>
-        </div>
-        <div class="bgg_box_info">
-                <h2>{{info.name}}</h2>
-                <p class="bgg_box_row">Rank:
-                <strong>{{info.rank}}</strong>
-                </p>
-                <p class="bgg_box_row">Playtime:
-                {% if info.minplaytime < info.maxplaytime %}
-                    <strong>{{info.minplaytime}}-{{info.maxplaytime}} min</strong>
-                {% else %}
-                    <strong>{{info.playtime}} min</strong>
-                {% endif %}
-                </p>
-                <p class="bgg_box_row">Age:
-                <strong>{{info.minage}}+</strong>
-                </p>
-                <p class="bgg_box_row">Weight:
-                <strong>{{info.weight}}</strong>
-                </p>
-                <p class="bgg_box_row">Players:
-                    {% if info.minp < info.maxp %}
-                        <strong>{{info.minp}}-{{info.maxp}}</strong>
-                    {% else %}
-                        <strong>{{info.minp}}</strong>
-                    {% endif %}
-                </p>
-                <p class="bgg_box_row">Year:
-                <strong>{{info.year}}</strong>
-                </p><br>
-        <p style="display: inline-block;">
-        <input type="button" id="add_bg_button" value="This one!" onclick="savegame({{ forloop.counter0 }})">
-        <input type="checkbox" id="I_also_own_this_{{ forloop.counter0 }}">
-        <label for="I_also_own_this_{{ forloop.counter0 }}">I also own this!</label>
-        </p>
-        </div>
-    </div>
+        <div id="boardgame_box_{{ forloop.counter0 }}" boardgame_box_url="{% url 'boardgame_box' %}"></div>
+        <script type="text/javascript">
+           load_boardgame_box({{ forloop.counter0 }});
+        </script>
     {% endfor %}
 {% endif %}
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script>
     function savegame(bg_ind) {
-        var url = $("#bg_box").attr("url");
+        var url = $("#bg_box").attr("exp_url");
         var own = $("#I_also_own_this_" + bg_ind).prop('checked');
         var basegame = $("#bg_name").val();
         console.log(url);

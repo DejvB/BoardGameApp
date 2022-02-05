@@ -5,6 +5,8 @@ from xml.etree import ElementTree as ET
 import numpy as np
 import requests
 
+from django.shortcuts import render
+
 from ..models import (
     Boardgames,
     Category,
@@ -216,3 +218,13 @@ def get_last_gameplay(request, only_session):
 def show_success_tooltip(context, tooltip='tooltip'):
     context.update({tooltip: 'Submit was successful.'})
     return context
+
+
+def load_boardgame_box(request):
+    bg_ind = int(request.GET.get('bg_ind'))
+    return render(request,
+                  'polls/boardgame_box.html',
+                  {'info': request.session['bgg_infos'][bg_ind],
+                   'bg_ind': bg_ind,
+                   'with_submit': bool(request.GET.get('with_submit'))}
+                  )
