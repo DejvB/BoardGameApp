@@ -1,0 +1,41 @@
+<div class="box round shadow bgg_box" bg_url="{% url 'bg_submit' %}" exp_url="{% url 'exp_submit' %}" id="bg_box">
+    <div class="bgg_box_image">
+        <label><img id="bgg_img" src="{{ info.img_link }}" style="max-width: 100%;"></label>
+    </div>
+    <div class="bgg_box_info">
+            <h2>{{info.name}}</h2>
+            <p class="bgg_box_row">Rank:
+            <strong>{{info.rank}}</strong>
+            </p>
+            <p class="bgg_box_row">Playtime:
+            {% if info.minplaytime < info.maxplaytime %}
+                <strong>{{info.minplaytime}}-{{info.maxplaytime}} min</strong>
+            {% else %}
+                <strong>{{info.playtime}} min</strong>
+            {% endif %}
+            </p>
+            <p class="bgg_box_row">Age:
+            <strong>{{info.minage}}+</strong>
+            </p>
+            <p class="bgg_box_row">Weight:
+            <strong>{{info.weight}}</strong>
+            </p>
+            <p class="bgg_box_row">Players:
+                {% if info.minp < info.maxp %}
+                    <strong>{{info.minp}}-{{info.maxp}}</strong>
+                {% else %}
+                    <strong>{{info.minp}}</strong>
+                {% endif %}
+            </p>
+            <p class="bgg_box_row">Year:
+            <strong>{{info.year}}</strong>
+            </p><br>
+    {% if with_submit %}
+        <p style="display: inline-block;">
+        <input type="button" id="add_bg_button" value="This one!" onclick="savegame({{ bg_ind }})">
+        <input type="checkbox" id="I_also_own_this_{{ bg_ind }}">
+        <label for="I_also_own_this_{{ bg_ind }}">I also own this!</label>
+        </p>
+    {% endif %}
+    </div>
+</div>

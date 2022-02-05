@@ -3,6 +3,8 @@ from django.urls import path
 
 from . import views
 
+from .views import helpers
+
 urlpatterns = [
     # ex: /polls/
     path('', views.index, name='home'),
@@ -70,5 +72,10 @@ urlpatterns = [
         'ajax/expansions_dropdown_options/',
         views.expansions_dropdown_options,
         name='expansions_dropdown_options',
+    ),
+    path(
+        'ajax/boardgame_box/',
+        views.load_boardgame_box,
+        name='boardgame_box',
     ),
 ]
