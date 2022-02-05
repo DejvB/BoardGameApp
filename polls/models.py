@@ -43,9 +43,13 @@ class Boardgames(models.Model):
 
     def to_dict(self):
         data = model_to_dict(self)
-        data['mechanics'] = self.mechanics.all()
-        data['category'] = self.category.all()
-        data['designer'] = self.designer.all()
+        data['year'] = int(data['year'])
+        data['weight'] = float(data['weight'])
+        data['rank'] = float(data['rank'])
+        data['basegame'] = []
+        data['mechanics'] = list(self.mechanics.all().values_list('name', flat=True))
+        data['category'] = list(self.category.all().values_list('name', flat=True))
+        data['designer'] = list(self.designer.all().values_list('name', flat=True))
         return data
 
     name = models.CharField(max_length=50)
