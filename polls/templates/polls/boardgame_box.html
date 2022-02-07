@@ -11,7 +11,7 @@
             {% if info.minplaytime < info.maxplaytime %}
                 <strong>{{info.minplaytime}}-{{info.maxplaytime}} min</strong>
             {% else %}
-                <strong>{{info.playtime}} min</strong>
+                <strong>{{info.maxplaytime}} min</strong>
             {% endif %}
             </p>
             <p class="bgg_box_row">Age:
@@ -21,10 +21,10 @@
             <strong>{{info.weight}}</strong>
             </p>
             <p class="bgg_box_row">Players:
-                {% if info.minp < info.maxp %}
-                    <strong>{{info.minp}}-{{info.maxp}}</strong>
+                {% if info.minNumberOfPlayers < info.maxNumberOfPlayers %}
+                    <strong>{{ info.minNumberOfPlayers }}-{{ info.maxNumberOfPlayers }}</strong>
                 {% else %}
-                    <strong>{{info.minp}}</strong>
+                    <strong>{{ info.minNumberOfPlayers }}</strong>
                 {% endif %}
             </p>
             <p class="bgg_box_row">Year:
