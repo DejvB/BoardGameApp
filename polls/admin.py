@@ -17,8 +17,8 @@ from .models import (
 
 from .views.admin_actions import BoardgamesAdmin
 
-admin.site.register(Boardgames)
-admin.site.register(OwnBoardgame, BoardgamesAdmin)
+admin.site.register(Boardgames, BoardgamesAdmin)
+admin.site.register(OwnBoardgame)
 admin.site.register(Gameplay)
 admin.site.register(Player)
 admin.site.register(Results)
