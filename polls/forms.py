@@ -9,6 +9,7 @@ from .models import (
     Player,
     PlayerSpecifics,
     Results,
+    ScoringTable,
     UsedExpansion,
 )
 
@@ -106,15 +107,27 @@ class NewUserForm(UserCreationForm):
 
 class OwnBoardgameForm(forms.ModelForm):
     bg_id = forms.ModelChoiceField(Boardgames.objects.filter(standalone=True).order_by('name'))
+
     class Meta:
         model = OwnBoardgame
         exclude = ()
         widgets = {'p_id': forms.HiddenInput()}
 
+
 class OwnExpansionForm(forms.ModelForm):
     basegame = forms.ModelChoiceField(Boardgames.objects.filter(standalone=True).order_by('name'))
     expansion = forms.ModelChoiceField(Boardgames.objects.none())
+
     class Meta:
         model = OwnBoardgame
         fields = ('basegame', 'expansion', 'p_id')
         widgets = {'p_id': forms.HiddenInput()}
+
+
+class ScoringTableForm(forms.ModelForm):
+    class Meta:
+        model = ScoringTable
+        fields = ('ss_id', 'score', 'result_id')
+        widgets = {'result_id': forms.HiddenInput()}
+        disabled = ('ss_id')
+

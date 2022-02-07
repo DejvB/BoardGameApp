@@ -96,7 +96,7 @@ class Gameplay(models.Model):
 
 class PlayerSpecifics(models.Model):
     def __str__(self):
-        return self.name
+        return f'{self.bg_id.name} - {self.name}'
 
     name = models.CharField(max_length=50)
     bg_id = models.ForeignKey(Boardgames, on_delete=models.CASCADE)
@@ -104,7 +104,7 @@ class PlayerSpecifics(models.Model):
 
 class Results(models.Model):
     def __str__(self):
-        return self.gp_id.name.name
+        return f'{self.gp_id.name.name} - {self.p_id.name}'
 
     gp_id = models.ForeignKey(
         Gameplay, on_delete=models.CASCADE, related_name='results'
@@ -149,3 +149,18 @@ class Designer(models.Model):
 
     name = models.CharField(max_length=50)
     boardgame = models.ManyToManyField(Boardgames, related_name='designer')
+
+
+class ScoringSpecifics(models.Model):
+    def __str__(self):
+        return f'{self.bg_id.name} - {self.name}'
+    name = models.CharField(max_length=50)
+    bg_id = models.ForeignKey(Boardgames, on_delete=models.CASCADE, related_name='scoring_category')
+
+
+class ScoringTable(models.Model):
+    def __str__(self):
+        return f'{self.ss_id} - {self.result_id.p_id.name}'
+    score = models.IntegerField(default=0)
+    result_id = models.ForeignKey(Results, on_delete=models.CASCADE)
+    ss_id = models.ForeignKey(ScoringSpecifics, on_delete=models.CASCADE)

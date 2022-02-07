@@ -1,0 +1,86 @@
+{% extends "polls/header.html" %}
+{% block body %}
+
+<form method="POST" enctype="multipart/form-data">
+    {{ result_formset.management_data }}
+    {{ st_formset.management_data }}
+        {% csrf_token %}
+        {{ result_formset.management_form }}
+        {{ st_formset.management_form }}
+<div class="round box shadow big">
+    <div style="overflow-x: scroll; max-width:100%">
+    <h2>Results</h2>
+    <hr>
+    <table>
+            {% for st_form in st_formset %}
+                {{ st_form.non_field_errors }}
+                {% if forloop.counter <=  NoSS %}
+                    {% if forloop.first %}
+                        <thead>
+                        <tr>
+                            <th>Player:</th>
+                            {% for result_form in result_formset %}
+                                {{ result_form.non_field_errors }}
+                                {% for hidden in result_form.hidden_fields %}
+                                    {{ hidden }}
+                                {% endfor %}
+                                {% for field in result_form.visible_fields %}
+                                    {% if field.name == 'p_id' %}
+                                        <th>{{ field.errors }}{{ field }}</th>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            <th>Player order:</th>
+                            {% for result_form in result_formset %}
+                                {% for field in result_form.visible_fields %}
+                                    {% if field.name == 'player_order' %}
+                                        <th>{{ field.errors }}{{ field }}</th>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            <th>Player specifics:</th>
+                            {% for result_form in result_formset %}
+                                {% for field in result_form.visible_fields %}
+                                    {% if field.name == 'player_specifics' %}
+                                        <th class="narrow_column">{{ field.errors }}{{ field }}</th>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                        </tr>
+                        </thead>
+                    {% endif %}
+                    <tr>
+                        {% for row_label in st_form.visible_fields %}
+                                {% if row_label.name == 'ss_id' %}
+                                <th class="narrow_column">{{ row_label.hidden }}{{ row_label.help_text }}:</th>
+                                {% endif %}
+                                {% for st_form in st_formset %}
+                                    {% for inner_field in st_form.visible_fields %}
+                                {{ inner_field.get_ss_id_display }}
+                                        {% if inner_field.name != 'ss_id' and st_form.visible_fields.0.value == row_label.value  %}
+
+                                        <th>{{ inner_field.errors }} {{ inner_field }}</th>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                        {% endfor %}
+                    </tr>
+                {% endif %}
+            {% endfor %}
+    </table>
+    <div class="tooltip">
+        <button type="submit" name="run_script" onclick="this.disabled=true,this.form.submit()">Save results</button>
+        {% if tooltip %}
+            <span class="tooltiptext show" id="myTooltip">{{ tooltip }}</span>
+        {% endif %}
+    </div>
+<a href="{% url 'add_results' %}">I want it old way!</a>
+    </div>
+</div>
+</form>
+
+{% endblock %}
