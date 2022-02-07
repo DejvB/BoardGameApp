@@ -62,8 +62,8 @@ def add_play(request):
                 e.gp_id = gp
                 e.save()
             request.session['gameplay_id'] = gp.id
-            if gp.with_results:
-                return redirect('add_results')
+            if gp.name.scoring_category.all():
+                return redirect('add_results_specifics')
             else:
                 return redirect('add_results')
     context['gp_form'] = gp_form

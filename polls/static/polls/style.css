@@ -32,6 +32,7 @@ input:not([type=image]),button[type=submit],input[type=button],select  {
   margin: 4px 2px;
   cursor: pointer;
   max-width:200px;
+  /*width:100%;*/
 }
 
 /* Navbar container */
@@ -368,13 +369,12 @@ a.fill-div {
     .bgg_box {
         width: auto;
     }
-}
 
-a.button {
-    -webkit-appearance: button;
-    -moz-appearance: button;
-    appearance: button;
-
-    text-decoration: none;
-    color: initial;
+    .narrow_column > select {
+        max-width: 100px;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        text-indent: 1px;
+        text-overflow: '';
+    }
 }

@@ -4,6 +4,7 @@ from django.urls import path
 from . import views
 
 from .views import helpers, gamebrary
+from .views.adds import results_specifics
 
 urlpatterns = [
     # ex: /polls/
@@ -21,6 +22,7 @@ urlpatterns = [
     path('add_expansion_old/', views.add_expansion_old, name='add_exp_old'),
     # ex: /polls/add_results/
     path('add_results/', views.add_results, name='add_results'),
+    path('add_results_specifics/', results_specifics.add_results_specifics, name='add_results_specifics'),
     # ex: /polls/hs/
     path('hs/', views.highscores, name='highscores'),
     # ex: /polls/history/

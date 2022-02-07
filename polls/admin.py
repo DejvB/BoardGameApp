@@ -11,6 +11,8 @@ from .models import (
     PlayerSpecifics,
     Results,
     UsedExpansion,
+    ScoringSpecifics,
+    ScoringTable,
 )
 
 from .views.admin_actions import BoardgamesAdmin
@@ -25,3 +27,5 @@ admin.site.register(Category)
 admin.site.register(Mechanics)
 admin.site.register(Designer)
 admin.site.register(PlayerSpecifics)
+admin.site.register(ScoringSpecifics)
+admin.site.register(ScoringTable)
