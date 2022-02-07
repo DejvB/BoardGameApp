@@ -100,6 +100,9 @@ def update_bg_info(bg_id, bg_info):
     bg.rank = bg_info['rank']
     bg.img_link = bg_info['img_link']
     bg.save()
+    bg.category.clear()
+    bg.mechanics.clear()
+    bg.designer.clear()
     for category in bg_info['category']:
         cat, _ = Category.objects.get_or_create(name=category)
         cat.boardgame.add(bg_id)
