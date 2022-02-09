@@ -9,6 +9,7 @@ from .models import (
     Player,
     PlayerSpecifics,
     Results,
+    ScoringSpecifics,
     ScoringTable,
     UsedExpansion,
 )
@@ -131,3 +132,14 @@ class ScoringTableForm(forms.ModelForm):
         widgets = {'result_id': forms.HiddenInput()}
         disabled = ('ss_id')
 
+
+class PlayerSpecificsForm(forms.ModelForm):
+    class Meta:
+        model = PlayerSpecifics
+        exclude = ()
+
+
+class ScoringSpecificsForm(forms.ModelForm):
+    class Meta:
+        model = ScoringSpecifics
+        exclude = ()

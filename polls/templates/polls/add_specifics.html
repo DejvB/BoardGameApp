@@ -1,0 +1,44 @@
+{% extends "polls/header.html" %}
+{% block body %}
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+
+<div class="box round shadow" style="clear: none;">
+    <h2>New Scoring Specifics</h2>
+    <hr>
+    <form  method="post" id="SSForm"  novalidate>
+    {% csrf_token %}
+      <table>
+          {{ ss_form.as_table }}
+      </table>
+        <div class="tooltip">
+        <input type="submit" name="ss_submit" value="Submit">
+            {% if tooltip_ss %}
+                <span class="tooltiptext show" id="myTooltip">{{ tooltip_ss }}</span>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<div class="box round shadow" style="clear: none;">
+    <h2>New Player Specifics</h2>
+    <hr>
+    <form  method="post" id="PSForm"  novalidate>
+    {% csrf_token %}
+      <table>
+          {{ ps_form.as_table }}
+      </table>
+        <div class="tooltip">
+        <input type="submit" name="ps_submit" value="Submit">
+            {% if tooltip_ps %}
+                <span class="tooltiptext show" id="myTooltip">{{ tooltip_ps }}</span>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<script>
+
+</script>
+{% endblock %}
