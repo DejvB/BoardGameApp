@@ -1,0 +1,90 @@
+{% extends "polls/header.html" %}
+{% block body %}
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+
+<div class="box round shadow" style="clear: none;">
+    <h2>New Scoring Specifics</h2>
+    <hr>
+    <form  method="post" id="SSForm"  novalidate>
+    {% csrf_token %}
+      <table>
+          {{ ss_form.as_table }}
+      </table>
+        <div class="tooltip">
+        <input type="submit" name="ss_submit" value="Submit">
+            {% if tooltip_ss %}
+                <span class="tooltiptext show" id="myTooltip">{{ tooltip_ss }}</span>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<div class="box round shadow" style="clear: none;">
+    <h2>New Player Specifics</h2>
+    <hr>
+    <form  method="post" id="PSForm"  novalidate>
+    {% csrf_token %}
+      <table>
+          {{ ps_form.as_table }}
+      </table>
+        <div class="tooltip">
+        <input type="submit" name="ps_submit" value="Submit">
+            {% if tooltip_ps %}
+                <span class="tooltiptext show" id="myTooltip">{{ tooltip_ps }}</span>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<div class="box round shadow" style="clear: none;">
+    <h2>Show Scoring Specifics</h2>
+    <hr>
+      <label for="ss_id">Boardgame:</label></th><td>
+        <select name="name" required id="ss_id" url="{% url 'specifics_list' %}">
+            {% for ss in ss_list %}
+              <option value="{{ ss.bg_id }}">{{ ss.bg_id__name }}</option>
+            {% endfor %}
+        </select>
+    <table style="width:100%" id="ss_table">
+    </table>
+</div>
+
+<div class="box round shadow" style="clear: none;">
+    <h2>Show Player Specifics</h2>
+    <hr>
+      <label for="ps_id">Boardgame:</label></th><td>
+        <select name="name" required id="ps_id" url="{% url 'specifics_list' %}">
+            {% for ps in ps_list %}
+              <option value="{{ ps.bg_id }}">{{ ps.bg_id__name }}</option>
+            {% endfor %}
+        </select>
+    <table style="width:100%" id="ps_table">
+    </table>
+</div>
+
+  <script>
+    $("#ss_id, #ps_id").change(function () {
+      var url = $(this).attr("url");
+      var bg_id = $(this).val();
+      el_id = $(this).attr('id');
+      $.ajax({
+        url: url,
+        data: {
+          'bg_id': bg_id,
+          'el_id': el_id,
+
+        },
+        success: function (data) {
+            table = '#' + el_id.substr(0,2) + '_table';
+          $(table).html("");
+          for (j = 0; j < data.spec_list.length; j++){
+              $(table).append('<tr><th>' + data.spec_list[j] + '</th></tr>');
+          }
+        }
+      });
+
+    });
+  </script>
+{% endblock %}
