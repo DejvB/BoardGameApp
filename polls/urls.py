@@ -73,6 +73,7 @@ urlpatterns = [
     path('ajax/god_button/', views.god_button, name='god_button'),
     path('ajax/bg_submit/', views.bg_submit, name='bg_submit'),
     path('ajax/exp_submit/', views.exp_submit, name='exp_submit'),
+    path('ajax/specifics_list/', specifics.specifics_list, name='specifics_list'),
     path(
         'ajax/expansions_dropdown_options/',
         views.expansions_dropdown_options,
