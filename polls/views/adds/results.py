@@ -27,13 +27,16 @@ def add_results(request):
         formset = ResultsFormSet(
             request.POST or None,
             initial=[
-                {'order': i + 1, 'gp_id': last_game}
+                {'order': player_order[i + 1], 'gp_id': last_game}
                 for i in range(max(2, last_game.NumberOfPlayers))
             ],
         )
 
         for form in formset:
+            form.fields['gp_id'].disabled = True
             form.fields['player_order'].choices = player_order
+            form.fields['order'].choices = player_order
+            form.fields['order'].disabled = True
             if specifics:
                 form.fields['player_specifics'].choices = specifics
             else:
@@ -42,7 +45,7 @@ def add_results(request):
         formset = ResultsFormSet(
             request.POST or None,
             initial=[
-                {'order': 0, 'gp_id': last_game}
+                {'order': player_order[0], 'gp_id': last_game}
                 for _ in range(max(2, last_game.NumberOfPlayers))
             ],
         )

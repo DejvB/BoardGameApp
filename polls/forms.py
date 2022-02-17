@@ -82,11 +82,14 @@ class ResultsForm(forms.ModelForm):
     player_specifics = forms.ModelChoiceField(
         PlayerSpecifics.objects.order_by('name')
     )
+    p_id = forms.ModelChoiceField(Player.objects.order_by('name'))
     player_order = forms.ChoiceField()
+    order = forms.ChoiceField()
 
     class Meta:
         model = Results
         exclude = ()
+        widgets = {'points': forms.NumberInput(attrs={'style': 'width:10ch'})}
 
 
 class NewUserForm(UserCreationForm):
@@ -129,17 +132,30 @@ class ScoringTableForm(forms.ModelForm):
     class Meta:
         model = ScoringTable
         fields = ('ss_id', 'score', 'result_id')
-        widgets = {'result_id': forms.HiddenInput()}
-        disabled = ('ss_id')
+        widgets = {'result_id': forms.HiddenInput(), 'score': forms.NumberInput(attrs={'style': 'width:10ch'})}
+        disabled = ('ss_id',)
 
 
 class PlayerSpecificsForm(forms.ModelForm):
+
     class Meta:
         model = PlayerSpecifics
         exclude = ()
+
+    def __init__(self, *args, **kwargs):
+        super(PlayerSpecificsForm, self).__init__(*args, **kwargs)
+        self.fields['bg_id'].queryset = self.fields['bg_id'].queryset.order_by('name')
 
 
 class ScoringSpecificsForm(forms.ModelForm):
     class Meta:
         model = ScoringSpecifics
         exclude = ()
+
+    def __init__(self, *args, **kwargs):
+        super(ScoringSpecificsForm, self).__init__(*args, **kwargs)
+        self.fields['bg_id'].queryset = self.fields['bg_id'].queryset.order_by('name')
+
+
+class GameplaysWithPossibleScoringResultsForm(forms.Form):
+    gameplays = forms.ChoiceField(choices=[['0', '0'], ])
