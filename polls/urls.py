@@ -80,6 +80,11 @@ urlpatterns = [
         name='expansions_dropdown_options',
     ),
     path(
+        'ajax/add_results_specifics_to_existing_game/',
+        specifics.add_results_specifics_to_existing_game,
+        name='add_results_specifics_to_existing_game',
+    ),
+    path(
         'ajax/boardgame_box/',
         views.load_boardgame_box,
         name='boardgame_box',

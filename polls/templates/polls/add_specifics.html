@@ -64,27 +64,40 @@
     </table>
 </div>
 
-  <script>
-    $("#ss_id, #ps_id").change(function () {
-      var url = $(this).attr("url");
-      var bg_id = $(this).val();
-      el_id = $(this).attr('id');
-      $.ajax({
-        url: url,
-        data: {
-          'bg_id': bg_id,
-          'el_id': el_id,
+<div class="box round shadow" style="clear: none;">
+    <h2>Add specifics result to a gameplay</h2>
+    <hr>
+    <form  method="post" id="GPForm"  novalidate>
+    {% csrf_token %}
+        <table>
+          {{ gp_form.as_table }}
+        </table>
+      <input type="submit" name="gp_submit" value="Submit">
+    </form>
+</div>
 
-        },
-        success: function (data) {
-            table = '#' + el_id.substr(0,2) + '_table';
-          $(table).html("");
-          for (j = 0; j < data.spec_list.length; j++){
-              $(table).append('<tr><th>' + data.spec_list[j] + '</th></tr>');
-          }
-        }
-      });
 
-    });
-  </script>
+<script>
+$("#ss_id, #ps_id").change(function () {
+  var url = $(this).attr("url");
+  var bg_id = $(this).val();
+  el_id = $(this).attr('id');
+  $.ajax({
+    url: url,
+    data: {
+      'bg_id': bg_id,
+      'el_id': el_id,
+
+    },
+    success: function (data) {
+        table = '#' + el_id.substr(0,2) + '_table';
+      $(table).html("");
+      for (j = 0; j < data.spec_list.length; j++){
+          $(table).append('<tr><th>' + data.spec_list[j] + '</th></tr>');
+      }
+    }
+  });
+
+});
+</script>
 {% endblock %}

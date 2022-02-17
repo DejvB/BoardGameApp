@@ -87,6 +87,10 @@ class Gameplay(models.Model):
             list(self.results.all().values_list('p_id__name', flat=True))
         )
 
+    def get_players_w_results(self):
+        player_points_list = [f'{res[0]}: {res[1]}' for res in self.results.all().values_list('p_id__name', 'points')]
+        return ', '.join(player_points_list)
+
     name = models.ForeignKey(Boardgames, on_delete=models.CASCADE)
     NumberOfPlayers = models.IntegerField(default=0)
     date = models.DateTimeField(default=datetime.datetime.now)
