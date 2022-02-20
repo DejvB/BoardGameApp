@@ -23,13 +23,12 @@ def add_results(request):
     ).values_list('id', 'name')
     player_order = [(i, i) for i in range(last_game.NumberOfPlayers + 1)]
     ResultsFormSet = formset_factory(ResultsForm, extra=0)
-    print(player_order)
     if last_game.with_results:
         formset = ResultsFormSet(
             request.POST or None,
             initial=[
                 {'order': player_order[i + 1][0], 'gp_id': last_game}
-                for i in range(max(2, last_game.NumberOfPlayers))
+                for i in range(last_game.NumberOfPlayers)
             ],
         )
 
@@ -46,7 +45,7 @@ def add_results(request):
             request.POST or None,
             initial=[
                 {'order': player_order[0][0], 'gp_id': last_game}
-                for i in range(max(2, last_game.NumberOfPlayers))
+                for i in range(last_game.NumberOfPlayers)
             ],
         )
 
@@ -70,3 +69,17 @@ def add_results(request):
             update_elo(changes)
         return redirect('highscores')
     return render(request, 'polls/add_results.html', context)
+
+
+def plus_result(request):
+    last_game = get_last_gameplay(request, only_session=False)
+    last_game.NumberOfPlayers = last_game.NumberOfPlayers + 1
+    last_game.save(update_fields=['NumberOfPlayers'])
+    return redirect('add_results')
+
+
+def minus_result(request):
+    last_game = get_last_gameplay(request, only_session=False)
+    last_game.NumberOfPlayers = max(last_game.NumberOfPlayers - 1, 1)
+    last_game.save(update_fields=['NumberOfPlayers'])
+    return redirect('add_results')

@@ -40,6 +40,8 @@ urlpatterns = [
     path('userpage/', views.userpage, name='userpage'),
     path('userpage/gamebrary/', gamebrary.gamebrary, name='gamebrary'),
     path('userpage/gamebrary/<str:sort_key>/', gamebrary.gamebrary, name='gamebrary'),
+    path('plus_result', views.plus_result, name='plus_result'),
+    path('minus_result', views.minus_result, name='minus_result'),
     # AJAX new_game_in_library
     path(
         'ajax/load_player_count/',
