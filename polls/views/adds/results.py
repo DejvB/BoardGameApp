@@ -23,11 +23,12 @@ def add_results(request):
     ).values_list('id', 'name')
     player_order = [(i, i) for i in range(last_game.NumberOfPlayers + 1)]
     ResultsFormSet = formset_factory(ResultsForm, extra=0)
+    print(player_order)
     if last_game.with_results:
         formset = ResultsFormSet(
             request.POST or None,
             initial=[
-                {'order': player_order[i + 1], 'gp_id': last_game}
+                {'order': player_order[i + 1][0], 'gp_id': last_game}
                 for i in range(max(2, last_game.NumberOfPlayers))
             ],
         )
@@ -36,7 +37,6 @@ def add_results(request):
             form.fields['gp_id'].disabled = True
             form.fields['player_order'].choices = player_order
             form.fields['order'].choices = player_order
-            form.fields['order'].disabled = True
             if specifics:
                 form.fields['player_specifics'].choices = specifics
             else:
@@ -45,13 +45,15 @@ def add_results(request):
         formset = ResultsFormSet(
             request.POST or None,
             initial=[
-                {'order': player_order[0], 'gp_id': last_game}
-                for _ in range(max(2, last_game.NumberOfPlayers))
+                {'order': player_order[0][0], 'gp_id': last_game}
+                for i in range(max(2, last_game.NumberOfPlayers))
             ],
         )
 
         for form in formset:
+            form.fields['gp_id'].disabled = True
             form.fields['player_order'].choices = player_order
+            form.fields['order'].choices = player_order
             if specifics:
                 form.fields['player_specifics'].choices = specifics
             else:
