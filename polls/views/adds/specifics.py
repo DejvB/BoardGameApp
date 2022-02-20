@@ -4,7 +4,7 @@ from django.shortcuts import redirect, render
 
 from polls.forms import GameplaysWithPossibleScoringResultsForm, PlayerSpecificsForm, ScoringSpecificsForm
 
-from ...models import Gameplay, Results, ScoringSpecifics, PlayerSpecifics
+from ...models import Gameplay, Results, ScoringSpecifics, PlayerSpecifics, ScoringTable
 from ..helpers import my_view, show_success_tooltip
 
 
@@ -25,8 +25,14 @@ def add_specifics(request):
 
     gp_ids = Results.objects.filter(p_id=userid).values_list('gp_id', flat=True)
     bg_ids_with_ss = [bg['bg_id'] for bg in ss_list]
+    gp_w_ss_res = ScoringTable.objects\
+                              .all()\
+                              .values('result_id__gp_id')\
+                              .distinct()\
+                              .values_list('result_id__gp_id', flat=True)
     gameplay_list = Gameplay.objects\
                             .filter(id__in=gp_ids, name__id__in=bg_ids_with_ss)\
+                            .exclude(id__in=gp_w_ss_res)\
                             .order_by('id')\
                             .values('id', 'name__id', 'name__name')
     for a in gameplay_list:
