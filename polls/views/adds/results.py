@@ -70,16 +70,3 @@ def add_results(request):
         return redirect('highscores')
     return render(request, 'polls/add_results.html', context)
 
-
-def plus_result(request):
-    last_game = get_last_gameplay(request, only_session=False)
-    last_game.NumberOfPlayers = last_game.NumberOfPlayers + 1
-    last_game.save(update_fields=['NumberOfPlayers'])
-    return redirect('add_results')
-
-
-def minus_result(request):
-    last_game = get_last_gameplay(request, only_session=False)
-    last_game.NumberOfPlayers = max(last_game.NumberOfPlayers - 1, 1)
-    last_game.save(update_fields=['NumberOfPlayers'])
-    return redirect('add_results')

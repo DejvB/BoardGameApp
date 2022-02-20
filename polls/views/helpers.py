@@ -5,7 +5,7 @@ from xml.etree import ElementTree as ET
 import numpy as np
 import requests
 
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 
 from ..models import (
     Boardgames,
@@ -231,3 +231,23 @@ def load_boardgame_box(request):
                    'bg_ind': bg_ind,
                    'with_submit': bool(request.GET.get('with_submit'))}
                   )
+
+
+def plus_result(request, site='r'):
+    last_game = get_last_gameplay(request, only_session=False)
+    last_game.NumberOfPlayers = last_game.NumberOfPlayers + 1
+    last_game.save(update_fields=['NumberOfPlayers'])
+    if site == 'rs':
+        return redirect('add_results_specifics')
+    else:
+        return redirect('add_results')
+
+
+def minus_result(request, site='r'):
+    last_game = get_last_gameplay(request, only_session=False)
+    last_game.NumberOfPlayers = max(last_game.NumberOfPlayers - 1, 1)
+    last_game.save(update_fields=['NumberOfPlayers'])
+    if site == 'rs':
+        return redirect('add_results_specifics')
+    else:
+        return redirect('add_results')
