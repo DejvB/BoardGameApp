@@ -82,7 +82,7 @@ def add_results_specifics(request):
         points = []
         for i in range(len(result_formset)):
             NoSS = context['NoSS']
-            points.append(sum([st_formset[NoSS * i + j].clean()['score'] for j in range(NoSS)]))
+            points.append(get_sum_without_total(st_formset, NoSS, i))
         for i, result_form in enumerate(result_formset):
             r, created = Results.objects.get_or_create(**result_form.cleaned_data)
             if created:
@@ -102,5 +102,17 @@ def add_results_specifics(request):
     return render(request, 'polls/add_results_specifics.html', context)
 
 
+def get_sum_without_total(fs, NoSS, i):
+    total_temp = 0
+    total_test = 0
+    for j in range(NoSS):
+        if fs[NoSS * i + j].clean()['ss_id'].name != 'Total':
+            print(fs[NoSS * i + j].clean()['ss_id'].name)
+            total_temp += fs[NoSS * i + j].clean()['score']
+        else:
+            total_test = fs[NoSS * i + j].clean()['score']
+    if total_temp != total_test:
+        print('Check failed!')
+    return total_temp
 
 
