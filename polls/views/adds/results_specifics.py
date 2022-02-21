@@ -25,13 +25,13 @@ def add_results_specifics(request):
     scoring_specifics = ScoringSpecifics.objects.filter(Q(bg_id_id=last_game.name.id) |
                                                         Q(bg_id_id__in=used_exp))\
         .values_list('id', 'name')
+    if not scoring_specifics:
+        return redirect('add_results')
     scoring_total = [ss for ss in scoring_specifics if ss[1] == 'Total'][0]
     scoring_specifics = [ss for ss in scoring_specifics if ss[1] != 'Total']
     scoring_specifics.append(scoring_total)
     ResultsFormSet = formset_factory(ResultsForm, extra=0)
     ScoringTableFormSet = formset_factory(ScoringTableForm, extra=0)
-    if not scoring_specifics:
-        return redirect('add_results')
     initials = []
     player_order = [(i, i) for i in range(last_game.NumberOfPlayers + 1)]
     for i in range(last_game.NumberOfPlayers):
