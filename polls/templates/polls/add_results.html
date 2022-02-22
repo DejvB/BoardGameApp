@@ -18,8 +18,16 @@
                 {% if forloop.first %}
                     <h2>Results</h2>
                 {% endif %}
-                <h3>Player {{ forloop.counter}}</h3>
-                <hr>
+                <h3 style="float:left;">Player {{ forloop.counter }}</h3>
+                {% if forloop.last %}
+                    <a href="{% url 'minus_result' %}r" id="minus_button" style="float:right;">
+                        <input type="button" value="-">
+                    </a>
+                    <a href="{% url 'plus_result' %}r" id="plus_button" style="float:right;">
+                        <input type="button" value="+">
+                    </a>
+                {% endif %}
+                <hr style="clear:both;">
                 <table>
                     {{ form.as_table }}
                 </table>
@@ -33,6 +41,7 @@
                 {% endif %}
             </div>
         {% endfor %}
+
 </form>
 
  <!--<form action='.' method='POST'>-->

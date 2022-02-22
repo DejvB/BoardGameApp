@@ -9,8 +9,14 @@
         {{ st_formset.management_form }}
 <div class="round box shadow big">
     <div style="overflow-x: scroll; max-width:100%">
-    <h2>Results</h2>
-    <hr>
+    <h2 style="display: inline-block">Results</h2>
+    <a href="{% url 'minus_result' %}rs" id="minus_button" style="float:right;">
+        <input type="button" value="-">
+    </a>
+    <a href="{% url 'plus_result' %}rs" id="plus_button" style="float:right;">
+        <input type="button" value="+">
+    </a>
+    <hr style="clear:both;">
     <table>
             {% for st_form in st_formset %}
                 {{ st_form.non_field_errors }}
@@ -90,7 +96,7 @@
             <span class="tooltiptext show" id="myTooltip">{{ tooltip }}</span>
         {% endif %}
     </div>
-<a href="{% url 'add_results' %}">I want it old way!</a>
+    <a href="{% url 'add_results' %}">I want it old way!</a>
     </div>
 </div>
 </form>
