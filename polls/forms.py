@@ -120,7 +120,7 @@ class OwnBoardgameForm(forms.ModelForm):
 
 class OwnExpansionForm(forms.ModelForm):
     basegame = forms.ModelChoiceField(Boardgames.objects.filter(standalone=True).order_by('name'))
-    expansion = forms.ModelChoiceField(Boardgames.objects.none())
+    expansion = forms.ModelChoiceField(Boardgames.objects.all().order_by('name'))
 
     class Meta:
         model = OwnBoardgame
