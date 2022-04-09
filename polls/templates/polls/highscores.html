@@ -308,11 +308,16 @@ function plot_bar_graph(data) {
   ch.options.title.text = bg_name,
   ch.options.tooltips.callbacks.label = function(item, chart){
     var i = item.datasetIndex;
-    return ['Player: ' + data.names[i],
+    var Label = ['Player: ' + data.names[i],
             'Position: ' + data.position[i],
             'Points: ' + data.data[i],
-            'Number of Players: ' + data.labels[i]
-            ];
+            'Number of Players: ' + data.labels[i]];
+    if (data.scoring_tables[i]) {
+        for (j = 0; j < data.scoring_tables[i].length; j++) {
+                    Label.push(data.scoring_tables[i][j][0] + ': ' + data.scoring_tables[i][j][1])
+        }
+    }
+    return Label;
   }
   ch.update();
 }
