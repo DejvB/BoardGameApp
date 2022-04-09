@@ -45,6 +45,7 @@ def load_chart_data(request):
     names = []
     position = []
     diff = []
+    scoring_tables = []
 
     bg_id = request.GET.get('id')
     bg_info = get_bgg_info(bg_id)
@@ -57,7 +58,12 @@ def load_chart_data(request):
         Results.objects.filter(gp_id__name__id=bg_id)
         .filter(gp_id__with_results=True)
         .values(
-            'gp_id', 'p_id__name', 'gp_id__NumberOfPlayers', 'points', 'order'
+            'id',
+            'gp_id',
+            'p_id__name',
+            'gp_id__NumberOfPlayers',
+            'points',
+            'order',
         )
         .order_by('-points')
     )
@@ -73,6 +79,10 @@ def load_chart_data(request):
             display.append(False)
         else:
             display.append(True)
+        if Results.objects.get(id=query['id']).get_scoring_table():
+            scoring_tables.append(Results.objects.get(id=query['id']).get_scoring_table())
+        else:
+            scoring_tables.append([])
         data.append([query['points']])
         # colors.append(c[query['p_id__name']])
         colors.append(p_colors[query['p_id__name']])
@@ -171,7 +181,8 @@ def load_chart_data(request):
         p_points.append({'x': count + 1, 'y': 'Nan'})
         if player_exists:
             order_data.append([p.name, p.color, p_order, p_points])
-
+    # scoring_tables = ['\n'.join([f'{hm[0]}: {hm[1]}' for hm in st]) for st in scoring_tables]
+    print(scoring_tables)
     return JsonResponse(
         data={
             'labels': labels,
@@ -180,6 +191,7 @@ def load_chart_data(request):
             'display': display,
             'names': names,
             'position': position,
+            'scoring_tables': scoring_tables,
             'maxws': maxws,
             'minws': minws,
             'avgws': avgws,

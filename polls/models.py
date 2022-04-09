@@ -110,6 +110,15 @@ class Results(models.Model):
     def __str__(self):
         return f'{self.gp_id.name.name} - {self.p_id.name}'
 
+    def get_scoring_table(self):
+        if self.scoring_table:
+            st_list = []
+            for st in self.scoring_table.all():
+                st_list.append([st.ss_id.name, st.score])
+            return st_list
+        else:
+            return []
+
     gp_id = models.ForeignKey(
         Gameplay, on_delete=models.CASCADE, related_name='results'
     )
@@ -166,5 +175,5 @@ class ScoringTable(models.Model):
     def __str__(self):
         return f'{self.ss_id} - {self.result_id.p_id.name}'
     score = models.IntegerField(default=0)
-    result_id = models.ForeignKey(Results, on_delete=models.CASCADE)
+    result_id = models.ForeignKey(Results, on_delete=models.CASCADE, related_name='scoring_table')
     ss_id = models.ForeignKey(ScoringSpecifics, on_delete=models.CASCADE)

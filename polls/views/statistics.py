@@ -171,7 +171,7 @@ def compute_tournament_local(results, elos):
 def set_elo(elo):
     for key, value in elo.items():
         p = Player.objects.get(id=key)
-        if value[0] < 100:
+        if value and value[0] < 100:
             value[0] += 1000
         if sum(value) != p.elo:
             p.elo = sum(value)
