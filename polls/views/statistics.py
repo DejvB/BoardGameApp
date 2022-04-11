@@ -1,10 +1,16 @@
+import datetime
 import itertools
 
 import numpy as np
+from django.db.models import Count, Max, Q, Sum
+from django.db.models.functions import (
+    ExtractIsoYear,
+    ExtractWeek,
+)
 from django.http import JsonResponse
 from django.shortcuts import render
 
-from ..models import Gameplay, Player, Results
+from ..models import Gameplay, Player, Results, OwnBoardgame
 from .helpers import computeKW, my_view
 
 elos = {}
@@ -17,6 +23,8 @@ def playerstats(request):
     elo_history = {p.id: [] for p in Player.objects.all()}
     elos = {p.id: 1000 for p in Player.objects.all()}
     numbers = [10, 20, 50, 100, 'all']
+    players_with_most_played_games = get_playtime()
+    owner_counts = get_bg_owners()
     context = {
         'players': Player.objects.all()
         .values('name', 'id')
@@ -27,8 +35,26 @@ def playerstats(request):
         .distinct()
         .order_by('-elo'),
         'numbers': numbers,
+        'players_with_most_played_games': players_with_most_played_games,
+        'owner_counts': owner_counts,
     }
     return render(request, 'polls/playerstats.html', context)
+
+
+def get_playtime():
+    curr_year, curr_week, _ = datetime.date.today().isocalendar()
+    game_list = Results.objects.annotate(
+        year=ExtractIsoYear('gp_id__date'),
+        week=ExtractWeek('gp_id__date'),
+    ).filter(year=curr_year, week=curr_week)
+    game_list = game_list.values('p_id__name').annotate(game_count=Count('p_id__id')).annotate(game_time=Sum('gp_id__time'))
+    return game_list
+
+
+def get_bg_owners():
+    owner_counts = OwnBoardgame.objects.all().values('p_id__name').annotate(count=Count('bg_id'))
+    print(owner_counts)
+    return owner_counts
 
 
 def load_playerstats(request):
