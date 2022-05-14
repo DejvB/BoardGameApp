@@ -47,7 +47,10 @@ def get_playtime():
         year=ExtractIsoYear('gp_id__date'),
         week=ExtractWeek('gp_id__date'),
     ).filter(year=curr_year, week=curr_week)
-    game_list = game_list.values('p_id__name').annotate(game_count=Count('p_id__id')).annotate(game_time=Sum('gp_id__time'))
+    game_list = game_list.exclude(p_id__id__in=[17, 33])\
+                         .values('p_id__name')\
+                         .annotate(game_count=Count('p_id__id'))\
+                         .annotate(game_time=Sum('gp_id__time'))
     return game_list
 
 
