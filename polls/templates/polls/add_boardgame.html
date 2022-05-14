@@ -25,11 +25,15 @@ function load_boardgame_box(bg_ind) {
     {% csrf_token %}
       <label for="bg_name">Boardgame name:</label>
       <input type="text" id="bg_name" name="bg_name"><br><br>
-      <input type="submit" value="Search">
+      <input type="submit" value="Search" name="search_for_game">
       <br>
       <a href="{% url 'add_bg_old' %}">If nothing found.</a>
+      {% if bgg_ids_len %}
+          Found {{ bgg_ids_len }} games.
+      {% endif %}
     </form>
 </div>
+
 {% if bgg_infos %}
     {% for info in bgg_infos %}
         <div id="boardgame_box_{{ forloop.counter0 }}" boardgame_box_url="{% url 'boardgame_box' %}"></div>
@@ -38,7 +42,21 @@ function load_boardgame_box(bg_ind) {
         </script>
     {% endfor %}
 {% endif %}
-
+{% if bgg_ids_len > 10 %}
+<div style="width: 50%;  margin: auto;">
+    <div class="box round shadow" style="text-align: center;">
+        <p style="display: inline-block;">
+            {%if page > 0 %}
+                <a href="{% url 'add_game' %}{{ page|add:'-1' }}"><input class="arrow" type="button" value="<"/></a>
+            {% endif %}
+            {% widthratio bgg_ids_len 10 1 as ratio %}
+            {% if page != ratio|add:'-1' %}
+                <a href="{% url 'add_game' %}{{ page|add:'1' }}"><input class="arrow" type="button" value=">"/></a>
+            {% endif %}
+        </p>
+    </div>
+</div>
+{% endif %}
 <script>
     function savegame(bg_ind) {
         var url = $("#bg_box").attr("bg_url");

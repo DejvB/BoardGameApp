@@ -10,7 +10,7 @@
             {% for p in players_with_most_played_games|dictsortreversed:"game_count"|slice:":5" %}
                 <li>{{ p.p_id__name }}, {{ p.game_count }} games
                     {% if forloop.counter <= 3 %}
-                        <img class="color_{{ forloop.counter }}" src="{% static 'images/trophy-cup.svg' %}" height="20">
+                        <img class="color_{{ forloop.counter }}" src="{% static 'images/trophy-cup.png' %}" height="20">
                     {% endif %}
                 </li>
             {% endfor %}
@@ -28,7 +28,7 @@
             {% for p in players_with_most_played_games|dictsortreversed:"game_time"|slice:":5" %}
                 <li>{{ p.p_id__name }}, {{ p.game_time }}
                     {% if forloop.counter <= 3 %}
-                        <img class="color_{{ forloop.counter }}" src="{% static 'images/trophy-cup.svg' %}" height="20">
+                        <img class="color_{{ forloop.counter }}" src="{% static 'images/trophy-cup.png' %}" height="20">
                     {% endif %}
                 </li>
             {% endfor %}
@@ -46,7 +46,7 @@
             {% for p in owner_counts|dictsortreversed:"count"|slice:":5" %}
                 <li>{{ p.p_id__name }}, {{ p.count }} boardgames
                     {% if forloop.counter <= 3 %}
-                        <img class="color_{{ forloop.counter }}" src="{% static 'images/trophy-cup.svg' %}" height="20">
+                        <img class="color_{{ forloop.counter }}" src="{% static 'images/trophy-cup.png' %}" height="20">
                     {% endif %}
                 </li>
             {% endfor %}

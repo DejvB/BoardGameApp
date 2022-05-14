@@ -14,18 +14,42 @@ from ..helpers import (
 
 
 @login_required
-def add_boardgame(request):
+def add_boardgame(request, page=-1):
     context = {}
-    if request.method == 'POST':  # and 'run_script' in request.POST:
-        search_query = request.POST['bg_name']
-        _, bgg_ids = search_for_bgg_id(search_query)
+    print(page)
+
+    if request.method == 'GET' and page >= 0:
+        bgg_ids = request.session['bgg_ids']
         bgg_infos = []
-        for bgg_id in bgg_ids:
+        for bgg_id in bgg_ids[10 * page: 10 * (page + 1)]:
             bgg_info = scrape_bgg_info(bgg_id)
             if bgg_info['type'] == 'boardgame':
                 bgg_infos.append(bgg_info)
         context['bgg_infos'] = bgg_infos
         request.session['bgg_infos'] = bgg_infos
+        context['bgg_ids_len'] = len(bgg_ids)
+        print(bgg_infos)
+    print(page)
+
+    if page == -1:
+        page = 0
+
+    context['page'] = page
+    if request.method == 'POST':  # and 'run_script' in request.POST:
+        page = 0
+        search_query = request.POST['bg_name']
+        _, bgg_ids = search_for_bgg_id(search_query)
+        bgg_infos = []
+        for bgg_id in bgg_ids[10 * page: 10 * (page + 1)]:
+            bgg_info = scrape_bgg_info(bgg_id)
+            if bgg_info['type'] == 'boardgame':
+                bgg_infos.append(bgg_info)
+        context['bgg_infos'] = bgg_infos
+        context['bgg_ids_len'] = len(bgg_ids)
+
+        request.session['bgg_ids'] = bgg_ids
+        request.session['bgg_infos'] = bgg_infos
+        print(len(bgg_ids))
     return render(request, 'polls/add_boardgame.html', context)
 
 
