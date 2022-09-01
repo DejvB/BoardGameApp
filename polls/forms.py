@@ -1,3 +1,5 @@
+import datetime
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -82,6 +84,7 @@ class ResultsForm(forms.ModelForm):
     player_specifics = forms.ModelChoiceField(
         PlayerSpecifics.objects.order_by('name')
     )
+    gp_id = forms.ModelChoiceField(Gameplay.objects.filter(date__gte=datetime.datetime.now() - datetime.timedelta(days=7)).order_by('-id'))
     p_id = forms.ModelChoiceField(Player.objects.order_by('name'))
     player_order = forms.ChoiceField()
     order = forms.ChoiceField()
