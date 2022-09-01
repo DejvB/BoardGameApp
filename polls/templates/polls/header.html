@@ -17,6 +17,7 @@
   <a href="{% url 'highscores' %}"><input type="image" src="{% static 'images/trophy-cup.png' %}"/></a>
   <a href="{% url 'history' %}"><input type="image" src="{% static 'images/backward-time.png' %}"/></a>
   <a href="{% url 'playerstats' %}"><input type="image" src="{% static 'images/meeple-king.png' %}"/></a>
+  <a href="https://discord.gg/WenySkTMXK"><input type="image" src="{% static 'images/discord.png' %}"/></a>
   <div  class="headertext" style="float: right;">
           {% if request.user.username %}
            <a href="{% url 'userpage' %}">{{ request.user.username }} </a>
