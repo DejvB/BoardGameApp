@@ -152,7 +152,7 @@ def load_chart_data(request):
         p_points = [{'x': 0, 'y': 'Nan'}]
         for ids in list(
             queryset.values('gp_id')
-            .order_by('gp_id')
+            .order_by('gp_id__date')
             .distinct()
             .values_list('gp_id', flat=True)
         ):

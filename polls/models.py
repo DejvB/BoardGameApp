@@ -84,7 +84,7 @@ class Gameplay(models.Model):
 
     def get_players(self):
         return ', '.join(
-            list(self.results.all().values_list('p_id__name', flat=True))
+            list(self.results.all().order_by('order').values_list('p_id__name', flat=True))
         )
 
     def get_players_w_results(self):
