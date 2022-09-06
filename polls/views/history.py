@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render
 
 from ..models import Gameplay
@@ -6,7 +8,7 @@ from ..tables import GameplayTable
 
 def history(request):
     context = {}
-    context['games'] = GameplayTable(Gameplay.objects.all().order_by('-date'))
+    context['games'] = GameplayTable(Gameplay.objects.filter(date__gte=datetime.datetime.now() - datetime.timedelta(days=30)).order_by('-date'))
     return render(request, 'polls/history.html', context)
 
 
