@@ -3,6 +3,7 @@ import datetime
 from django.contrib.auth.models import User
 from django.db import models
 from django.forms.models import model_to_dict
+from django.utils import timezone
 
 
 class Player(models.Model):
@@ -52,7 +53,7 @@ class Boardgames(models.Model):
         data['designer'] = list(self.designer.all().values_list('name', flat=True))
         return data
 
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
     minNumberOfPlayers = models.IntegerField(default=2)
     maxNumberOfPlayers = models.IntegerField(default=4)
     minage = models.IntegerField(default=10)
@@ -93,7 +94,7 @@ class Gameplay(models.Model):
 
     name = models.ForeignKey(Boardgames, on_delete=models.CASCADE)
     NumberOfPlayers = models.IntegerField(default=0)
-    date = models.DateTimeField(default=datetime.datetime.now)
+    date = models.DateTimeField(default=timezone.now)
     time = models.DurationField(default=datetime.timedelta(days=0, seconds=0))
     with_results = models.BooleanField(default=True)
 
