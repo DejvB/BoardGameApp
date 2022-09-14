@@ -22,6 +22,12 @@ class Player(models.Model):
             )
         )
 
+    def get_recent_comrades(self, id):
+        played_games = self.get_played(id)
+        last_game_id = played_games.order_by('-id').values_list('id', flat=True)
+        last_game_id = list(last_game_id)[:5]
+        return Player.objects.filter(id__in=Results.objects.filter(gp_id__in=last_game_id).values_list('p_id', flat=True)).order_by('name')
+
     user = models.OneToOneField(
         User, on_delete=models.SET_NULL, null=True, default=None, blank=True
     )
