@@ -81,51 +81,53 @@
       <input type='button' name="give_me_game" id="random_game" value="Na křídlech">
 </div>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-  <script>
-    $("#id_name").change(function () {
-      var url = $("#GameplayForm").attr("load_player_count_url");  // get the url of the `load_cities` view
-      var bg_id = $(this).val();  // get the selected country ID from the HTML input
 
-      $.ajax({                       // initialize an AJAX request
-        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load_player_count/)
+
+  <script>
+    $("#random_game").click(function () {
+      var url = $("#randomizer").attr("randomizer_url");
+      $.ajax({
+        url: url,
+
         data: {
-          'id': bg_id       // add the country id to the GET parameters
         },
-        success: function (data) {   // `data` is the return of the `load_cities` view function
-          $("#id_NumberOfPlayers").html(data);  // replace the contents of the city input with the data that came from the server
+        success: function (data) {
+      $("#random_game_label").html(data.games[Math.floor(Math.random() * data.games.length)]);
+       $("#random_game").val(data.games[Math.floor(Math.random() * data.games.length)]);
         }
       });
 
     });
   </script>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<!--  <link rel="stylesheet" href="/resources/demos/style.css">-->
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
   <script>
-    $("#id_name").change(function () {
-      var url = $("#GameplayForm").attr("expansions_select_options_url");  // get the url of the `load_cities` view
-      var bg_id = $(this).val();  // get the selected country ID from the HTML input
-      $.ajax({                       // initialize an AJAX request
-        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load_player_count/)
+  function lpc(value) {
+      var url = $("#GameplayForm").attr("load_player_count_url");
+      var bg_name = value;
 
+      $.ajax({
+        url: url,
         data: {
-          'id': bg_id       // add the country id to the GET parameters
+          'name': bg_name
         },
-        success: function (data) {   // `data` is the return of the `load_cities` view function
-          $("#Expansion_formset_id").html(data);  // replace the contents of the city input with the data that came from the server
-
+        success: function (data) {
+          $("#id_NumberOfPlayers").html(data);
         }
       });
+  };
 
-    });
-  </script>
-  <script>
-    $("#id_name").change(function () {
-      var url = $("#basic_stats").attr("basic_stats_url");  // get the url of the `load_cities` view
-        var bg_id = $(this).val();
-      $.ajax({                       // initialize an AJAX request
-        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load_player_count/)
+  function bs(value) {
+      var url = $("#basic_stats").attr("basic_stats_url");
+        var bg_name = value;
+      $.ajax({
+        url: url,
         data: {
-          'id': bg_id
+          'name': bg_name
         },
-        success: function (data) {   // `data` is the return of the `load_cities` view function
+        success: function (data) {
           $("#points").html("");
           for (j = 0; j < data.result.length; j++){
               $("#points").append('<tr><th>' + data.result[j][0] + '</th>' + '<th>' + data.result[j][1] + '</th></tr>');
@@ -137,24 +139,38 @@
           $("#maxnws").html(data.maxnws);
         }
       });
+  };
 
-    });
-  </script>
-  <script>
-    $("#random_game").click(function () {
-      var url = $("#randomizer").attr("randomizer_url");  // get the url of the `load_cities` view
-      $.ajax({                       // initialize an AJAX request
-        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load_player_count/)
+    function se(value) {
+        var url = $("#GameplayForm").attr("expansions_select_options_url");
+        var bg_name = value;
+        $.ajax({
+        url: url,
 
         data: {
+          'name': bg_name
         },
-        success: function (data) {   // `data` is the return of the `load_cities` view function
-      $("#random_game_label").html(data.games[Math.floor(Math.random() * data.games.length)]);
-       $("#random_game").val(data.games[Math.floor(Math.random() * data.games.length)]);
+        success: function (data) {
+          $("#Expansion_formset_id").html(data);
 
         }
-      });
+        });
 
+    }
+
+    $( function() {
+    $( "#id_Boardgame" ).autocomplete({
+      source: {{ boardgames_names|safe }},
+      minLength:2,
+      select: function (e, ui) {
+        lpc(ui.item.value); // load player count
+        bs(ui.item.value); // basic stats
+        se(ui.item.value); // show expansions
+    },
     });
+  } );
   </script>
+
+
+
 {% endblock %}
