@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Avg, Min, Max, Q
 from django.forms import formset_factory
 from django.http import JsonResponse
@@ -29,6 +30,14 @@ def get_nearest_to_5(minutes):
         return 1
 
 
+def get_id_from_name(request):
+    bg_name = request.GET.get('name')
+    try:
+        return Boardgames.objects.get(name=bg_name).id
+    except ObjectDoesNotExist:
+        print("Boardgame with this name does not exist.")
+        return -1
+
 def get_now():
     d = datetime.now()
     d = d + timedelta(minutes=get_nearest_to_5(d.minute))
@@ -53,9 +62,11 @@ def add_play(request):
     if request.method == 'POST':
         gp_form = GameplayForm(request.POST)
         minutes = get_time_length(request)
+        bg_name = request.POST.get('Boardgame')
         if gp_form.is_valid() and e_formset.is_valid():
             gp = gp_form.save(commit=False)
             gp.time = timedelta(minutes=minutes)
+            gp.name = Boardgames.objects.get(name=bg_name)
             gp.save()
             for e_form in e_formset:
                 e = e_form.save()
@@ -69,11 +80,15 @@ def add_play(request):
     context['gp_form'] = gp_form
     context['e_formset'] = e_formset
     context['boardgame'] = Boardgames.objects.all()
+    context['boardgames_names'] = list(Boardgames.objects
+                                       .filter(standalone=True)
+                                       .order_by('name')
+                                       .values_list('name', flat=True))
     return render(request, 'polls/add_game.html', context)
 
 
 def expansions_select_options(request):
-    bg_id = request.GET.get('id')
+    bg_id = get_id_from_name(request)
     Expansions = list(
         Boardgames.objects.filter(basegame__id=bg_id)
         .order_by('name')
@@ -111,7 +126,7 @@ def expansions_select_options(request):
 
 
 def load_player_count(request):
-    bg_id = request.GET.get('id')
+    bg_id = get_id_from_name(request)
     playersRange = (Boardgames.objects.filter(Q(basegame__id=bg_id) |
                                               Q(id=bg_id))
                                       .values(
@@ -130,7 +145,7 @@ def load_player_count(request):
 
 def basic_stats(request):
     # basic stats for new gameplay page
-    bg_id = request.GET.get('id')
+    bg_id = get_id_from_name(request)
     game_id = (
         Gameplay.objects.filter(name__id=bg_id)
         .values('id')

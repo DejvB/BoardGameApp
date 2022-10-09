@@ -35,9 +35,7 @@ time_choices = (
 
 
 class GameplayForm(forms.ModelForm):
-    name = forms.ModelChoiceField(Boardgames.objects
-                                  .filter(standalone=True)
-                                  .order_by('name'))
+    Boardgame = forms.CharField()
     time = forms.MultipleChoiceField(
         choices=time_choices,
         required=False,
@@ -46,7 +44,8 @@ class GameplayForm(forms.ModelForm):
 
     class Meta:
         model = Gameplay
-        exclude = ()
+        exclude = ('name',)
+        fields = ('Boardgame', 'NumberOfPlayers', 'date', 'time', 'with_results',)
         widgets = {
             'NumberOfPlayers': forms.widgets.Select(),
             'date': forms.widgets.DateTimeInput(
