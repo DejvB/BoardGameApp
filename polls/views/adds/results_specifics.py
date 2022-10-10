@@ -107,7 +107,6 @@ def get_sum_without_total(fs, NoSS, i):
     total_test = 0
     for j in range(NoSS):
         if fs[NoSS * i + j].clean()['ss_id'].name != 'Total':
-            print(fs[NoSS * i + j].clean()['ss_id'].name)
             total_temp += fs[NoSS * i + j].clean()['score']
         else:
             total_test = fs[NoSS * i + j].clean()['score']
