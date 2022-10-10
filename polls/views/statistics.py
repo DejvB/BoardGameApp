@@ -56,17 +56,13 @@ def get_playtime():
 
 def get_bg_owners():
     owner_counts = OwnBoardgame.objects.all().values('p_id__name').annotate(count=Count('bg_id'))
-    print(owner_counts)
     return owner_counts
 
 
 def load_playerstats(request):
     userid = my_view(request)
-    # reset_all_elo()
     elo_history = elo()
     set_elo(elo_history)
-    # compute_tournament(Gameplay.objects.get(id = 336).results.all())
-    # print_all_elo()
     p_id = request.GET.get('p_id')
     number = request.GET.get('number')
     if number == 'all':
@@ -132,7 +128,6 @@ def load_playerstats(request):
     maxelo = max(cummean)
     minelo = min(cummean)
 
-    # print_all_elo()
     return JsonResponse(
         data={
             'p_id': p_id,
@@ -163,8 +158,6 @@ def update_elo_local(elos, changes):
 def elo():
     if any([v != 1000 for v in elos.values()]):
         return elo_history
-    # elo_history = {p.id: [] for p in Player.objects.all()}
-    # elos = {p.id: 1000 for p in Player.objects.all()}
     gms = Gameplay.objects.filter(with_results=True).order_by('date')
     for g in gms:
         changes = compute_tournament_local(g.results.all(), elos)
@@ -219,6 +212,4 @@ def print_all_elo():
     total_elo = 0
     for p in Player.objects.all():
         total_elo = total_elo + p.elo
-        print(p, p.elo)
-    print(total_elo)
     return None
