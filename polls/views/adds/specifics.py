@@ -41,7 +41,7 @@ def add_specifics(request):
     gp_form.fields['gameplays'].choices = [[a['id'], f"{a['name__name']}: {a['res']}"] for a in gameplay_list]
     context['gp_form'] = gp_form
 
-    if request.method == 'POST':  # and 'run_script' in request.POST:
+    if request.method == 'POST':
         if 'ss_submit' in request.POST:
             ss_form = ScoringSpecificsForm(request.POST, prefix='ss')
             if ss_form.is_valid():
@@ -57,11 +57,8 @@ def add_specifics(request):
         elif 'gp_submit' in request.POST:
             gp_form = GameplaysWithPossibleScoringResultsForm(request.POST, prefix='gp')
             gp_form.fields['gameplays'].choices = [[a['id'], f"{a['name__name']}: {a['res']}"] for a in gameplay_list]
-            print(gp_form)
             if gp_form.is_valid():
-                print('haha')
                 gp = gp_form.cleaned_data
-                print(gp)
                 request.session['gameplay_id'] = gp.get('gameplays')
                 return redirect('add_results_specifics')
     return render(request, 'polls/add_specifics.html', context)
