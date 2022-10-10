@@ -151,7 +151,6 @@ def index(request):
         )
         totalTimestr_month.append(str(stat['time__sum']))
         totalCount_month.append(stat['time__count'])
-    # print(stats)
     context['month'] = month
     context['totalTime_month'] = totalTime_month
     context['totalTimestr_month'] = totalTimestr_month
