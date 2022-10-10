@@ -17,7 +17,6 @@ from .helpers import my_view
 
 
 def index(request):
-    request.session['test'] = 'Blue'
     userid = my_view(request)
     games_own_list = games_list = Gameplay.objects.all()
     results_list = Results.objects.all()

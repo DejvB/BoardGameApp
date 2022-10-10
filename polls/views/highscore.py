@@ -9,8 +9,6 @@ from .helpers import get_bgg_info, my_view
 
 
 def highscores(request):
-    if 'test' in request.session:
-        print(request.session['test'])
     userid = my_view(request)
     gameplays = Gameplay.objects.all()
     if userid:
