@@ -1,11 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.forms import formset_factory
+from django.forms import formset_factory, inlineformset_factory
 from django.shortcuts import render, redirect
 
 from polls.forms import ResultsForm
 
-from ...models import Player, PlayerSpecifics
+from ...models import Gameplay, Player, PlayerSpecifics, Results
 from ..helpers import (
     compute_tournament,
     get_last_gameplay,
@@ -16,7 +16,7 @@ from ..helpers import (
 
 
 @login_required
-def add_results(request):
+def add_results(request, gp_id=None):
     userid = my_view(request)
     context = {}
     last_game = get_last_gameplay(request, only_session=False)
@@ -27,8 +27,13 @@ def add_results(request):
     player_recent_choices = [(q.id, q.name) for q in Player.objects.get(id=userid).get_recent_comrades(id=userid)]
     player_all_choices = [(q.id, q.name) for q in Player.objects.all().order_by('name')]
     player_choices = [('-', '------')] + player_recent_choices + [('-', '------')] + player_all_choices
-    ResultsFormSet = formset_factory(ResultsForm, extra=0)
-    if last_game.with_results:
+    if gp_id:
+        ResultsFormSet = inlineformset_factory(Gameplay, Results, extra=0, exclude=())
+    else:
+        ResultsFormSet = formset_factory(ResultsForm, extra=0)
+    if gp_id:
+        formset = ResultsFormSet(request.POST or None, request.FILES or None, instance=Gameplay.objects.get(id=gp_id))
+    elif last_game.with_results:
         formset = ResultsFormSet(
             request.POST or None,
             initial=[

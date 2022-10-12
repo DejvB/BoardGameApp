@@ -10,6 +10,9 @@ class GameplayTable(tables.Table):
     class Meta:
         model = Gameplay
         exclude = (
-            'time',
             'ID',
         )
+        row_attrs = {
+            # "data-id": lambda record: record.pk
+            "onClick": lambda record: "document.location.href='/polls/add_results/{0}';".format(record.id)
+        }
