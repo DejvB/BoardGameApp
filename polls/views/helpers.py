@@ -233,21 +233,36 @@ def load_boardgame_box(request):
                   )
 
 
-def plus_result(request, site='r'):
-    last_game = get_last_gameplay(request, only_session=False)
+def plus_result(request, site='r', gp_id=None):
+    print(gp_id)
+    if gp_id:
+        last_game = Gameplay.objects.get(id=gp_id)
+    else:
+        last_game = get_last_gameplay(request, only_session=False)
     last_game.NumberOfPlayers = last_game.NumberOfPlayers + 1
     last_game.save(update_fields=['NumberOfPlayers'])
     if site == 'rs':
-        return redirect('add_results_specifics')
+        page = 'add_results_specifics'
     else:
-        return redirect('add_results')
+        page = 'add_results'
+    if gp_id:
+        return redirect(page, gp_id=gp_id)
+    else:
+        return redirect(page)
 
 
-def minus_result(request, site='r'):
-    last_game = get_last_gameplay(request, only_session=False)
+def minus_result(request, site='r', gp_id=None):
+    if gp_id:
+        last_game = Gameplay.objects.get(id=gp_id)
+    else:
+        last_game = get_last_gameplay(request, only_session=False)
     last_game.NumberOfPlayers = max(last_game.NumberOfPlayers - 1, 1)
     last_game.save(update_fields=['NumberOfPlayers'])
     if site == 'rs':
-        return redirect('add_results_specifics')
+        page = 'add_results_specifics'
     else:
-        return redirect('add_results')
+        page = 'add_results'
+    if gp_id:
+        return redirect(page, gp_id=gp_id)
+    else:
+        return redirect(page)

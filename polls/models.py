@@ -89,6 +89,9 @@ class Gameplay(models.Model):
     def __str__(self):
         return self.name.name
 
+    def get_player_count(self):
+        return len(list(self.results.all().order_by('order').values_list('p_id__name', flat=True)))
+
     def get_players(self):
         return ', '.join(
             list(self.results.all().order_by('order').values_list('p_id__name', flat=True))
