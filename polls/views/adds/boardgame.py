@@ -16,7 +16,6 @@ from ..helpers import (
 @login_required
 def add_boardgame(request, page=-1):
     context = {}
-    print(page)
 
     if request.method == 'GET' and page >= 0:
         bgg_ids = request.session['bgg_ids']
@@ -28,8 +27,6 @@ def add_boardgame(request, page=-1):
         context['bgg_infos'] = bgg_infos
         request.session['bgg_infos'] = bgg_infos
         context['bgg_ids_len'] = len(bgg_ids)
-        print(bgg_infos)
-    print(page)
 
     if page == -1:
         page = 0
@@ -49,7 +46,6 @@ def add_boardgame(request, page=-1):
 
         request.session['bgg_ids'] = bgg_ids
         request.session['bgg_infos'] = bgg_infos
-        print(len(bgg_ids))
     return render(request, 'polls/add_boardgame.html', context)
 
 

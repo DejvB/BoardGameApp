@@ -9,8 +9,6 @@ from .helpers import get_bgg_info, my_view
 
 
 def highscores(request):
-    if 'test' in request.session:
-        print(request.session['test'])
     userid = my_view(request)
     gameplays = Gameplay.objects.all()
     if userid:
@@ -79,12 +77,11 @@ def load_chart_data(request):
             display.append(False)
         else:
             display.append(True)
-        if Results.objects.get(id=query['id']).get_scoring_table():
-            scoring_tables.append(Results.objects.get(id=query['id']).get_scoring_table())
+        if res := Results.objects.get(id=query['id']).get_scoring_table():
+            scoring_tables.append(res)
         else:
             scoring_tables.append([])
         data.append([query['points']])
-        # colors.append(c[query['p_id__name']])
         colors.append(p_colors[query['p_id__name']])
         labels.append(str(query['gp_id__NumberOfPlayers']))
         names.append(query['p_id__name'])
@@ -167,12 +164,8 @@ def load_chart_data(request):
             )
             if order:
                 for o, pl in zip(order, points):
-                    # print(o)
                     p_order.append({'x': count, 'y': o['order']})
                     p_points.append({'x': count, 'y': pl['points']})
-
-                # p_order.append({'x': count, 'y': order[0]['order']})
-                # p_points.append({'x': count, 'y': points[0]['points']})
                 player_exists = True
             else:
                 p_order.append({'x': count, 'y': 'Nan'})
@@ -181,8 +174,6 @@ def load_chart_data(request):
         p_points.append({'x': count + 1, 'y': 'Nan'})
         if player_exists:
             order_data.append([p.name, p.color, p_order, p_points])
-    # scoring_tables = ['\n'.join([f'{hm[0]}: {hm[1]}' for hm in st]) for st in scoring_tables]
-    print(scoring_tables)
     return JsonResponse(
         data={
             'labels': labels,

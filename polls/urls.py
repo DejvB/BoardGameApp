@@ -23,7 +23,9 @@ urlpatterns = [
     path('add_expansion_old/', views.add_expansion_old, name='add_exp_old'),
     # ex: /polls/add_results/
     path('add_results/', views.add_results, name='add_results'),
+    path('add_results/<str:gp_id>', views.add_results, name='add_results'),
     path('add_results_specifics/', results_specifics.add_results_specifics, name='add_results_specifics'),
+    path('edit_results_specifics/<str:gp_id>', helpers.edit_results_specifics, name='edit_results_specifics'),
     path('add_specifics/', specifics.add_specifics, name='add_specifics'),
     # ex: /polls/hs/
     path('hs/', views.highscores, name='highscores'),
@@ -43,8 +45,10 @@ urlpatterns = [
     path('userpage/gamebrary/<str:sort_key>/', gamebrary.gamebrary, name='gamebrary'),
     path('plus_result/', views.plus_result, name='plus_result'),
     path('plus_result/<str:site>/', views.plus_result, name='plus_result'),
+    path('plus_result/<str:site>/<str:gp_id>/', views.plus_result, name='plus_result'),
     path('minus_result/', views.minus_result, name='minus_result'),
     path('minus_result/<str:site>/', views.minus_result, name='minus_result'),
+    path('minus_result/<str:site>/<str:gp_id>/', views.minus_result, name='minus_result'),
     # AJAX new_game_in_library
     path(
         'ajax/load_player_count/',

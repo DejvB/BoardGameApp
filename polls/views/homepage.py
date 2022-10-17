@@ -17,7 +17,6 @@ from .helpers import my_view
 
 
 def index(request):
-    request.session['test'] = 'Blue'
     userid = my_view(request)
     games_own_list = games_list = Gameplay.objects.all()
     results_list = Results.objects.all()
@@ -152,7 +151,6 @@ def index(request):
         )
         totalTimestr_month.append(str(stat['time__sum']))
         totalCount_month.append(stat['time__count'])
-    # print(stats)
     context['month'] = month
     context['totalTime_month'] = totalTime_month
     context['totalTimestr_month'] = totalTimestr_month

@@ -314,7 +314,7 @@ function plot_bar_graph(data) {
             'Number of Players: ' + data.labels[i]];
     if (data.scoring_tables[i]) {
         for (j = 0; j < data.scoring_tables[i].length; j++) {
-                    Label.push(data.scoring_tables[i][j][0] + ': ' + data.scoring_tables[i][j][1])
+                    Label.push(data.scoring_tables[i][j]['name'] + ': ' + data.scoring_tables[i][j]['score'])
         }
     }
     return Label;

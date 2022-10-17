@@ -89,6 +89,16 @@
                     </tr>
                 {% endif %}
             {% endfor %}
+                    <tr>
+                        <th>Delete:</th>
+                        {% for result_form in result_formset %}
+                            {% for field in result_form.visible_fields %}
+                                {% if field.name == 'DELETE' %}
+                                    <th>{{ field.errors }}{{ field }}</th>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </tr>
     </table>
     <div class="tooltip">
         <button type="submit" name="run_script" onclick="this.disabled=true,this.form.submit()">Save results</button>
