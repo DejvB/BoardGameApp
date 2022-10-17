@@ -234,7 +234,6 @@ def load_boardgame_box(request):
 
 
 def plus_result(request, site='r', gp_id=None):
-    print(gp_id)
     if gp_id:
         last_game = Gameplay.objects.get(id=gp_id)
     else:
@@ -266,3 +265,9 @@ def minus_result(request, site='r', gp_id=None):
         return redirect(page, gp_id=gp_id)
     else:
         return redirect(page)
+
+
+def edit_results_specifics(request, gp_id=None):
+    if gp_id:
+        request.session['gameplay_id'] = gp_id
+    return redirect('add_results_specifics')

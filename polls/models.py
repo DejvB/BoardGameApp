@@ -42,6 +42,9 @@ class Boardgames(models.Model):
     def __str__(self):
         return self.name
 
+    def has_scoring_category(self):
+        return len(self.scoring_category.all()) > 0
+
     def not_played_recently(self, d):
         return (
             self.lastTimePlayed
@@ -124,7 +127,10 @@ class Results(models.Model):
         if self.scoring_table:
             st_list = []
             for st in self.scoring_table.all():
-                st_list.append([st.ss_id.name, st.score])
+                st_list.append({'id': st.ss_id.id,
+                                'score': st.score,
+                                'name': st.ss_id.name
+                                })
             return st_list
         else:
             return []

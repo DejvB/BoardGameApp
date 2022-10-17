@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 
 from polls.forms import ResultsForm, ScoringTableForm
 
-from ...models import PlayerSpecifics, ScoringSpecifics, Results
+from ...models import PlayerSpecifics, ScoringSpecifics, ScoringTable, Results
 from ..helpers import (
     compute_tournament,
     get_last_gameplay,
@@ -15,14 +15,19 @@ from ..helpers import (
     update_elo,
 )
 
+
+def get_st_values(er):
+    return [{'score': st['score'], 'ss_id': st['id']} for st in er.get_scoring_table()]
+
+
 @login_required
 def add_results_specifics(request):
     context = {}
-    last_game = get_last_gameplay(request, only_session=False)
-    er = Results.objects.filter(gp_id=last_game)
-    used_exp = last_game.usedexpansion_set.filter(used=True).values('e_id')
-    player_specifics = PlayerSpecifics.objects.filter(bg_id_id=last_game.name.id).values_list('id', 'name')
-    scoring_specifics = ScoringSpecifics.objects.filter(Q(bg_id_id=last_game.name.id) |
+    gameplay = get_last_gameplay(request, only_session=False)
+    er = Results.objects.filter(gp_id=gameplay)
+    used_exp = gameplay.usedexpansion_set.filter(used=True).values('e_id')
+    player_specifics = PlayerSpecifics.objects.filter(bg_id_id=gameplay.name.id).values_list('id', 'name')
+    scoring_specifics = ScoringSpecifics.objects.filter(Q(bg_id_id=gameplay.name.id) |
                                                         Q(bg_id_id__in=used_exp))\
         .values_list('id', 'name')
     if not scoring_specifics:
@@ -30,20 +35,20 @@ def add_results_specifics(request):
     scoring_total = [ss for ss in scoring_specifics if ss[1] == 'Total'][0]
     scoring_specifics = [ss for ss in scoring_specifics if ss[1] != 'Total']
     scoring_specifics.append(scoring_total)
-    ResultsFormSet = formset_factory(ResultsForm, extra=0)
+    ResultsFormSet = formset_factory(ResultsForm, extra=0, can_delete=True)
     ScoringTableFormSet = formset_factory(ScoringTableForm, extra=0)
     initials = []
-    player_order = [(i, i) for i in range(last_game.NumberOfPlayers + 1)]
-    for i in range(last_game.NumberOfPlayers):
-        if er:
-            initials.append({'gp_id': last_game,
+    player_order = [(i, i) for i in range(gameplay.NumberOfPlayers + 1)]
+    for i in range(gameplay.NumberOfPlayers):
+        try:
+            initials.append({'gp_id': gameplay,
                              'points': er[i].points,
                              'order': er[i].order,
                              'player_order': er[i].player_order,
                              'p_id': er[i].p_id,
                              'player_specifics': er[i].player_specifics})
-        else:
-            initials.append({'gp_id': last_game,
+        except IndexError:
+            initials.append({'gp_id': gameplay,
                              'points': 0,
                              'order': 0,
                              'player_order': player_order[0][0]})
@@ -61,11 +66,17 @@ def add_results_specifics(request):
             result_form.fields.pop('player_specifics')
     initials = []
     for i, _ in enumerate(result_formset):
-        for ss in scoring_specifics:
-            if ss[1] == 'Total' and er:
-                initials.append({'score': er[i].points, 'ss_id': ss[0]})
-            else:
-                initials.append({'score': 0, 'ss_id': ss[0]})
+        try:
+            initials.extend(get_st_values(er[i]))
+        except IndexError:
+            for ss in scoring_specifics:
+                if ss[1] == 'Total':
+                    try:
+                        initials.append({'score': er[i].points, 'ss_id': ss[0]})
+                    except IndexError:
+                        initials.append({'score': 0, 'ss_id': ss[0]})
+                else:
+                    initials.append({'score': 0, 'ss_id': ss[0]})
     st_formset = ScoringTableFormSet(request.POST or None, initial=initials, prefix='scores')
     for i, st_form in enumerate(st_formset):
         st_form.fields['ss_id'].disabled = True
@@ -84,19 +95,26 @@ def add_results_specifics(request):
             NoSS = context['NoSS']
             points.append(get_sum_without_total(st_formset, NoSS, i))
         for i, result_form in enumerate(result_formset):
+            to_be_deleted = result_form.cleaned_data.pop('DELETE')
             r, created = Results.objects.get_or_create(**result_form.cleaned_data)
             if created:
                 r.points = points[i]
                 r.order = sum([r.points < point for point in points]) + 1
                 r.save()
+            elif to_be_deleted:
+                r.delete()
+                continue
             for st_form in st_formset[context['NoSS'] * i: context['NoSS'] * (i + 1)]:
-                st = st_form.save(commit=False)
-                st.result_id = r
-                if st.ss_id.name == 'Total' and st.score == 0:
-                    st.score = points[i]
-                st.save()
-        if last_game.with_results:
-            changes = compute_tournament(last_game.results.all())
+                st, created = ScoringTable.objects.get_or_create(**st_form.cleaned_data | {'result_id': r})
+                if created:
+                    st.result_id = r
+                    if st.ss_id.name == 'Total' and st.score == 0:
+                        st.score = points[i]
+                    st.save()
+        gameplay.NumberOfPlayers = max(gameplay.NumberOfPlayers - len(result_formset.deleted_forms), 1)
+        gameplay.save(update_fields=['NumberOfPlayers'])
+        if gameplay.with_results:
+            changes = compute_tournament(gameplay.results.all())
             update_elo(changes)
         return redirect('highscores')
     return render(request, 'polls/add_results_specifics.html', context)

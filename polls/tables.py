@@ -14,5 +14,5 @@ class GameplayTable(tables.Table):
         )
         row_attrs = {
             # "data-id": lambda record: record.pk
-            "onClick": lambda record: "document.location.href='/polls/add_results/{0}';".format(record.id)
+            "onClick": lambda record: f"document.location.href='/polls/{'edit_results_specifics' if record.name.has_scoring_category() else 'add_results'}/{record.id}';",  # NOQA
         }

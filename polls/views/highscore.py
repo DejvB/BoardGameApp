@@ -77,8 +77,8 @@ def load_chart_data(request):
             display.append(False)
         else:
             display.append(True)
-        if Results.objects.get(id=query['id']).get_scoring_table():
-            scoring_tables.append(Results.objects.get(id=query['id']).get_scoring_table())
+        if res := Results.objects.get(id=query['id']).get_scoring_table():
+            scoring_tables.append(res)
         else:
             scoring_tables.append([])
         data.append([query['points']])
