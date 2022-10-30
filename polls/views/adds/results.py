@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.forms import formset_factory, inlineformset_factory
@@ -20,9 +21,10 @@ def add_results(request, gp_id=None):
     userid = my_view(request)
     context = {}
     gameplay = get_last_gameplay(request, only_session=False)
-    specifics = PlayerSpecifics.objects.filter(
-        bg_id_id=gameplay.name.id
-    ).values_list('id', 'name')
+    used_exp = gameplay.usedexpansion_set.filter(used=True).values('e_id')
+    specifics = PlayerSpecifics.objects.filter(Q(bg_id_id=gameplay.name.id) |
+                                                        Q(bg_id_id__in=used_exp))\
+                                        .values_list('id', 'name')
     player_order = [(i, i) for i in range(gameplay.NumberOfPlayers + 1)]
     player_recent_choices = [(q.id, q.name) for q in Player.objects.get(id=userid).get_recent_comrades(id=userid)]
     player_all_choices = [(q.id, q.name) for q in Player.objects.all().order_by('name')]

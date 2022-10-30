@@ -26,7 +26,9 @@ def add_results_specifics(request):
     gameplay = get_last_gameplay(request, only_session=False)
     er = Results.objects.filter(gp_id=gameplay)
     used_exp = gameplay.usedexpansion_set.filter(used=True).values('e_id')
-    player_specifics = PlayerSpecifics.objects.filter(bg_id_id=gameplay.name.id).values_list('id', 'name')
+    player_specifics = PlayerSpecifics.objects.filter(Q(bg_id_id=gameplay.name.id) |
+                                                        Q(bg_id_id__in=used_exp))\
+                                                .values_list('id', 'name')
     scoring_specifics = ScoringSpecifics.objects.filter(Q(bg_id_id=gameplay.name.id) |
                                                         Q(bg_id_id__in=used_exp))\
         .values_list('id', 'name')
