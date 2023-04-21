@@ -27,8 +27,10 @@ def add_results(request, gp_id=None):
                                         .values_list('id', 'name')
     player_order = [(i, i) for i in range(gameplay.NumberOfPlayers + 1)]
     player_recent_choices = [(q.id, q.name) for q in Player.objects.get(id=userid).get_recent_comrades(id=userid)]
+    player_friends = [(q.id, q.name) for q in Player.objects.filter(friend__id=userid).order_by('name')]
     player_all_choices = [(q.id, q.name) for q in Player.objects.all().order_by('name')]
-    player_choices = [('-', '------')] + player_recent_choices + [('-', '------')] + player_all_choices
+    sep = [('-', '------')]
+    player_choices = sep + player_recent_choices + sep + player_friends + sep + player_all_choices
     if gp_id:
         gameplay = Gameplay.objects.get(id=gp_id)
         extra = max(gameplay.NumberOfPlayers - gameplay.get_player_count(), 0)
