@@ -25,3 +25,5 @@ if __name__ == '__main__':
 # python3 manage.py makemigrations polls
 # python3 manage.py migrate
 # python3 manage.py runserver 0.0.0.0:8000
+
+# to start mysql server : services > mysql80 > start
